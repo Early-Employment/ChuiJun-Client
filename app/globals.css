@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-default: #ffffff;
+  --color-text-primary: #111111;
+  --color-text-secondary: #555555;
+  --color-brand-500: #2563eb;
+
+  --font-size-display: 32px;
+  --font-size-heading: 24px;
+  --font-size-body: 16px;
+  --font-size-caption: 12px;
+
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+}
+
+html,
+body {
+  background-color: var(--color-bg-default);
+  color: var(--color-text-primary);
+}
