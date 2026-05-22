@@ -44,7 +44,7 @@
   --color-info-500: #4a90e2;
   --color-info-600: #2f76ca;
 
-  --color-canvas: var(--color-neutral-50);
+  --color-canvas: var(--color-neutral-0);
   --color-surface: var(--color-neutral-0);
   --color-surface-subtle: var(--color-neutral-100);
   --color-surface-accent: var(--color-primary-100);
