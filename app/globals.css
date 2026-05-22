@@ -1,11 +1,70 @@
 @import "tailwindcss";
 
 @theme {
-  --color-bg-default: #ffffff;
-  --color-primary: #18c5c7;
-  --color-text-primary: #111111;
-  --color-text-secondary: #555555;
-  --color-brand-500: #2563eb;
+  --color-neutral-0: #ffffff;
+  --color-neutral-50: #f5f7fb;
+  --color-neutral-100: #eff2f6;
+  --color-neutral-200: #e2e4eb;
+  --color-neutral-300: #d5d7de;
+  --color-neutral-500: #a1a8b3;
+  --color-neutral-600: #727272;
+  --color-neutral-900: #111111;
+
+  --color-primary-50: #f2fcfc;
+  --color-primary-100: #e9f7f8;
+  --color-primary-200: #bfeef0;
+  --color-primary-300: #8fe2e4;
+  --color-primary-400: #52d4d6;
+  --color-primary-500: #18c5c7;
+  --color-primary-600: #12a8aa;
+  --color-primary-700: #0d8a8d;
+
+  --color-bronze-50: #f4efed;
+  --color-bronze-100: #d8d0ce;
+  --color-bronze-500: #a06a4a;
+  --color-bronze-600: #8a5739;
+
+  --color-success-50: #effaf3;
+  --color-success-100: #daf3e3;
+  --color-success-500: #33a968;
+  --color-success-600: #238a52;
+
+  --color-warning-50: #fff8e8;
+  --color-warning-100: #ffedbf;
+  --color-warning-500: #d69a1d;
+  --color-warning-600: #b67f08;
+
+  --color-danger-50: #fff1f1;
+  --color-danger-100: #ffd9d9;
+  --color-danger-500: #e25555;
+  --color-danger-600: #c53d3d;
+
+  --color-info-50: #eff7ff;
+  --color-info-100: #d7ebff;
+  --color-info-500: #4a90e2;
+  --color-info-600: #2f76ca;
+
+  --color-canvas: var(--color-neutral-50);
+  --color-surface: var(--color-neutral-0);
+  --color-surface-subtle: var(--color-neutral-100);
+  --color-surface-accent: var(--color-primary-100);
+  --color-foreground: var(--color-neutral-900);
+  --color-muted: var(--color-neutral-600);
+  --color-placeholder: var(--color-neutral-500);
+  --color-line: var(--color-neutral-200);
+  --color-line-strong: var(--color-neutral-300);
+  --color-accent: var(--color-primary-500);
+  --color-accent-strong: var(--color-primary-600);
+  --color-reward: var(--color-bronze-500);
+
+  --color-state-success: var(--color-success-500);
+  --color-state-success-soft: var(--color-success-50);
+  --color-state-warning: var(--color-warning-500);
+  --color-state-warning-soft: var(--color-warning-50);
+  --color-state-danger: var(--color-danger-500);
+  --color-state-danger-soft: var(--color-danger-50);
+  --color-state-info: var(--color-info-500);
+  --color-state-info-soft: var(--color-info-50);
 
   --font-size-display: 32px;
   --font-size-heading: 24px;
@@ -19,6 +78,6 @@
 
 html,
 body {
-  background-color: var(--color-bg-default);
-  color: var(--color-text-primary);
+  background-color: var(--color-canvas);
+  color: var(--color-foreground);
 }
