@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "'/Users/ijungeon/projects/조업/ChuiJun-Client/.codex/hooks/format.sh'"
+          },
+          {
+            "type": "command",
+            "command": "'/Users/ijungeon/projects/조업/ChuiJun-Client/.codex/hooks/lint.sh'"
+          },
+          {
+            "type": "command",
+            "command": "'/Users/ijungeon/projects/조업/ChuiJun-Client/.codex/hooks/typecheck.sh'"
+          }
+        ]
+      }
+    ]
+  }
+}
