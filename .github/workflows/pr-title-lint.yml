@@ -1,0 +1,31 @@
+name: PR Title Lint
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+jobs:
+  lint-title:
+    name: Validate PR title format
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          PATTERN='^\[(shared|entities|features|widgets|app|global|ci\/cd|release)\] .+'
+          if ! echo "$PR_TITLE" | grep -qE "$PATTERN"; then
+            echo "PR 제목이 컨벤션을 따르지 않습니다."
+            echo ""
+            echo "현재 제목: $PR_TITLE"
+            echo ""
+            echo "허용 형식: [scope] 한국어 설명"
+            echo "허용 scope: shared | entities | features | widgets | app | global | ci/cd | release"
+            echo ""
+            echo "예시:"
+            echo "  [app] DataGSM OAuth 로그인 연동"
+            echo "  [shared] axios 인터셉터 추가"
+            echo "  [release] v1.2.0 릴리즈"
+            exit 1
+          fi
+          echo "PR 제목 형식이 올바릅니다: $PR_TITLE"
