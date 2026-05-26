@@ -117,12 +117,19 @@ AskUserQuestion 도구로 다음을 묻는다:
 
 각 코멘트에 인라인 답글을 게시한다. 쉘 인젝션 방지를 위해 `path`와 `comment_id`는 반드시 인용한다.
 
+**멘션 규칙**: 답글 본문 맨 앞에 리뷰어 멘션을 붙인다.
+
+- `gemini-code-assist[bot]` → `@gemini-code-assist`
+- 사람 리뷰어 → `@<username>`
+
 ```bash
 gh api "repos/$REPO/pulls/$PR_NUMBER/comments/<comment_id>/replies" \
   --field body=@- <<'EOF'
-<답글 본문>
+@<reviewer> <답글 본문>
 EOF
 ```
+
+**수정 금지**: 이미 게시된 답글을 PATCH로 수정하면 리뷰어에게 알림이 가지 않는다. 내용을 바꿔야 할 경우 DELETE 후 새로 게시한다.
 
 답글 템플릿은 `references/reply-formats.md` 참조.
 
