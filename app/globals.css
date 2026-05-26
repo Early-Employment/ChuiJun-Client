@@ -69,7 +69,11 @@
   --font-size-display: 32px;
   --font-size-heading: 24px;
   --font-size-body: 16px;
+  --font-size-label: 14px;
   --font-size-caption: 12px;
+
+  --font-family-base:
+    "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -80,4 +84,5 @@ html,
 body {
   background-color: var(--color-canvas);
   color: var(--color-foreground);
+  font-family: var(--font-family-base);
 }
