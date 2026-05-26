@@ -13,14 +13,13 @@
     "check": "bun run typecheck && bun run lint && bun run lint:fsd"
   },
   "dependencies": {
+    "@tanstack/react-query": "^5.62.0",
+    "@themoment-team/datagsm-oauth-react": "^1.1.1",
+    "axios": "^1.7.0",
     "next": "^15.5.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "@tanstack/react-query": "^5.62.0",
-    "axios": "^1.7.0",
-    "zod": "^3.24.0",
-    "clsx": "^2.1.0",
-    "tailwind-merge": "^2.5.0"
+    "zod": "^3.24.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.3.5",
