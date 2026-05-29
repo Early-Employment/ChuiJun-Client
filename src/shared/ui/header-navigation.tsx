@@ -1,8 +1,8 @@
 export default function NavigaitionHeader() {
   return (
     <>
-    <div>
-      
+    <div id="headerContainer">
+
     </div>
     </>
   );
