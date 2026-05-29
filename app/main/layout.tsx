@@ -5,7 +5,7 @@ export default function MainLayout({ children }: { children: ReactNode }) {
   return (
     <>
       <NavigationHeader />
-      <div className="pt-20">{children}</div>
+      <div className="min-w-full min-h-full w-full h-auto">{children}</div>
     </>
   );
 }
