@@ -10,16 +10,12 @@ export function DgOAuthProvider({ children }: { children: ReactNode }) {
   const redirectUri = process.env.NEXT_PUBLIC_DATAGSM_REDIRECT_URI;
 
   if (!clientId || !redirectUri) {
-    if (process.env.NODE_ENV === "development") {
-      if (!hasWarnedMissingOAuthEnv) {
-        console.error("Datagsm OAuth 환경 변수가 설정되지 않았습니다. .env 파일을 확인해주세요.");
-        hasWarnedMissingOAuthEnv = true;
-      }
-
-      return <>{children}</>;
+    if (process.env.NODE_ENV === "development" && !hasWarnedMissingOAuthEnv) {
+      console.error("Datagsm OAuth 환경 변수가 설정되지 않았습니다. .env 파일을 확인해주세요.");
+      hasWarnedMissingOAuthEnv = true;
     }
 
-    throw new Error("Datagsm OAuth 환경 변수가 설정되지 않았습니다.");
+    return <>{children}</>;
   }
 
   return (
