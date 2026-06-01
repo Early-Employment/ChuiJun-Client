@@ -4,7 +4,7 @@ import { LogoIcon } from "@/shared/assets/LogoIcon";
 
 export function Header() {
   return (
-    <header className="bg-surface border-line sticky top-0 z-10 border-b">
+    <header className="bg-surface border-line sticky top-0 z-50 border-b">
       <div className="mx-auto flex h-14 max-w-7xl items-center justify-between px-6">
         <Link href="/" className="flex items-center gap-1" aria-label="취준 홈">
           <LogoIcon className="size-8" />
