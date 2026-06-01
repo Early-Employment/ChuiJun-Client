@@ -3,12 +3,12 @@ import Link from "next/link";
 import bellIcon from "@/shared/assets/bell.svg";
 import { LogoIcon } from "@/shared/assets/LogoIcon";
 
-export default function NavigaitionHeader() {
+export default function NavigationHeader() {
   return (
     <>
       <div
         id="headerContainer"
-        className="fixed top-0 left-0 z-50 flex h-12 w-full items-center justify-center border-b border-line bg-surface px-4 sm:px-8 xl:px-35"
+        className="fixed top-0 left-0 z-50 flex h-12 w-full items-center justify-center border-b border-line bg-surface px-4 sm:px-8 xl:px-[140px]"
       >
         <div id="logo" className="flex items-center gap-2">
           <LogoIcon className="h-8 w-auto" />
@@ -23,7 +23,7 @@ export default function NavigaitionHeader() {
           <Image src={bellIcon} alt="알림" className="h-6 w-6 cursor-pointer" width={24} height={24} />
           <button
             type="button"
-            className="flex h-8 w-18 cursor-pointer items-center justify-center rounded-md bg-primary-500 px-2 text-white"
+            className="flex h-8 w-[72px] cursor-pointer items-center justify-center rounded-md bg-primary-500 px-2 text-white"
           >
             로그인
           </button>

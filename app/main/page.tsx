@@ -6,21 +6,21 @@ const filterChips = ["난이도", "문제 상태", "언어", "문제집"] as con
 const rowsPerPage = 10;
 
 const problemRows = [
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "해결함", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
-  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3" },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "해결함", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: true },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
+  { status: "안 풀림", title: "서현이의 디자인 입문기", level: "lv. 2", solvedCount: "3", isHighlighted: false },
 ] as const;
 
 const summaryCards = [
@@ -186,9 +186,7 @@ function ProblemBoard() {
                     {row.status}
                   </td>
                   <td
-                    className={`px-6 py-5 text-center${
-                      startIndex + index === 3 ? " font-semibold text-info-600 underline" : ""
-                    }`}
+                    className={`px-6 py-5 text-center${row.isHighlighted ? " font-semibold text-info-600 underline" : ""}`}
                   >
                     <span className="block w-full text-center">{row.title}</span>
                   </td>
