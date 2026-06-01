@@ -179,12 +179,12 @@ export function ProblemBoard() {
                 >
                   <td className="px-6 py-5 text-center">{startIndex + index + 1}</td>
                   <td
-                    className={`px-6 py-5 text-center${row.status === "해결함" ? "text-accent font-semibold" : ""}`}
+                    className={`px-6 py-5 text-center ${row.status === "해결함" ? "text-accent font-semibold" : ""}`}
                   >
                     {row.status}
                   </td>
                   <td
-                    className={`px-6 py-5 text-center${row.isHighlighted ? "text-info-600 font-semibold underline" : ""}`}
+                    className={`px-6 py-5 text-center ${row.isHighlighted ? "text-info-600 font-semibold underline" : ""}`}
                   >
                     <span className="block w-full text-center">{row.title}</span>
                   </td>
