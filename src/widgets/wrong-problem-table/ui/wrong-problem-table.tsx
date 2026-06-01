@@ -1,17 +1,17 @@
 const wrongProblems = [
   {
     id: 1,
-    title: "준건이가 서현이 괴롭혀요",
+    title: "두 수의 합",
     attempts: 2,
-    date: "2026.4.3",
-    reason: "run time error",
+    date: "2026.04.03",
+    reason: "Runtime Error",
   },
   {
-    id: 1,
-    title: "준건이가 서현이 괴롭혀요",
-    attempts: 2,
-    date: "2026.4.3",
-    reason: "run time error",
+    id: 2,
+    title: "DFS와 BFS",
+    attempts: 3,
+    date: "2026.04.04",
+    reason: "Wrong Answer",
   },
 ];
 
