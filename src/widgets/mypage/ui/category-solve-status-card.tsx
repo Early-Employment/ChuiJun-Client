@@ -17,9 +17,12 @@ export function CategorySolveStatusCard() {
               <div className="bg-accent rounded-sm" style={{ height: `${category.solved}%` }} />
             </div>
             <span className="mt-2 text-center text-xs leading-tight">
-              그리디
-              <br />
-              알고리즘
+              {category.label.split(" ").map((word, wordIndex, words) => (
+                <span key={word}>
+                  {word}
+                  {wordIndex < words.length - 1 && <br />}
+                </span>
+              ))}
             </span>
           </div>
         ))}
