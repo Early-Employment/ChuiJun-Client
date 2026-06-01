@@ -14,10 +14,11 @@
 
 ## 2. 디렉터리 규칙
 
-- 라우팅: `app/`. 페이지 로직은 직접 작성하거나 `src/views/`에서 composition.
-- FSD 계층: `shared → entities → features → widgets → views`. 상위가 하위 import.
+- 라우팅과 페이지 로직: `app/` (Next.js App Router). 페이지 파일에 직접 작성하거나 `src/widgets/` 컴포넌트를 composition한다. `src/views/` 폴더는 만들지 않는다.
+- FSD 계층: `shared → entities → features → widgets`. 상위가 하위 import.
 - 같은 계층 슬라이스 간 횡단 import 금지 (원칙). 위반 시 Steiger 경고 — blocking 아님.
-- Next.js의 `app/`는 라우팅 전용, FSD `app` 계층 역할은 `app/layout.tsx`가 흡수 (별도 `src/app` 폴더 없음).
+- Next.js의 `app/`이 FSD `views` 계층과 `app` 계층 역할을 모두 담당한다. `app/layout.tsx`가 providers·전역 초기화를 흡수 (별도 `src/app`, `src/views/` 폴더 없음).
+- SVG 아이콘은 `src/shared/assets/`에 PascalCase 파일명으로 둔다 (예: `BellIcon.tsx`). 단일 슬라이스에서만 쓰이더라도 아이콘은 이 위치에 중앙화한다.
 - 경로 alias: `@/*` → `src/*`.
 
 ## 3. 파일명 규칙
@@ -33,7 +34,7 @@
 
 ```tsx
 // ❌ 금지
-export { default } from "@/views/home/home-view";
+export { default } from "@/widgets/home/home-widget";
 
 // ✅ 허용 — 단순 페이지
 export default function HomePage() {
@@ -41,9 +42,9 @@ export default function HomePage() {
 }
 
 // ✅ 허용 — composition
-import { HomeView } from "@/views/home/home-view";
+import { HomeWidget } from "@/widgets/home/home-widget";
 export default function HomePage() {
-  return <HomeView />;
+  return <HomeWidget />;
 }
 ```
 
@@ -95,16 +96,16 @@ export const problemKeys = {
 
 ## 10. 명령어
 
-| 명령 | 설명 |
-|---|---|
-| `bun run dev` | 개발 서버 |
-| `bun run build` | 프로덕션 빌드 |
-| `bun run start` | 프로덕션 서버 |
-| `bun run lint` | ESLint |
-| `bun run lint:fsd` | Steiger (경고만, 종료 코드 0) |
-| `bun run typecheck` | `tsc --noEmit` |
-| `bun run check` | typecheck + lint + lint:fsd 일괄 |
-| `bun run format` | Prettier |
+| 명령                | 설명                             |
+| ------------------- | -------------------------------- |
+| `bun run dev`       | 개발 서버                        |
+| `bun run build`     | 프로덕션 빌드                    |
+| `bun run start`     | 프로덕션 서버                    |
+| `bun run lint`      | ESLint                           |
+| `bun run lint:fsd`  | Steiger (경고만, 종료 코드 0)    |
+| `bun run typecheck` | `tsc --noEmit`                   |
+| `bun run check`     | typecheck + lint + lint:fsd 일괄 |
+| `bun run format`    | Prettier                         |
 
 - **Husky 없음.** 커밋 전 사람이 직접 `bun run check`를 실행한다.
 - 에이전트가 `Edit`/`Write`로 파일을 바꾸면 `.claude/hooks/`의 3개 훅이 순서대로 동작 (모두 비차단):

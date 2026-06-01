@@ -24,7 +24,7 @@ git branch --show-current
 - **Types** (영어 소문자):
   `feat` / `fix` / `docs` / `style` / `refactor` / `test` / `chore` / `perf` / `ci/cd`
 - **Scope** (영어 소문자): FSD 계층 또는 routing/전역.
-  - FSD: `shared` / `entities` / `features` / `widgets` / `views`
+  - FSD: `shared` / `entities` / `features` / `widgets`
   - Next 라우팅 변경: `app`
   - root config, tooling, CI, 환경설정 등 슬라이스 밖: `global`
   - 자세한 선택 규칙: `references/scope-guide.md`

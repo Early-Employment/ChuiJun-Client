@@ -34,7 +34,7 @@ gh pr view --json number,baseRefName -q '{number: .number, base: .baseRefName}'
 ### 판정 기준 (우선순위 순)
 
 1. **프로젝트 컨벤션 (1순위)**: `AGENTS.md` 및 `.agents/rules/` 하위 SKILL.md 교차 참조
-   - FSD 계층 import 방향 (`shared → entities → features → widgets → views`)
+   - FSD 계층 import 방향 (`shared → entities → features → widgets`)
    - 같은 계층 슬라이스 간 횡단 import 금지
    - re-export 금지 (`export { default } from`, `export * from`)
    - mock 금지 (`mock`, `fake`, `dummy` 키워드)
@@ -67,7 +67,6 @@ gh pr view --json number,baseRefName -q '{number: .number, base: .baseRefName}'
    - `entities/` → `chore(entities): ...`
    - `features/` → `chore(features): ...`
    - `widgets/` → `chore(widgets): ...`
-   - `views/` → `chore(views): ...`
    - `app/` → `chore(app): ...`
 4. 커밋 및 푸시:
    ```bash
