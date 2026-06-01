@@ -6,21 +6,21 @@ const statItems = [
 
 export function ProfileSidebar() {
   return (
-    <aside className="self-start rounded-lg border border-line bg-surface p-6 shadow-sm">
-      <h2 className="text-3xl font-extrabold text-foreground">000 선생님, 어서오세요!</h2>
+    <aside className="border-line bg-surface self-start rounded-lg border p-6 shadow-sm">
+      <h2 className="text-foreground text-3xl font-extrabold">000 선생님, 어서오세요!</h2>
 
       <div className="mt-5 grid grid-cols-3 gap-5">
         {statItems.map((item) => (
           <div key={item.label} className="space-y-1">
             <p className="text-body text-muted">{item.label}</p>
-            <p className="text-2xl font-extrabold text-foreground">{item.value}</p>
+            <p className="text-foreground text-2xl font-extrabold">{item.value}</p>
           </div>
         ))}
       </div>
 
       <div className="mt-7">
-        <h3 className="text-3xl font-extrabold text-foreground">이번 달 활동 기록</h3>
-        <div className="mt-5 rounded-md bg-surface p-1">
+        <h3 className="text-foreground text-3xl font-extrabold">이번 달 활동 기록</h3>
+        <div className="bg-surface mt-5 rounded-md p-1">
           <div className="grid grid-cols-[repeat(18,minmax(0,1fr))] gap-1">
             {Array.from({ length: 180 }, (_, index) => {
               const strong = index % 9 === 0 || index % 11 === 0;

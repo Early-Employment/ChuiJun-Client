@@ -20,16 +20,16 @@ http://localhost:3000 접속.
 
 ## 명령어
 
-| 명령 | 설명 |
-|---|---|
-| `bun run dev` | 개발 서버 |
-| `bun run build` | 프로덕션 빌드 |
-| `bun run start` | 프로덕션 서버 |
-| `bun run lint` | ESLint |
-| `bun run lint:fsd` | Steiger (FSD 계층 검증 — 경고만, 종료 코드 0) |
-| `bun run typecheck` | `tsc --noEmit` |
-| `bun run check` | typecheck + lint + lint:fsd 일괄 |
-| `bun run format` | Prettier |
+| 명령                | 설명                                          |
+| ------------------- | --------------------------------------------- |
+| `bun run dev`       | 개발 서버                                     |
+| `bun run build`     | 프로덕션 빌드                                 |
+| `bun run start`     | 프로덕션 서버                                 |
+| `bun run lint`      | ESLint                                        |
+| `bun run lint:fsd`  | Steiger (FSD 계층 검증 — 경고만, 종료 코드 0) |
+| `bun run typecheck` | `tsc --noEmit`                                |
+| `bun run check`     | typecheck + lint + lint:fsd 일괄              |
+| `bun run format`    | Prettier                                      |
 
 ## 스택
 

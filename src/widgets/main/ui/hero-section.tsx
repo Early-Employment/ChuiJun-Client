@@ -26,16 +26,16 @@ export function HeroSection() {
     <section className="bg-primary-500">
       <div className="mx-auto flex w-full max-w-[1320px] flex-col gap-3 px-4 py-4 sm:px-6 lg:py-5 xl:px-8">
         <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_460px]">
-          <article className="flex min-h-56 flex-col justify-start rounded-lg bg-surface px-8 py-7 shadow-sm lg:min-h-64 lg:px-10 lg:py-8">
-            <h1 className="text-4xl font-extrabold tracking-tight text-foreground lg:text-[44px]">
+          <article className="bg-surface flex min-h-56 flex-col justify-start rounded-lg px-8 py-7 shadow-sm lg:min-h-64 lg:px-10 lg:py-8">
+            <h1 className="text-foreground text-4xl font-extrabold tracking-tight lg:text-[44px]">
               안녕하세요
             </h1>
-            <p className="mt-6 text-xl font-semibold text-foreground lg:text-2xl">
+            <p className="text-foreground mt-6 text-xl font-semibold lg:text-2xl">
               잘왔어요. 여기가 짱짱 좋음
             </p>
           </article>
 
-          <aside className="self-start rounded-lg bg-surface p-3 shadow-sm">
+          <aside className="bg-surface self-start rounded-lg p-3 shadow-sm">
             <div className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-2">
               {summaryCards.map((card, index) => (
                 <SummaryCard
@@ -67,15 +67,15 @@ function SummaryCard({
 }) {
   return (
     <article
-      className={`relative rounded-md bg-primary-50 p-3 text-foreground${className ? ` ${className}` : ""}`}
+      className={`bg-primary-50 relative rounded-md p-3 text-foreground${className ? ` ${className}` : ""}`}
     >
-      <p className="text-caption font-semibold text-accent-strong">{eyebrow}</p>
+      <p className="text-caption text-accent-strong font-semibold">{eyebrow}</p>
       <div className="mt-1.5 flex items-start justify-between gap-2.5">
         <div>
-          <h2 className="text-body font-bold text-foreground">{title}</h2>
-          <p className="mt-1 text-label text-muted">{meta}</p>
+          <h2 className="text-body text-foreground font-bold">{title}</h2>
+          <p className="text-label text-muted mt-1">{meta}</p>
         </div>
-        <span className="pt-0.5 text-xl leading-none text-accent-strong">›</span>
+        <span className="text-accent-strong pt-0.5 text-xl leading-none">›</span>
       </div>
     </article>
   );
