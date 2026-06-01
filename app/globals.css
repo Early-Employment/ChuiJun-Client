@@ -93,3 +93,35 @@ body {
   animation: none !important;
   transition: none !important;
 }
+
+@keyframes page-swap-enter-left {
+  from {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes page-swap-enter-right {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.page-swap-enter-left {
+  animation: page-swap-enter-left 220ms ease-out !important;
+}
+
+.page-swap-enter-right {
+  animation: page-swap-enter-right 220ms ease-out !important;
+}
