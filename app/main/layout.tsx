@@ -3,9 +3,9 @@ import NavigationHeader from "@/shared/ui/header-navigation";
 
 export default function MainLayout({ children }: { children: ReactNode }) {
   return (
-    <>
+    <div className="bg-surface-subtle">
       <NavigationHeader />
-      <div className="min-w-full min-h-full w-full h-auto">{children}</div>
-    </>
+      <div className="w-full pt-12">{children}</div>
+    </div>
   );
 }

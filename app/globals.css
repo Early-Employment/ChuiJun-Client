@@ -85,4 +85,11 @@ body {
   background-color: var(--color-canvas);
   color: var(--color-foreground);
   font-family: var(--font-family-base);
+  overscroll-behavior: none;
+  scroll-behavior: auto !important;
+}
+
+* {
+  animation: none !important;
+  transition: none !important;
 }
