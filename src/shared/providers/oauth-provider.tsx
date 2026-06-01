@@ -3,11 +3,25 @@
 import { OAuthProvider } from "@themoment-team/datagsm-oauth-react";
 import type { ReactNode } from "react";
 
+let hasWarnedMissingOAuthEnv = false;
+
 export function DgOAuthProvider({ children }: { children: ReactNode }) {
+  const clientId = process.env.NEXT_PUBLIC_DATAGSM_CLIENT_ID;
+  const redirectUri = process.env.NEXT_PUBLIC_DATAGSM_REDIRECT_URI;
+
+  if (!clientId || !redirectUri) {
+    if (process.env.NODE_ENV === "development" && !hasWarnedMissingOAuthEnv) {
+      console.error("Datagsm OAuth 환경 변수가 설정되지 않았습니다. .env 파일을 확인해주세요.");
+      hasWarnedMissingOAuthEnv = true;
+    }
+
+    return <>{children}</>;
+  }
+
   return (
     <OAuthProvider
-      clientId={process.env.NEXT_PUBLIC_DATAGSM_CLIENT_ID!}
-      redirectUri={process.env.NEXT_PUBLIC_DATAGSM_REDIRECT_URI!}
+      clientId={clientId}
+      redirectUri={redirectUri}
       authMode="PKCE"
     >
       {children}
