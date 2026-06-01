@@ -1,13 +1,19 @@
-import { Skeleton } from "@/shared/ui/skeleton";
+import { Header } from "@/widgets/header/ui/header";
+import { HeroSection } from "@/widgets/main/ui/hero-section";
+import { ProblemBoard } from "@/widgets/main/ui/problem-board";
+import { ProfileSidebar } from "@/widgets/main/ui/profile-sidebar";
 
 export default function HomePage() {
   return (
-    <main className="mx-auto flex min-h-screen max-w-3xl flex-col items-center justify-center gap-6 px-6 py-12">
-      <h1 className="text-display font-bold">취준</h1>
-      <p className="text-body text-muted">
-        한국 취준생을 위한 코딩 테스트 풀이 플랫폼 — 초기 세팅 완료
-      </p>
-      <Skeleton className="h-4 w-48" />
-    </main>
+    <div className="bg-surface-subtle flex min-h-screen flex-col">
+      <Header />
+      <HeroSection />
+      <main className="mx-auto flex w-full max-w-[1440px] flex-col gap-9 px-4 py-9 sm:px-8 xl:px-10">
+        <div className="grid gap-8 xl:grid-cols-[minmax(0,1fr)_430px]">
+          <ProblemBoard />
+          <ProfileSidebar />
+        </div>
+      </main>
+    </div>
   );
 }
