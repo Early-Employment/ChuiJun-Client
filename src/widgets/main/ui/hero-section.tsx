@@ -66,9 +66,7 @@ function SummaryCard({
   className?: string;
 }) {
   return (
-    <article
-      className={`bg-primary-50 relative rounded-md p-3 text-foreground${className ? ` ${className}` : ""}`}
-    >
+    <article className={`bg-primary-50 text-foreground relative rounded-md p-3 ${className}`}>
       <p className="text-caption text-accent-strong font-semibold">{eyebrow}</p>
       <div className="mt-1.5 flex items-start justify-between gap-2.5">
         <div>
