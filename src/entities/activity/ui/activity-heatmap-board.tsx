@@ -2,6 +2,7 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { activityKeys } from "@/entities/activity/api/activity-keys";
+import { monthRange } from "@/entities/activity/model/activity-date";
 import { getActivityLevel } from "@/entities/activity/model/activity-level";
 import { formatActivityTooltip } from "@/entities/activity/model/activity-tooltip";
 import { ActivityCalendar } from "@/entities/activity/ui/activity-calendar";
@@ -10,20 +11,19 @@ import { Skeleton } from "@/shared/ui/skeleton";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
 
 export type ActivityPeriod =
-  | { type: "range"; days: number }
+  | { type: "range"; from: string; to: string }
   | { type: "month"; year: number; month: number };
 
 interface ActivityHeatmapBoardProps {
   period: ActivityPeriod;
 }
 
-// range/month 키는 queryKey 튜플 길이가 달라 union이 useSuspenseQuery에 직접 추론되지 않는다.
-// queryFn 이 컨텍스트를 쓰지 않으므로 동일한 옵션 형태(range 반환 타입)로 맞춘다.
-type ActivityQueryOptions = ReturnType<typeof activityKeys.range>;
-
-function periodQuery(period: ActivityPeriod): ActivityQueryOptions {
-  if (period.type === "range") return activityKeys.range(period.days);
-  return activityKeys.month(period.year, period.month) as unknown as ActivityQueryOptions;
+// month 는 표시 형태(달력)만 다를 뿐 같은 활동 데이터다. 어떤 기간이든 동일한
+// range(from, to) 키로 조회해 useSuspenseQuery 가 단일 옵션 타입으로 추론되게 한다.
+function periodQuery(period: ActivityPeriod) {
+  if (period.type === "range") return activityKeys.range(period.from, period.to);
+  const { from, to } = monthRange(period.year, period.month);
+  return activityKeys.range(from, to);
 }
 
 function ActivityHeatmapBoard({ period }: ActivityHeatmapBoardProps) {
