@@ -11,9 +11,9 @@ const badges = [
 
 export function EarnedBadgeCard() {
   return (
-    <section className="border-line bg-surface rounded-lg border px-8 py-7">
+    <section className="border-line bg-surface rounded-lg border px-5 py-6 sm:px-8 sm:py-7">
       <h2 className="text-lg font-semibold">획득한 배지</h2>
-      <div className="mt-5 grid grid-cols-4 gap-x-4 gap-y-5">
+      <div className="mt-5 grid grid-cols-2 gap-x-4 gap-y-5 sm:grid-cols-4">
         {badges.map((badge) => (
           <div key={badge.label} className="flex flex-col items-center gap-2 text-center">
             <div className="border-line flex size-14 items-center justify-center rounded-full border">

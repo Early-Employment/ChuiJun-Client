@@ -14,7 +14,7 @@ export function ProfileStatCards() {
       {profileStats.map((stat) => (
         <article
           key={stat.label}
-          className="border-line bg-surface flex h-36 flex-col justify-between rounded-lg border px-8 py-7"
+          className="border-line bg-surface flex h-36 flex-col justify-between rounded-lg border px-5 py-6 sm:px-8 sm:py-7"
         >
           <div className="flex items-center gap-2 text-lg font-semibold">
             {stat.icon}

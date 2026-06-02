@@ -4,7 +4,7 @@ import { TrophyIcon } from "@/shared/assets/TrophyIcon";
 
 export function ProfileSummaryCard() {
   return (
-    <section className="border-line bg-surface flex flex-col gap-8 rounded-lg border px-8 py-8 lg:flex-row lg:items-center lg:px-14">
+    <section className="border-line bg-surface flex flex-col gap-8 rounded-lg border px-5 py-6 sm:px-8 sm:py-8 lg:flex-row lg:items-center lg:px-14">
       <div className="relative mx-auto size-40 shrink-0 lg:mx-0">
         <div className="flex size-40 items-center justify-center rounded-full bg-neutral-300">
           <LogoIcon className="size-28" />

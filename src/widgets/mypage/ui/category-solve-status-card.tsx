@@ -8,9 +8,9 @@ const categoryStats = [
 
 export function CategorySolveStatusCard() {
   return (
-    <section className="border-line bg-surface rounded-lg border px-8 py-7">
+    <section className="border-line bg-surface rounded-lg border px-5 py-6 sm:px-8 sm:py-7">
       <h2 className="text-lg font-semibold">분야 별 정답/풀이 현황</h2>
-      <div className="mt-7 flex h-36 items-end gap-3">
+      <div className="mt-7 flex h-36 items-end gap-2 sm:gap-3">
         {categoryStats.map((category, index) => (
           <div key={`${category.label}-${index}`} className="flex flex-1 flex-col items-center">
             <div className="flex h-28 w-full flex-col justify-end rounded-sm bg-neutral-200">

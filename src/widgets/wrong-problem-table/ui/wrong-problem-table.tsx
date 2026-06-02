@@ -19,7 +19,33 @@ export function WrongProblemTable() {
   return (
     <section>
       <h2 className="text-lg font-semibold">틀렸던 문제 확인</h2>
-      <div className="border-line mt-2 overflow-x-auto rounded-md border">
+
+      <ul className="border-line divide-line bg-surface mt-2 divide-y rounded-md border md:hidden">
+        {wrongProblems.map((problem, index) => (
+          <li key={`${problem.title}-${index}`} className="space-y-3 px-4 py-4 text-sm">
+            <div className="flex items-start justify-between gap-3">
+              <span className="font-semibold">{problem.title}</span>
+              <span className="text-muted shrink-0">#{problem.id}</span>
+            </div>
+            <dl className="grid grid-cols-3 gap-2 text-xs">
+              <div className="space-y-1">
+                <dt className="text-muted">시도 횟수</dt>
+                <dd>{problem.attempts}회</dd>
+              </div>
+              <div className="space-y-1">
+                <dt className="text-muted">시도 날짜</dt>
+                <dd>{problem.date}</dd>
+              </div>
+              <div className="space-y-1">
+                <dt className="text-muted">실패 이유</dt>
+                <dd>{problem.reason}</dd>
+              </div>
+            </dl>
+          </li>
+        ))}
+      </ul>
+
+      <div className="border-line mt-2 hidden overflow-x-auto rounded-md border md:block">
         <table className="bg-surface w-full min-w-[720px] border-collapse text-center text-sm">
           <thead className="bg-neutral-200 font-medium">
             <tr>
