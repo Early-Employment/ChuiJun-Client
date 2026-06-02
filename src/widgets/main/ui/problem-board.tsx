@@ -130,7 +130,7 @@ export function ProblemBoard() {
         </div>
       </div>
 
-      <div className="grid gap-3 md:grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,1.6fr)]">
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,1.6fr)]">
         {filterChips.map((chip) => (
           <button
             key={chip}
@@ -144,7 +144,49 @@ export function ProblemBoard() {
       </div>
 
       <div className="border-line bg-surface overflow-hidden rounded-lg border shadow-sm">
-        <div className="overflow-x-auto">
+        <ul
+          key={`cards-${currentPage}`}
+          className={`divide-line divide-y md:hidden ${
+            pageDirection === "left" ? "page-swap-enter-left" : "page-swap-enter-right"
+          }`}
+        >
+          {pagedRows.map((row, index) => (
+            <li key={`${row.title}-${index}`} className="space-y-3 px-4 py-4">
+              <div className="flex items-start justify-between gap-3">
+                <span
+                  className={`text-body font-semibold ${
+                    row.isHighlighted ? "text-info-600 underline" : "text-foreground"
+                  }`}
+                >
+                  {row.title}
+                </span>
+                <span className="text-muted text-label shrink-0">#{startIndex + index + 1}</span>
+              </div>
+              <dl className="text-label grid grid-cols-3 gap-2">
+                <div className="space-y-1">
+                  <dt className="text-muted">상태</dt>
+                  <dd
+                    className={
+                      row.status === "해결함" ? "text-accent font-semibold" : "text-foreground"
+                    }
+                  >
+                    {row.status}
+                  </dd>
+                </div>
+                <div className="space-y-1">
+                  <dt className="text-muted">난이도</dt>
+                  <dd className="text-foreground">{row.level}</dd>
+                </div>
+                <div className="space-y-1">
+                  <dt className="text-muted">완료한 사람</dt>
+                  <dd className="text-foreground">{row.solvedCount}</dd>
+                </div>
+              </dl>
+            </li>
+          ))}
+        </ul>
+
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[720px] table-fixed border-collapse">
             <colgroup>
               <col className="w-[80px]" />
