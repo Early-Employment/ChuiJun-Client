@@ -1,9 +1,9 @@
 const categoryStats = [
   { label: "그리디 알고리즘", solved: 82, failed: 18 },
-  { label: "그리디 알고리즘", solved: 72, failed: 10 },
-  { label: "그리디 알고리즘", solved: 58, failed: 18 },
-  { label: "그리디 알고리즘", solved: 43, failed: 14 },
-  { label: "그리디 알고리즘", solved: 32, failed: 12 },
+  { label: "해시", solved: 72, failed: 10 },
+  { label: "정렬", solved: 58, failed: 18 },
+  { label: "DFS BFS", solved: 43, failed: 14 },
+  { label: "동적 계획법", solved: 32, failed: 12 },
 ];
 
 export function CategorySolveStatusCard() {
@@ -18,7 +18,7 @@ export function CategorySolveStatusCard() {
             </div>
             <span className="mt-2 text-center text-xs leading-tight">
               {category.label.split(" ").map((word, wordIndex, words) => (
-                <span key={word}>
+                <span key={wordIndex}>
                   {word}
                   {wordIndex < words.length - 1 && <br />}
                 </span>
