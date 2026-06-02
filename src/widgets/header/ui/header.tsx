@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { BellIcon } from "@/shared/assets/BellIcon";
 import { LogoIcon } from "@/shared/assets/LogoIcon";
+import { MobileNav } from "@/widgets/header/ui/mobile-nav";
 
 export function Header() {
   return (
@@ -21,7 +22,7 @@ export function Header() {
             학급
           </Link>
         </nav>
-        <div className="flex items-center gap-4">
+        <div className="hidden items-center gap-4 md:flex">
           <button
             type="button"
             aria-label="알림"
@@ -36,6 +37,8 @@ export function Header() {
             로그인
           </Link>
         </div>
+
+        <MobileNav />
       </div>
     </header>
   );
