@@ -32,6 +32,14 @@ export function MobileNav() {
     };
     document.addEventListener("keydown", handleKeyDown);
 
+    // 데스크톱 폭으로 커지면 드로어는 md:hidden으로 가려지지만 isOpen은 true로 남아
+    // 배경 스크롤 잠금이 풀리지 않는다. 미디어 쿼리로 감지해 드로어를 닫는다.
+    const desktopQuery = window.matchMedia("(min-width: 768px)");
+    const handleDesktopChange = (event: MediaQueryListEvent) => {
+      if (event.matches) setIsOpen(false);
+    };
+    desktopQuery.addEventListener("change", handleDesktopChange);
+
     const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
     document.body.style.overflow = "hidden";
     if (scrollbarWidth > 0) {
@@ -40,6 +48,7 @@ export function MobileNav() {
 
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      desktopQuery.removeEventListener("change", handleDesktopChange);
       document.body.style.overflow = "";
       document.body.style.paddingRight = "";
     };
