@@ -19,11 +19,7 @@ export function DgOAuthProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <OAuthProvider
-      clientId={clientId}
-      redirectUri={redirectUri}
-      authMode="PKCE"
-    >
+    <OAuthProvider clientId={clientId} redirectUri={redirectUri} authMode="PKCE">
       {children}
     </OAuthProvider>
   );
