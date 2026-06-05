@@ -1,0 +1,65 @@
+import type { Testcase } from "@/entities/problem/model/problem-detail";
+import type { SubmissionResult } from "@/entities/submission/model/submission";
+import { runPython, type RunResult } from "@/shared/lib/pyodide/python-runner";
+import { normalizeOutput } from "@/features/code-judge/model/normalize-output";
+
+export interface TestcaseOutcome {
+  index: number;
+  passed: boolean;
+  status: RunResult["status"];
+  /** 주입한 표준 입력값 */
+  input: string;
+  expected: string;
+  /** 통과 시 실제 출력, 에러 시 traceback, 타임아웃 시 안내 문구 */
+  received: string;
+}
+
+export interface JudgeReport {
+  result: SubmissionResult;
+  outcomes: TestcaseOutcome[];
+}
+
+/** 테스트케이스를 순차 실행해 전수 채점한다. 각 케이스는 timeLimitMs 안에 끝나야 한다. */
+export async function judge(
+  problemId: number,
+  code: string,
+  testcases: Testcase[],
+  timeLimitMs: number,
+): Promise<JudgeReport> {
+  const start = performance.now();
+  const outcomes: TestcaseOutcome[] = [];
+
+  for (const [index, testcase] of testcases.entries()) {
+    const run = await runPython(code, testcase.input, timeLimitMs);
+    const expected = normalizeOutput(testcase.expectedOutput);
+    const received = describeOutput(run);
+    const passed = run.status === "ok" && received === expected;
+    outcomes.push({
+      index,
+      passed,
+      status: run.status,
+      input: testcase.input,
+      expected,
+      received,
+    });
+  }
+
+  const passedCount = outcomes.filter((outcome) => outcome.passed).length;
+
+  return {
+    result: {
+      problemId,
+      passed: passedCount === testcases.length && testcases.length > 0,
+      passedCount,
+      totalCount: testcases.length,
+      durationMs: Math.round(performance.now() - start),
+    },
+    outcomes,
+  };
+}
+
+function describeOutput(run: RunResult): string {
+  if (run.status === "ok") return normalizeOutput(run.stdout);
+  if (run.status === "error") return run.message;
+  return "시간 초과";
+}
