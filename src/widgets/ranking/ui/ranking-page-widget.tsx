@@ -48,7 +48,9 @@ export function RankingPageWidget({ snapshots }: { snapshots: RankingSnapshots }
   const startIndex = (safeCurrentPage - 1) * rowsPerPage;
   const pageEntries = sortedEntries.slice(startIndex, startIndex + rowsPerPage);
   const myEntry = data.entries.find((entry) => entry.isMe);
-  const podiumEntries = data.entries.slice(0, 3);
+  const podiumEntries = [...data.entries]
+    .sort((left, right) => right.score - left.score)
+    .slice(0, 3);
 
   if (data.entries.length === 0 || !myEntry) {
     return <RankingPageWidget.Empty />;
