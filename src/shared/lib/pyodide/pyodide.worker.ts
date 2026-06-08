@@ -69,7 +69,9 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
     const [stdout, err] = result.toJs();
     result.destroy();
 
-    self.postMessage({ type: "result", id, ok: err === null, stdout, stderr: err ?? "" });
+    // Pyodide는 Python의 None 을 JS null 이 아니라 undefined 로 변환한다.
+    // 따라서 정상 실행(_err is None)은 err == null 로 판별해야 한다.
+    self.postMessage({ type: "result", id, ok: err == null, stdout, stderr: err ?? "" });
   } catch (error) {
     // Pyodide 로드 실패 등 파이썬 레벨 밖의 오류.
     self.postMessage({ type: "result", id, ok: false, stdout: "", stderr: String(error) });
