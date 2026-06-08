@@ -19,14 +19,12 @@ export interface JudgeReport {
   outcomes: TestcaseOutcome[];
 }
 
-/** 테스트케이스를 순차 실행해 전수 채점한다. 각 케이스는 timeLimitMs 안에 끝나야 한다. */
-export async function judge(
-  problemId: number,
+/** 테스트케이스를 순차 실행해 케이스별 결과를 만든다. 각 케이스는 timeLimitMs 안에 끝나야 한다. */
+export async function runTestcases(
   code: string,
   testcases: Testcase[],
   timeLimitMs: number,
-): Promise<JudgeReport> {
-  const start = performance.now();
+): Promise<TestcaseOutcome[]> {
   const outcomes: TestcaseOutcome[] = [];
 
   for (const [index, testcase] of testcases.entries()) {
@@ -44,6 +42,18 @@ export async function judge(
     });
   }
 
+  return outcomes;
+}
+
+/** 테스트케이스를 전수 채점해 제출용 리포트를 만든다. */
+export async function judge(
+  problemId: number,
+  code: string,
+  testcases: Testcase[],
+  timeLimitMs: number,
+): Promise<JudgeReport> {
+  const start = performance.now();
+  const outcomes = await runTestcases(code, testcases, timeLimitMs);
   const passedCount = outcomes.filter((outcome) => outcome.passed).length;
 
   return {
