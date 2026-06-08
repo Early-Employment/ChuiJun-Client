@@ -1,15 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { rankingKeys } from "@/entities/ranking/api/ranking-keys";
 import {
   rankingCategories,
   type RankingCategory,
 } from "@/entities/ranking/model/ranking-category";
-import type { RankingEntry } from "@/entities/ranking/model/ranking-entry";
-import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
-import { Skeleton } from "@/shared/ui/skeleton";
+import type { RankingEntry, RankingSnapshot } from "@/entities/ranking/model/ranking-entry";
 
 const rowsPerPage = 14;
 const podiumOrder = [1, 0, 2] as const;
@@ -31,12 +27,14 @@ function getMotionClass(motion: RankingMotion) {
   return "ranking-content-enter-up";
 }
 
-function RankingPageWidget() {
+type RankingSnapshots = Record<RankingCategory, RankingSnapshot>;
+
+export function RankingPageWidget({ snapshots }: { snapshots: RankingSnapshots }) {
   const [selectedCategory, setSelectedCategory] = useState<RankingCategory>("overall");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [currentPage, setCurrentPage] = useState(1);
   const [motion, setMotion] = useState<RankingMotion>("up");
-  const { data } = useSuspenseQuery(rankingKeys.category(selectedCategory));
+  const data = snapshots[selectedCategory];
 
   useEffect(() => {
     setCurrentPage(1);
@@ -49,7 +47,6 @@ function RankingPageWidget() {
   const safeCurrentPage = Math.min(currentPage, totalPages);
   const startIndex = (safeCurrentPage - 1) * rowsPerPage;
   const pageEntries = sortedEntries.slice(startIndex, startIndex + rowsPerPage);
-  const emptyRowCount = rowsPerPage - pageEntries.length;
   const myEntry = data.entries.find((entry) => entry.isMe);
   const podiumEntries = data.entries.slice(0, 3);
 
@@ -100,7 +97,7 @@ function RankingPageWidget() {
                 setMotion("up");
                 setSortDirection((direction) => (direction === "desc" ? "asc" : "desc"));
               }}
-              className="border-line-strong bg-surface text-foreground inline-flex h-11 items-center justify-between gap-6 self-start rounded-md border px-4 text-sm font-medium transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+              className="border-line-strong bg-surface text-foreground inline-flex h-11 min-w-28 items-center justify-between gap-6 self-start rounded-md border px-4 text-sm font-medium whitespace-nowrap transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:shadow-sm"
             >
               {sortDirection === "desc" ? "오름차순" : "내림차순"}
               <span
@@ -178,14 +175,6 @@ function RankingPageWidget() {
                 <tbody>
                   {pageEntries.map((entry) => (
                     <RankingTableRow key={entry.id} entry={entry} />
-                  ))}
-                  {Array.from({ length: emptyRowCount }, (_, index) => (
-                    <tr key={`empty-${index}`} className="border-line-strong border-t">
-                      <td className="px-8 py-3.5">&nbsp;</td>
-                      <td className="px-8 py-3.5">&nbsp;</td>
-                      <td className="px-8 py-3.5">&nbsp;</td>
-                      <td className="px-8 py-3.5">&nbsp;</td>
-                    </tr>
                   ))}
                 </tbody>
               </table>
@@ -297,35 +286,6 @@ function Pagination({
   );
 }
 
-function RankingPageWidgetLoading() {
-  return (
-    <main className="mx-auto w-full max-w-[1240px] px-4 py-10 sm:px-6 lg:px-10">
-      <div className="space-y-6">
-        <Skeleton className="h-10 w-24" />
-        <Skeleton className="h-11 w-full rounded-md" />
-        <div className="grid gap-6 lg:grid-cols-2">
-          <Skeleton className="h-40 rounded-xl" />
-          <Skeleton className="h-40 rounded-xl" />
-        </div>
-        <Skeleton className="h-[32rem] rounded-lg" />
-      </div>
-    </main>
-  );
-}
-
-function RankingPageWidgetError({ resetErrorBoundary }: QueryErrorFallbackProps) {
-  return (
-    <main className="mx-auto flex min-h-[50dvh] w-full max-w-[1240px] items-center justify-center px-4 py-10 sm:px-6 lg:px-10">
-      <div className="text-muted space-y-3 text-center">
-        <p>랭킹 정보를 불러오지 못했어요.</p>
-        <button type="button" onClick={resetErrorBoundary} className="text-accent font-semibold">
-          다시 시도
-        </button>
-      </div>
-    </main>
-  );
-}
-
 function RankingPageWidgetEmpty() {
   return (
     <main className="mx-auto flex min-h-[50dvh] w-full max-w-[1240px] items-center justify-center px-4 py-10 sm:px-6 lg:px-10">
@@ -334,17 +294,4 @@ function RankingPageWidgetEmpty() {
   );
 }
 
-RankingPageWidget.Loading = RankingPageWidgetLoading;
-RankingPageWidget.Error = RankingPageWidgetError;
 RankingPageWidget.Empty = RankingPageWidgetEmpty;
-
-export function RankingPageWidgetBoundary() {
-  return (
-    <QueryBoundary
-      loadingFallback={<RankingPageWidget.Loading />}
-      errorFallback={RankingPageWidget.Error}
-    >
-      <RankingPageWidget />
-    </QueryBoundary>
-  );
-}
