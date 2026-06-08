@@ -34,7 +34,8 @@ export function LikeButton({ solutionId, liked }: Props) {
       }
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: detailKey });
+      // 목록(SolutionBoard)도 좋아요 수를 표시하므로 상세·목록을 함께 갱신한다.
+      queryClient.invalidateQueries({ queryKey: solutionKeys.all });
     },
   });
 
