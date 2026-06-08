@@ -5,6 +5,8 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ProblemDetail } from "@/entities/problem/model/problem-detail";
 import { submissionKeys } from "@/entities/submission/api/submission-keys";
 import { judge, type JudgeReport } from "@/features/code-judge/model/judge";
+import { runCode } from "@/features/code-judge/model/run-code";
+import type { RunResult } from "@/shared/lib/pyodide/python-runner";
 import { ChevronRightIcon } from "@/shared/assets/ChevronRightIcon";
 import { RefreshIcon } from "@/shared/assets/RefreshIcon";
 import { CodeEditor } from "@/widgets/problem-solve/ui/code-editor";
@@ -13,21 +15,38 @@ import { RunResultPanel } from "@/widgets/problem-solve/ui/run-result-panel";
 
 const STARTER_CODE = "# 표준 입력은 input(), 출력은 print() 를 사용하세요.\n";
 
+// 자유 실행은 문제의 채점 제한시간이 아니라, Pyodide 콜드 로드까지 견딜 넉넉한
+// 벽시계 타임아웃을 쓴다. (채점은 judge 가 케이스별로 timeLimitMs 를 적용한다.)
+const FREE_RUN_TIMEOUT_MS = 10000;
+
 export function ProblemTab({ problem }: { problem: ProblemDetail }) {
   const queryClient = useQueryClient();
   const submit = useMutation(submissionKeys.submit());
 
   const [code, setCode] = useState(STARTER_CODE);
+  const [stdin, setStdin] = useState("");
   const [running, setRunning] = useState(false);
   const [report, setReport] = useState<JudgeReport | null>(null);
+  const [runResult, setRunResult] = useState<RunResult | null>(null);
 
   function handleReset() {
     setCode(STARTER_CODE);
+    setStdin("");
     setReport(null);
+    setRunResult(null);
+  }
+
+  async function handleRun() {
+    setRunning(true);
+    setReport(null);
+    const result = await runCode(code, stdin, FREE_RUN_TIMEOUT_MS);
+    setRunResult(result);
+    setRunning(false);
   }
 
   async function handleSubmit() {
     setRunning(true);
+    setRunResult(null);
     const judged = await judge(problem.id, code, problem.testcases, problem.timeLimitMs);
     setReport(judged);
     setRunning(false);
@@ -64,6 +83,14 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
             </button>
             <button
               type="button"
+              onClick={handleRun}
+              disabled={running}
+              className="border-line bg-surface rounded-md border px-4 py-3 text-sm font-medium disabled:opacity-50"
+            >
+              실행
+            </button>
+            <button
+              type="button"
               onClick={handleSubmit}
               disabled={running}
               className="border-line-strong bg-surface rounded-md border px-4 py-3 text-sm font-medium disabled:opacity-50"
@@ -74,7 +101,22 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
         </div>
 
         <CodeEditor value={code} onChange={setCode} />
-        <RunResultPanel running={running} runResult={null} report={report} />
+
+        <div className="space-y-1">
+          <label htmlFor="stdin" className="text-muted text-sm font-medium">
+            입력값
+          </label>
+          <textarea
+            id="stdin"
+            value={stdin}
+            onChange={(event) => setStdin(event.target.value)}
+            placeholder="실행 시 표준 입력으로 주입할 값을 넣어주세요."
+            spellCheck={false}
+            className="border-line bg-surface text-foreground placeholder:text-muted h-20 w-full resize-y rounded-md border p-3 font-mono text-sm"
+          />
+        </div>
+
+        <RunResultPanel running={running} runResult={runResult} report={report} />
       </section>
     </div>
   );
