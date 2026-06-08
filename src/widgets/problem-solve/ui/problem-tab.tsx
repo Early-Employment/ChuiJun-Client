@@ -36,27 +36,33 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
   async function handleRun() {
     setRunning(true);
     setReport(null);
-    const outcomes = await runExamples(code, problem.examples, EXAMPLE_RUN_TIMEOUT_MS);
-    setExampleOutcomes(outcomes);
-    setRunning(false);
+    try {
+      const outcomes = await runExamples(code, problem.examples, EXAMPLE_RUN_TIMEOUT_MS);
+      setExampleOutcomes(outcomes);
+    } finally {
+      setRunning(false);
+    }
   }
 
   async function handleSubmit() {
     setRunning(true);
     setExampleOutcomes(null);
-    const judged = await judge(problem.id, code, problem.testcases, problem.timeLimitMs);
-    setReport(judged);
-    setRunning(false);
+    try {
+      const judged = await judge(problem.id, code, problem.testcases, problem.timeLimitMs);
+      setReport(judged);
 
-    submit.mutate(
-      { ...judged.result, code },
-      {
-        onSuccess: () => {
-          // 친구 풀이 보기 게이트 해제 (§5 계약: 실전환 시 invalidate 로 교체).
-          queryClient.setQueryData(submissionKeys.hasSubmitted(problem.id).queryKey, true);
+      submit.mutate(
+        { ...judged.result, code },
+        {
+          onSuccess: () => {
+            // 친구 풀이 보기 게이트 해제 (§5 계약: 실전환 시 invalidate 로 교체).
+            queryClient.setQueryData(submissionKeys.hasSubmitted(problem.id).queryKey, true);
+          },
         },
-      },
-    );
+      );
+    } finally {
+      setRunning(false);
+    }
   }
 
   return (

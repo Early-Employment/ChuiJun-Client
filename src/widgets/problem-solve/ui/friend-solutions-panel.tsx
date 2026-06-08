@@ -30,13 +30,19 @@ function FriendSolutionsPanel({ problemId, onRequireProblemTab }: Props) {
 
   if (selectedId === null) {
     return (
-      <SolutionBoardBoundary problemId={problemId} selectedId={null} onSelect={setSelectedId} />
+      <SolutionBoardBoundary
+        key={problemId}
+        problemId={problemId}
+        selectedId={null}
+        onSelect={setSelectedId}
+      />
     );
   }
 
   return (
     <div className="grid gap-6 lg:grid-cols-[minmax(0,360px)_minmax(0,1fr)]">
       <SolutionBoardBoundary
+        key={problemId}
         problemId={problemId}
         selectedId={selectedId}
         onSelect={setSelectedId}

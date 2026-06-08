@@ -98,16 +98,24 @@ function Pagination({
       >
         <ChevronLeftIcon className="size-4" />
       </button>
-      {Array.from({ length: totalPages }, (_, index) => index + 1).map((number) => (
-        <button
-          type="button"
-          key={number}
-          onClick={() => onChange(number)}
-          className={number === page ? "text-accent font-semibold" : ""}
-        >
-          {number}
-        </button>
-      ))}
+      {Array.from({ length: totalPages }, (_, index) => index + 1)
+        .filter((number) => number === 1 || number === totalPages || Math.abs(number - page) <= 2)
+        .map((number, index, visible) => {
+          const previous = visible[index - 1];
+          const showEllipsis = previous !== undefined && number - previous > 1;
+          return (
+            <span key={number} className="flex items-center gap-2">
+              {showEllipsis && <span aria-hidden>…</span>}
+              <button
+                type="button"
+                onClick={() => onChange(number)}
+                className={number === page ? "text-accent font-semibold" : ""}
+              >
+                {number}
+              </button>
+            </span>
+          );
+        })}
       <button
         type="button"
         onClick={() => onChange(Math.min(totalPages, page + 1))}
