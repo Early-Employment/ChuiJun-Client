@@ -261,6 +261,8 @@ function Pagination({
     startPage = Math.max(1, endPage - maxVisiblePages + 1);
   }
 
+  if (totalPages <= 1) return null;
+
   return (
     <nav className="text-muted flex items-center justify-center gap-4 py-2 text-sm">
       <button
