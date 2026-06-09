@@ -49,7 +49,7 @@ export function RankingPageWidget({ snapshots }: { snapshots: RankingSnapshots }
     .sort((left, right) => right.score - left.score)
     .slice(0, 3);
 
-  if (data.entries.length === 0 || !myEntry) {
+  if (data.entries.length === 0) {
     return <RankingPageWidget.Empty />;
   }
 
@@ -117,22 +117,28 @@ export function RankingPageWidget({ snapshots }: { snapshots: RankingSnapshots }
         >
           <section className="border-line-strong bg-surface rounded-xl border px-6 py-7">
             <p className="text-body font-semibold">나의 순위</p>
-            <div className="mt-6 flex items-end justify-between gap-4">
-              <p className="text-foreground text-[clamp(2rem,3vw,2.75rem)] leading-none font-extrabold">
-                {formatRank(myEntry.rank)}
-              </p>
-              <p
-                className={`text-lg font-medium ${
-                  data.myDelta > 0
-                    ? "text-state-success"
-                    : data.myDelta < 0
-                      ? "text-muted"
-                      : "text-foreground"
-                }`}
-              >
-                {formatDelta(data.myDelta)}
-              </p>
-            </div>
+            {myEntry ? (
+              <div className="mt-6 flex items-end justify-between gap-4">
+                <p className="text-foreground text-[clamp(2rem,3vw,2.75rem)] leading-none font-extrabold">
+                  {formatRank(myEntry.rank)}
+                </p>
+                <p
+                  className={`text-lg font-medium ${
+                    data.myDelta > 0
+                      ? "text-state-success"
+                      : data.myDelta < 0
+                        ? "text-muted"
+                        : "text-foreground"
+                  }`}
+                >
+                  {formatDelta(data.myDelta)}
+                </p>
+              </div>
+            ) : (
+              <div className="mt-6 flex min-h-18 items-end">
+                <p className="text-muted text-sm">현재 내 랭킹 정보를 확인할 수 없습니다.</p>
+              </div>
+            )}
           </section>
 
           <section className="border-line-strong bg-surface rounded-xl border px-6 py-7">
