@@ -253,6 +253,14 @@ function Pagination({
   totalPages: number;
   onChange: (page: number) => void;
 }) {
+  const maxVisiblePages = 5;
+  let startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+  const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+  if (endPage - startPage + 1 < maxVisiblePages) {
+    startPage = Math.max(1, endPage - maxVisiblePages + 1);
+  }
+
   return (
     <nav className="text-muted flex items-center justify-center gap-4 py-2 text-sm">
       <button
@@ -264,8 +272,8 @@ function Pagination({
       >
         ‹
       </button>
-      {Array.from({ length: totalPages }, (_, index) => {
-        const page = index + 1;
+      {Array.from({ length: endPage - startPage + 1 }, (_, index) => {
+        const page = startPage + index;
 
         return (
           <button
