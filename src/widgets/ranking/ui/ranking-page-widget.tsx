@@ -1,10 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  rankingCategories,
-  type RankingCategory,
-} from "@/entities/ranking/model/ranking-category";
+import { rankingCategories, type RankingCategory } from "@/entities/ranking/model/ranking-category";
 import type { RankingEntry, RankingSnapshot } from "@/entities/ranking/model/ranking-entry";
 
 const rowsPerPage = 14;
@@ -76,7 +73,9 @@ export function RankingPageWidget({ snapshots }: { snapshots: RankingSnapshots }
                       const currentIndex = rankingCategories.findIndex(
                         (item) => item.id === selectedCategory,
                       );
-                      const nextIndex = rankingCategories.findIndex((item) => item.id === category.id);
+                      const nextIndex = rankingCategories.findIndex(
+                        (item) => item.id === category.id,
+                      );
 
                       setMotion(nextIndex > currentIndex ? "left" : "right");
                       setSelectedCategory(category.id);
@@ -255,7 +254,7 @@ function Pagination({
         aria-label="이전 페이지"
         onClick={() => onChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="text-lg transition-[transform,color,opacity] duration-200 hover:-translate-x-0.5 hover:text-foreground disabled:opacity-40"
+        className="hover:text-foreground text-lg transition-[transform,color,opacity] duration-200 hover:-translate-x-0.5 disabled:opacity-40"
       >
         ‹
       </button>
@@ -267,7 +266,7 @@ function Pagination({
             key={page}
             type="button"
             onClick={() => onChange(page)}
-            className={`transition-[transform,color] duration-200 hover:-translate-y-0.5 hover:text-foreground ${
+            className={`hover:text-foreground transition-[transform,color] duration-200 hover:-translate-y-0.5 ${
               page === currentPage ? "text-foreground font-bold" : ""
             }`}
           >
@@ -280,7 +279,7 @@ function Pagination({
         aria-label="다음 페이지"
         onClick={() => onChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className="text-lg transition-[transform,color,opacity] duration-200 hover:translate-x-0.5 hover:text-foreground disabled:opacity-40"
+        className="hover:text-foreground text-lg transition-[transform,color,opacity] duration-200 hover:translate-x-0.5 disabled:opacity-40"
       >
         ›
       </button>
