@@ -11,9 +11,11 @@ import { AssignmentIcon } from "@/shared/assets/AssignmentIcon";
 import { MoreVerticalIcon } from "@/shared/assets/MoreVerticalIcon";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
 import { Skeleton } from "@/shared/ui/skeleton";
+import { useRouter } from "next/navigation";
 
 function ClassroomPageWidget() {
   const { data } = useSuspenseQuery(classroomDashboardKeys.current());
+  const router = useRouter();
 
   if (data.students.length === 0 && data.assignments.length === 0) {
     return <ClassroomPageWidget.Empty />;
@@ -37,6 +39,7 @@ function ClassroomPageWidget() {
             </button>
             <button
               type="button"
+              onClick={() => router.push("/assignments/new")}
               className="bg-accent text-neutral-0 rounded-md px-7 py-4 text-base font-medium"
             >
               과제 추가하기

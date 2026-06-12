@@ -1,5 +1,5 @@
-import { ClassroomPageWidgetBoundary } from "@/widgets/classroom/ui/classroom-page-widget";
+import { ClassroomRouteWidget } from "@/widgets/classroom/ui/classroom-route-widget";
 
 export default function ClassPage() {
-  return <ClassroomPageWidgetBoundary />;
+  return <ClassroomRouteWidget />;
 }
