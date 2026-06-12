@@ -23,7 +23,7 @@ function StudentClassroomPageWidget() {
   return (
     <main className="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-8 lg:py-10 xl:px-10">
       <section className="mx-auto w-full max-w-[1160px] space-y-6">
-        <ClassroomHero className={data.className} />
+        <ClassroomHero classroomName={data.classroomName} />
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,268px)_minmax(0,1fr)] lg:items-start lg:gap-[22px]">
           <UpcomingAssignmentsCard items={data.upcomingAssignments} />
@@ -39,11 +39,11 @@ function StudentClassroomPageWidget() {
   );
 }
 
-function ClassroomHero({ className }: { className: string }) {
+function ClassroomHero({ classroomName }: { classroomName: string }) {
   return (
     <section className="bg-primary-350 relative h-[312px] overflow-hidden rounded-[20px]">
       <h1 className="text-neutral-0 absolute top-9 left-9 text-[40px] font-bold whitespace-nowrap lg:text-[50px]">
-        {className}
+        {classroomName}
       </h1>
 
       {/* 우측 마스코트 장식 (작은 화면에서는 숨김) */}

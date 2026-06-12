@@ -23,7 +23,7 @@ export interface StudentAssignment {
 
 export interface StudentClassroom {
   /** 학급 이름. 예: "알고리즘 (3-1)" */
-  className: string;
+  classroomName: string;
   upcomingAssignments: StudentUpcomingAssignment[];
   assignments: StudentAssignment[];
 }
