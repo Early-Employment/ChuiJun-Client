@@ -4,6 +4,7 @@ import { ExampleIoRow } from "@/widgets/assignment-form/ui/example-io-row";
 import { LabeledField } from "@/widgets/assignment-form/ui/labeled-field";
 import { ProblemDescriptionEditor } from "@/widgets/assignment-form/ui/problem-description-editor";
 import { VisibilityRadioGroup } from "@/widgets/assignment-form/ui/visibility-radio-group";
+import Link from "next/link";
 
 const fieldClassName =
   "border-line-strong bg-surface text-foreground placeholder:text-muted focus:border-accent w-full rounded-md border px-4 py-3 text-base font-medium outline-none";
@@ -13,13 +14,13 @@ export function AssignmentForm() {
     <main className="mx-auto max-w-7xl px-4 py-9 sm:px-6">
       <form className="border-line-strong bg-surface flex flex-col gap-5 rounded-lg border px-6 py-8 sm:px-12 sm:py-10">
         <div className="flex flex-col gap-4">
-          <button
-            type="button"
+          <Link
+            href="/class"
             className="text-muted flex w-fit items-center gap-1 text-base font-medium"
           >
             <ChevronLeftIcon className="size-5" />
             뒤로가기
-          </button>
+          </Link>
           <h1 className="text-foreground text-display font-semibold">문제 출제</h1>
         </div>
 
