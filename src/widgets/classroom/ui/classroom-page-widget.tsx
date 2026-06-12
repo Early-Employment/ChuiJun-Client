@@ -151,18 +151,18 @@ function AssignmentRow({
 
 function ClassroomPageWidgetLoading() {
   return (
-    <main className="mx-auto w-full max-w-[1440px] bg-neutral-50 px-4 py-8 sm:px-8 xl:px-10">
+    <main className="mx-auto w-full max-w-[1440px] bg-neutral-50 px-4 py-8 sm:px-8 lg:py-10 xl:px-10">
       <section className="mx-auto w-full max-w-[1160px] space-y-7">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="space-y-3">
-            <Skeleton className="h-10 w-28" />
-            <Skeleton className="h-6 w-24" />
+        <header className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
+            <Skeleton className="h-10 w-20" />
+            <Skeleton className="h-7 w-24" />
           </div>
-          <div className="flex gap-3">
-            <Skeleton className="h-14 w-28" />
-            <Skeleton className="h-14 w-36" />
+          <div className="flex flex-wrap gap-3">
+            <Skeleton className="h-[58px] w-[110px] rounded-md" />
+            <Skeleton className="h-[58px] w-[143px] rounded-md" />
           </div>
-        </div>
+        </header>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-9">
           {Array.from({ length: 4 }, (_, index) => (
@@ -170,7 +170,7 @@ function ClassroomPageWidgetLoading() {
           ))}
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-[261px_minmax(0,1fr)] lg:gap-[22px]">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,261px)_minmax(0,1fr)] lg:items-start lg:gap-[22px]">
           <Skeleton className="h-[250px] w-full rounded-xl" />
           <Skeleton className="h-[386px] w-full rounded-xl" />
         </div>
