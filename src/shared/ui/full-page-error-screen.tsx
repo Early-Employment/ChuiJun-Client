@@ -30,7 +30,7 @@ export function FullPageErrorScreen({
 
           <div className="flex flex-col items-start">
             <p className="text-accent-strong text-label font-semibold">Something went wrong</p>
-            <h1 className="text-foreground mt-3 text-[36px] leading-tight font-extrabold md:text-[44px]">
+            <h1 className="text-foreground mt-3 text-[36px] leading-tight font-extrabold whitespace-nowrap md:text-[44px]">
               {title}
             </h1>
             <p className="text-muted mt-4 max-w-[34rem] text-base leading-7 font-medium md:text-lg">
