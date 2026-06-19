@@ -4,18 +4,30 @@ import type { ReactNode } from "react";
 import Link from "next/link";
 import { LogoIcon } from "@/shared/assets/LogoIcon";
 
+type ErrorScreenAction = {
+  href: string;
+  label: string;
+  tone?: "primary" | "secondary";
+};
+
 type FullPageErrorScreenProps = {
   description: ReactNode;
+  eyebrow?: string;
   fillViewport?: boolean;
+  primaryAction?: ErrorScreenAction;
   resetLabel: string;
+  secondaryAction?: ErrorScreenAction;
   title: string;
   onReset?: () => void;
 };
 
 export function FullPageErrorScreen({
   description,
+  eyebrow = "Something went wrong",
   fillViewport = true,
+  primaryAction,
   resetLabel,
+  secondaryAction,
   title,
   onReset,
 }: FullPageErrorScreenProps) {
@@ -34,7 +46,7 @@ export function FullPageErrorScreen({
           </div>
 
           <div className="flex flex-col items-start">
-            <p className="text-accent-strong text-label font-semibold">Something went wrong</p>
+            <p className="text-accent-strong text-label font-semibold">{eyebrow}</p>
             <h1 className="text-foreground mt-3 text-[36px] leading-tight font-extrabold whitespace-nowrap md:text-[44px]">
               {title}
             </h1>
@@ -43,19 +55,39 @@ export function FullPageErrorScreen({
             </p>
 
             <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-              <button
-                type="button"
-                onClick={onReset}
-                className="bg-accent text-neutral-0 rounded-md px-5 py-3 text-base font-semibold"
-              >
-                {resetLabel}
-              </button>
-              <Link
-                href="/"
-                className="bg-surface-subtle text-foreground rounded-md px-5 py-3 text-center text-base font-semibold"
-              >
-                홈으로 돌아가기
-              </Link>
+              {onReset ? (
+                <button
+                  type="button"
+                  onClick={onReset}
+                  className="bg-accent text-neutral-0 rounded-md px-5 py-3 text-base font-semibold"
+                >
+                  {resetLabel}
+                </button>
+              ) : null}
+              {primaryAction ? (
+                <Link
+                  href={primaryAction.href}
+                  className={`rounded-md px-5 py-3 text-center text-base font-semibold ${
+                    primaryAction.tone === "secondary"
+                      ? "bg-surface-subtle text-foreground"
+                      : "bg-accent text-neutral-0"
+                  }`}
+                >
+                  {primaryAction.label}
+                </Link>
+              ) : null}
+              {secondaryAction ? (
+                <Link
+                  href={secondaryAction.href}
+                  className={`rounded-md px-5 py-3 text-center text-base font-semibold ${
+                    secondaryAction.tone === "primary"
+                      ? "bg-accent text-neutral-0"
+                      : "bg-surface-subtle text-foreground"
+                  }`}
+                >
+                  {secondaryAction.label}
+                </Link>
+              ) : null}
             </div>
           </div>
         </section>

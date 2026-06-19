@@ -20,6 +20,7 @@ export default function ErrorPage({
       description={"잠시\u00A0후 다시 시도하거나 문제가 지속된다면 관리자에게 문의해주세요."}
       resetLabel="다시 시도"
       onReset={reset}
+      secondaryAction={{ href: "/", label: "홈으로 돌아가기", tone: "secondary" }}
     />
   );
 }
