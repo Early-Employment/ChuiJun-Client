@@ -14,8 +14,15 @@ allowed-tools: Bash
 git branch --show-current
 ```
 
-- 현재 브랜치가 `main`이면 사용자에게 작업 브랜치 사용을 권장만 한다(차단하지는 않는다). 사용자가 `main` 직접 커밋을 명시한 경우 그대로 진행.
-- 브랜치를 새로 따야 할 때 이름 규칙: `<type>/<kebab-case-description>` 예: `feat/problem-like-button`, `fix/auth-redirect-loop`, `refactor/query-boundary`.
+- **`develop` 브랜치인 경우**: 변경 사항을 미리 파악해 적절한 브랜치명을 제안한다.
+  1. `git diff`, `git status`로 변경 사항을 파악.
+  2. 아래 이름 규칙에 따라 브랜치명 후보를 제안하고 사용자에게 승인 요청.
+  3. 사용자가 승인하면 `git checkout -b <브랜치명>`으로 체크아웃한 뒤 커밋 흐름을 계속.
+  4. 사용자가 다른 이름을 원하면 수정 후 다시 승인 요청.
+
+### 브랜치 이름 규칙
+
+`<type>/<kebab-case-description>` 예: `feat/problem-like-button`, `fix/auth-redirect-loop`, `refactor/query-boundary`.
 
 ## Commit 메시지 규칙
 
@@ -24,7 +31,7 @@ git branch --show-current
 - **Types** (영어 소문자):
   `feat` / `fix` / `docs` / `style` / `refactor` / `test` / `chore` / `perf` / `ci/cd`
 - **Scope** (영어 소문자): FSD 계층 또는 routing/전역.
-  - FSD: `shared` / `entities` / `features` / `widgets` / `views`
+  - FSD: `shared` / `entities` / `features` / `widgets`
   - Next 라우팅 변경: `app`
   - root config, tooling, CI, 환경설정 등 슬라이스 밖: `global`
   - 자세한 선택 규칙: `references/scope-guide.md`

@@ -14,10 +14,11 @@
 
 ## 2. 디렉터리 규칙
 
-- 라우팅: `app/`. 페이지 로직은 직접 작성하거나 `src/views/`에서 composition.
-- FSD 계층: `shared → entities → features → widgets → views`. 상위가 하위 import.
+- 라우팅과 페이지 로직: `app/` (Next.js App Router). 페이지 파일에 직접 작성하거나 `src/widgets/` 컴포넌트를 composition한다. `src/views/` 폴더는 만들지 않는다.
+- FSD 계층: `shared → entities → features → widgets`. 상위가 하위 import.
 - 같은 계층 슬라이스 간 횡단 import 금지 (원칙). 위반 시 Steiger 경고 — blocking 아님.
-- Next.js의 `app/`는 라우팅 전용, FSD `app` 계층 역할은 `app/layout.tsx`가 흡수 (별도 `src/app` 폴더 없음).
+- Next.js의 `app/`이 FSD `views` 계층과 `app` 계층 역할을 모두 담당한다. `app/layout.tsx`가 providers·전역 초기화를 흡수 (별도 `src/app`, `src/views/` 폴더 없음).
+- SVG 아이콘은 `src/shared/assets/`에 PascalCase 파일명으로 둔다 (예: `BellIcon.tsx`). 단일 슬라이스에서만 쓰이더라도 아이콘은 이 위치에 중앙화한다.
 - 경로 alias: `@/*` → `src/*`.
 
 ## 3. 파일명 규칙
@@ -33,7 +34,7 @@
 
 ```tsx
 // ❌ 금지
-export { default } from "@/views/home/home-view";
+export { default } from "@/widgets/home/home-widget";
 
 // ✅ 허용 — 단순 페이지
 export default function HomePage() {
@@ -41,18 +42,22 @@ export default function HomePage() {
 }
 
 // ✅ 허용 — composition
-import { HomeView } from "@/views/home/home-view";
+import { HomeWidget } from "@/widgets/home/home-widget";
 export default function HomePage() {
-  return <HomeView />;
+  return <HomeWidget />;
 }
 ```
 
-## 5. mock 금지
+## 5. mock 정책 (격리된 목 허용)
 
-- 가짜 데이터, 가짜 API 응답, 가짜 사용자 객체를 만들지 않는다.
-- mock 생성이 불가능한 작업(예: 인증 흐름)은 **그 작업의 인터페이스조차 본 단계에서 만들지 않는다.**
-- 실 데이터 흐름이 준비된 시점에만 해당 코드를 작성한다.
-- 검증: `grep -rEi "mock|fake|dummy" src/ app/` 결과는 0건이어야 한다 (스킬 문서/주석은 예외).
+- 원칙적으로 가짜 데이터를 컴포넌트·위젯·페이지에 인라인으로 흩뿌리지 않는다.
+- **백엔드 미구현으로 실데이터 흐름이 아직 없는 기능**은, 컴포넌트를 막지 않기 위해 목 데이터를 쓰되 다음을 지킨다:
+  - 목은 해당 entity의 `api/*-mock.ts` **한 파일에 격리**하고, 파일명에 `mock`을 명시한다.
+  - 데이터 계약(타입)과 `queryOptions` 키 팩토리(§8)를 실제 엔드포인트 기준으로 먼저 설계한다.
+  - 컴포넌트·위젯은 목/실데이터를 구분하지 않는다. 데이터는 `queryOptions` 경계로만 들어온다.
+  - 실데이터 전환은 `queryFn`만 `instance.get`으로 교체하는 것으로 끝나야 한다 (그 외 변경 0).
+- 인증 등 계약 자체를 정의할 수 없는 작업은 여전히 **인터페이스조차 만들지 않는다.**
+- 검증: `grep -rEi "mock|fake|dummy" src/ app/` 결과는 목 모듈(`src/entities/**/api/*-mock.ts`)과 이를 연결하는 키 팩토리(`api/*-keys.ts`의 `queryFn` 와이어링), 그리고 스킬 문서/주석 외 0건이어야 한다.
 
 ## 6. 빈 폴더와 `.gitkeep`
 
@@ -83,6 +88,7 @@ export const problemKeys = {
 ```
 
 - 좋아요 등 빠른 반응이 필요한 mutation은 Optimistic Update.
+- 백엔드 미구현 기간에는 `queryFn`이 격리된 목(`api/*-mock.ts`)을 반환할 수 있다 (§5 참조). 실전환 시 `queryFn`만 교체한다.
 - 자세한 패턴: `.agents/rules/tanstack-query/SKILL.md`.
 
 ## 9. 에러 / 로딩
@@ -95,16 +101,16 @@ export const problemKeys = {
 
 ## 10. 명령어
 
-| 명령 | 설명 |
-|---|---|
-| `bun run dev` | 개발 서버 |
-| `bun run build` | 프로덕션 빌드 |
-| `bun run start` | 프로덕션 서버 |
-| `bun run lint` | ESLint |
-| `bun run lint:fsd` | Steiger (경고만, 종료 코드 0) |
-| `bun run typecheck` | `tsc --noEmit` |
-| `bun run check` | typecheck + lint + lint:fsd 일괄 |
-| `bun run format` | Prettier |
+| 명령                | 설명                             |
+| ------------------- | -------------------------------- |
+| `bun run dev`       | 개발 서버                        |
+| `bun run build`     | 프로덕션 빌드                    |
+| `bun run start`     | 프로덕션 서버                    |
+| `bun run lint`      | ESLint                           |
+| `bun run lint:fsd`  | Steiger (경고만, 종료 코드 0)    |
+| `bun run typecheck` | `tsc --noEmit`                   |
+| `bun run check`     | typecheck + lint + lint:fsd 일괄 |
+| `bun run format`    | Prettier                         |
 
 - **Husky 없음.** 커밋 전 사람이 직접 `bun run check`를 실행한다.
 - 에이전트가 `Edit`/`Write`로 파일을 바꾸면 `.claude/hooks/`의 3개 훅이 순서대로 동작 (모두 비차단):

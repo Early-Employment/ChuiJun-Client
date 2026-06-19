@@ -2,10 +2,7 @@
 
 import { Suspense, useSyncExternalStore, type ComponentType, type ReactNode } from "react";
 import { useQueryErrorResetBoundary } from "@tanstack/react-query";
-import {
-  QueryErrorBoundary,
-  type QueryErrorFallbackProps,
-} from "@/shared/ui/query-error-boundary";
+import { QueryErrorBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-error-boundary";
 
 type Props = {
   children: ReactNode;
