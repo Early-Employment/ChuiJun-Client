@@ -17,25 +17,12 @@ export function FullPageErrorScreen({
   onReset,
 }: FullPageErrorScreenProps) {
   return (
-    <main className="from-primary-50 via-surface to-primary-100 relative min-h-screen overflow-hidden bg-linear-to-b">
-      <div
-        className="bg-primary-200/70 absolute top-[-120px] left-1/2 size-[320px] -translate-x-1/2 rounded-full blur-3xl"
-        aria-hidden="true"
-      />
-      <div
-        className="bg-primary-300/60 absolute right-[-80px] bottom-[-40px] size-[220px] rounded-full blur-3xl"
-        aria-hidden="true"
-      />
-
+    <main className="bg-surface min-h-screen">
       <div className="relative mx-auto flex min-h-screen w-full max-w-[1320px] items-center px-4 py-12 sm:px-6 xl:px-8">
-        <section className="border-line bg-surface/90 mx-auto grid w-full max-w-[1040px] gap-10 rounded-[32px] border px-6 py-8 shadow-[0_24px_80px_rgba(24,197,199,0.14)] backdrop-blur md:px-10 md:py-10 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:items-center lg:px-12">
+        <section className="border-line bg-surface mx-auto grid w-full max-w-[1040px] gap-10 rounded-[32px] border px-6 py-8 md:px-10 md:py-10 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:items-center lg:px-12">
           <div className="relative flex justify-center lg:justify-start">
-            <div className="bg-primary-100 border-primary-200 relative flex size-[260px] items-center justify-center rounded-full border md:size-[320px]">
-              <div
-                className="bg-primary-300/80 absolute inset-[18px] rounded-full blur-2xl"
-                aria-hidden="true"
-              />
-              <div className="bg-surface relative flex size-[210px] items-center justify-center rounded-full shadow-[0_16px_40px_rgba(24,197,199,0.16)] md:size-[256px]">
+            <div className="bg-primary-50 border-primary-200 relative flex size-[260px] items-center justify-center rounded-full border md:size-[320px]">
+              <div className="bg-surface relative flex size-[210px] items-center justify-center rounded-full border border-[var(--color-line)] md:size-[256px]">
                 <LogoIcon className="h-auto w-[150px] md:w-[180px]" />
               </div>
             </div>
