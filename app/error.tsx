@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { FullPageErrorScreen } from "@/shared/ui/full-page-error-screen";
+import { FullPageErrorScreen } from "@/shared/ui/error-screen";
 
 export default function ErrorPage({
   error,

@@ -1,4 +1,4 @@
-import { FullPageErrorScreen } from "@/shared/ui/full-page-error-screen";
+import { FullPageErrorScreen } from "@/shared/ui/error-screen";
 
 export default function NotFoundPage() {
   return (
