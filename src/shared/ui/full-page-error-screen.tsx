@@ -1,7 +1,6 @@
 "use client";
 
 import type { ReactNode } from "react";
-import Link from "next/link";
 import { LogoIcon } from "@/shared/assets/LogoIcon";
 
 type ErrorScreenAction = {
@@ -64,34 +63,27 @@ export function FullPageErrorScreen({
                   {resetLabel}
                 </button>
               ) : null}
-              {primaryAction ? (
-                <Link
-                  href={primaryAction.href}
-                  className={`rounded-md px-5 py-3 text-center text-base font-semibold ${
-                    primaryAction.tone === "secondary"
-                      ? "bg-surface-subtle text-foreground"
-                      : "bg-accent text-neutral-0"
-                  }`}
-                >
-                  {primaryAction.label}
-                </Link>
-              ) : null}
-              {secondaryAction ? (
-                <Link
-                  href={secondaryAction.href}
-                  className={`rounded-md px-5 py-3 text-center text-base font-semibold ${
-                    secondaryAction.tone === "primary"
-                      ? "bg-accent text-neutral-0"
-                      : "bg-surface-subtle text-foreground"
-                  }`}
-                >
-                  {secondaryAction.label}
-                </Link>
-              ) : null}
+              {primaryAction ? <ErrorScreenAnchor action={primaryAction} /> : null}
+              {secondaryAction ? <ErrorScreenAnchor action={secondaryAction} /> : null}
             </div>
           </div>
         </section>
       </div>
     </main>
+  );
+}
+
+function ErrorScreenAnchor({ action }: { action: ErrorScreenAction }) {
+  return (
+    <a
+      href={action.href}
+      className={`rounded-md px-5 py-3 text-center text-base font-semibold ${
+        action.tone === "secondary"
+          ? "bg-surface-subtle text-foreground"
+          : "bg-accent text-neutral-0"
+      }`}
+    >
+      {action.label}
+    </a>
   );
 }
