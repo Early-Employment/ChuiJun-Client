@@ -14,7 +14,7 @@ type FullPageErrorScreenProps = {
   eyebrow?: string;
   fillViewport?: boolean;
   primaryAction?: ErrorScreenAction;
-  resetLabel: string;
+  resetLabel?: string;
   secondaryAction?: ErrorScreenAction;
   title: string;
   onReset?: () => void;
@@ -54,7 +54,7 @@ export function FullPageErrorScreen({
             </p>
 
             <div className="mt-8 flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
-              {onReset ? (
+              {onReset && resetLabel ? (
                 <button
                   type="button"
                   onClick={onReset}
