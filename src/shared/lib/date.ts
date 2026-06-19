@@ -21,3 +21,8 @@ export function monthRange(year: number, month: number): { from: string; to: str
     to: `${year}-${mm}-${String(lastDay).padStart(2, "0")}`,
   };
 }
+
+/** ISO 날짜(yyyy-mm-dd)의 요일을 로컬 기준(0=일)으로 반환한다. */
+export function weekdayOf(iso: string): number {
+  return fromIsoDate(iso).getDay();
+}

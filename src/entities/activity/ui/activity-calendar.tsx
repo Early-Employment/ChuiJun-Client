@@ -1,14 +1,9 @@
 import type { ActivityDay } from "@/entities/activity/model/activity-day";
 import { getActivityLevel } from "@/entities/activity/model/activity-level";
 import { formatActivityTooltip } from "@/entities/activity/model/activity-tooltip";
+import { weekdayOf } from "@/shared/lib/date";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"] as const;
-
-/** ISO 날짜(yyyy-mm-dd)의 요일을 로컬 기준(0=일)으로 반환한다. */
-function weekdayOf(isoDate: string): number {
-  const [year, month, day] = isoDate.split("-").map(Number) as [number, number, number];
-  return new Date(year, month - 1, day).getDay();
-}
 
 /** 한 달치 활동을 7열 달력 형식으로 렌더한다. 셀은 컨테이너 폭에 맞춰 채워진다. */
 export function ActivityCalendar({ days }: { days: ActivityDay[] }) {

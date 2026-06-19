@@ -1,4 +1,4 @@
-import { toIsoDate } from "@/entities/activity/model/activity-date";
+import { toIsoDate } from "@/shared/lib/date";
 import {
   ActivityHeatmapBoardBoundary,
   type ActivityPeriod,
