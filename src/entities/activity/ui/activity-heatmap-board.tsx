@@ -2,10 +2,10 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { activityKeys } from "@/entities/activity/api/activity-keys";
-import { monthRange } from "@/entities/activity/model/activity-date";
 import { getActivityLevel } from "@/entities/activity/model/activity-level";
 import { formatActivityTooltip } from "@/entities/activity/model/activity-tooltip";
 import { ActivityCalendar } from "@/entities/activity/ui/activity-calendar";
+import { monthRange } from "@/shared/lib/date";
 import { ActivityHeatmap } from "@/shared/ui/activity-heatmap";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";

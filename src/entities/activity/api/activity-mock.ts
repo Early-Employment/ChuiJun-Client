@@ -1,4 +1,4 @@
-import { fromIsoDate, toIsoDate } from "@/entities/activity/model/activity-date";
+import { fromIsoDate, toIsoDate } from "@/shared/lib/date";
 import type { ActivityDay } from "@/entities/activity/model/activity-day";
 
 // 백엔드 미구현 기간 동안 사용하는 격리된 목 데이터.

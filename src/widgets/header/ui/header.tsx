@@ -1,5 +1,4 @@
 import Link from "next/link";
-import { BellIcon } from "@/shared/assets/BellIcon";
 import { LogoIcon } from "@/shared/assets/LogoIcon";
 import { MobileNav } from "@/widgets/header/ui/mobile-nav";
 
@@ -23,13 +22,6 @@ export function Header() {
           </Link>
         </nav>
         <div className="hidden items-center gap-4 md:flex">
-          <button
-            type="button"
-            aria-label="알림"
-            className="text-foreground flex size-10 items-center justify-center"
-          >
-            <BellIcon className="size-4" />
-          </button>
           <Link
             href="/signin"
             className="bg-accent text-neutral-0 rounded-md px-4 py-2 text-base font-medium"
