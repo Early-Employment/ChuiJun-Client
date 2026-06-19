@@ -1,3 +1,4 @@
+import { ErrorPageTestButton } from "@/shared/ui/error-page-test-button";
 import { HeroSection } from "@/widgets/main/ui/hero-section";
 import { ProblemBoard } from "@/widgets/main/ui/problem-board";
 import { ProfileSidebar } from "@/widgets/main/ui/profile-sidebar";
@@ -16,6 +17,7 @@ export default function HomePage() {
           </div>
         </div>
       </main>
+      <ErrorPageTestButton />
     </>
   );
 }
