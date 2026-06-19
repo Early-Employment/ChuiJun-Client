@@ -1,121 +1,23 @@
 "use client";
 
 import { useState } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { problemKeys } from "@/entities/problem/api/problem-keys";
+import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 const filterChips = ["난이도", "문제 상태", "언어", "문제집"] as const;
 const rowsPerPage = 10;
 
-const problemRows = [
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "해결함",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: true,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-  {
-    status: "안 풀림",
-    title: "서현이의 디자인 입문기",
-    level: "lv. 2",
-    solvedCount: "3",
-    isHighlighted: false,
-  },
-] as const;
-
-export function ProblemBoard() {
+function ProblemBoard() {
+  const { data: problemRows } = useSuspenseQuery(problemKeys.list());
   const [currentPage, setCurrentPage] = useState(1);
   const [pageDirection, setPageDirection] = useState<"left" | "right">("left");
+
+  if (problemRows.length === 0) {
+    return <ProblemBoard.Empty />;
+  }
+
   const totalPages = Math.ceil(problemRows.length / rowsPerPage);
   const startIndex = (currentPage - 1) * rowsPerPage;
   const pagedRows = problemRows.slice(startIndex, startIndex + rowsPerPage);
@@ -293,5 +195,50 @@ export function ProblemBoard() {
         </button>
       </div>
     </section>
+  );
+}
+
+function ProblemBoardLoading() {
+  return (
+    <section className="space-y-4">
+      <Skeleton className="h-16 w-full rounded-lg" />
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-[repeat(3,minmax(0,1fr))_minmax(0,1.6fr)]">
+        {Array.from({ length: filterChips.length }, (_, index) => (
+          <Skeleton key={index} className="h-14 w-full rounded-md" />
+        ))}
+      </div>
+      <Skeleton className="h-[560px] w-full rounded-lg" />
+    </section>
+  );
+}
+
+function ProblemBoardError({ resetErrorBoundary }: QueryErrorFallbackProps) {
+  return (
+    <div className="text-muted flex h-[480px] flex-col items-center justify-center gap-2 text-sm">
+      <p>문제 목록을 불러오지 못했어요.</p>
+      <button type="button" onClick={resetErrorBoundary} className="text-accent font-medium">
+        다시 시도
+      </button>
+    </div>
+  );
+}
+
+function ProblemBoardEmpty() {
+  return (
+    <div className="text-muted flex h-[480px] items-center justify-center text-sm">
+      아직 표시할 문제가 없어요.
+    </div>
+  );
+}
+
+ProblemBoard.Loading = ProblemBoardLoading;
+ProblemBoard.Error = ProblemBoardError;
+ProblemBoard.Empty = ProblemBoardEmpty;
+
+export function ProblemBoardBoundary() {
+  return (
+    <QueryBoundary loadingFallback={<ProblemBoard.Loading />} errorFallback={ProblemBoard.Error}>
+      <ProblemBoard />
+    </QueryBoundary>
   );
 }
