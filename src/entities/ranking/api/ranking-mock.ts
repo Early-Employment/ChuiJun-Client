@@ -92,3 +92,7 @@ function createEntries({
 export function createRankingSnapshot(category: RankingCategory): RankingSnapshot {
   return rankingSeeds[category];
 }
+
+export function createRankingSnapshots(): Record<RankingCategory, RankingSnapshot> {
+  return rankingSeeds;
+}

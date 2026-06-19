@@ -1,8 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { rankingKeys } from "@/entities/ranking/api/ranking-keys";
 import { rankingCategories, type RankingCategory } from "@/entities/ranking/model/ranking-category";
-import type { RankingEntry, RankingSnapshot } from "@/entities/ranking/model/ranking-entry";
+import type { RankingEntry } from "@/entities/ranking/model/ranking-entry";
+import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
+import { Skeleton } from "@/shared/ui/skeleton";
 
 const rowsPerPage = 14;
 const podiumOrder = [1, 0, 2] as const;
@@ -24,9 +28,8 @@ function getMotionClass(motion: RankingMotion) {
   return "ranking-content-enter-up";
 }
 
-type RankingSnapshots = Record<RankingCategory, RankingSnapshot>;
-
-export function RankingPageWidget({ snapshots }: { snapshots: RankingSnapshots }) {
+function RankingPageWidget() {
+  const { data: snapshots } = useSuspenseQuery(rankingKeys.snapshots());
   const [selectedCategory, setSelectedCategory] = useState<RankingCategory>("overall");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [currentPage, setCurrentPage] = useState(1);
@@ -303,6 +306,33 @@ function Pagination({
   );
 }
 
+function RankingPageWidgetLoading() {
+  return (
+    <main className="mx-auto w-full max-w-[1240px] px-4 py-10 sm:px-6 lg:px-10">
+      <section className="space-y-6">
+        <Skeleton className="h-12 w-40 rounded-md" />
+        <Skeleton className="h-12 w-full rounded-md" />
+        <div className="grid gap-6 lg:grid-cols-2">
+          <Skeleton className="h-40 w-full rounded-xl" />
+          <Skeleton className="h-40 w-full rounded-xl" />
+        </div>
+        <Skeleton className="h-[520px] w-full rounded-lg" />
+      </section>
+    </main>
+  );
+}
+
+function RankingPageWidgetError({ resetErrorBoundary }: QueryErrorFallbackProps) {
+  return (
+    <main className="text-muted mx-auto flex min-h-[50dvh] w-full max-w-[1240px] flex-col items-center justify-center gap-2 px-4 py-10 text-sm sm:px-6 lg:px-10">
+      <p>랭킹 데이터를 불러오지 못했어요.</p>
+      <button type="button" onClick={resetErrorBoundary} className="text-accent font-medium">
+        다시 시도
+      </button>
+    </main>
+  );
+}
+
 function RankingPageWidgetEmpty() {
   return (
     <main className="mx-auto flex min-h-[50dvh] w-full max-w-[1240px] items-center justify-center px-4 py-10 sm:px-6 lg:px-10">
@@ -311,4 +341,17 @@ function RankingPageWidgetEmpty() {
   );
 }
 
+RankingPageWidget.Loading = RankingPageWidgetLoading;
+RankingPageWidget.Error = RankingPageWidgetError;
 RankingPageWidget.Empty = RankingPageWidgetEmpty;
+
+export function RankingPageWidgetBoundary() {
+  return (
+    <QueryBoundary
+      loadingFallback={<RankingPageWidget.Loading />}
+      errorFallback={RankingPageWidget.Error}
+    >
+      <RankingPageWidget />
+    </QueryBoundary>
+  );
+}
