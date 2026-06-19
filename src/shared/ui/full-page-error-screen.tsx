@@ -1,10 +1,11 @@
 "use client";
 
+import type { ReactNode } from "react";
 import Link from "next/link";
 import { LogoIcon } from "@/shared/assets/LogoIcon";
 
 type FullPageErrorScreenProps = {
-  description: string;
+  description: ReactNode;
   fillViewport?: boolean;
   resetLabel: string;
   title: string;
@@ -23,7 +24,7 @@ export function FullPageErrorScreen({
       <div
         className={`relative mx-auto flex w-full max-w-[1320px] items-center px-4 py-12 sm:px-6 xl:px-8 ${fillViewport ? "min-h-screen" : "min-h-full"}`}
       >
-        <section className="bg-surface mx-auto grid w-full max-w-[1040px] gap-10 px-6 py-8 md:px-10 md:py-10 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:items-center lg:px-12">
+        <section className="bg-surface mx-auto grid w-full max-w-[1040px] gap-8 px-6 py-8 md:px-10 md:py-10 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:items-center lg:px-12">
           <div className="relative flex justify-center lg:justify-start">
             <div className="bg-primary-50 relative flex size-[260px] items-center justify-center rounded-full md:size-[320px]">
               <div className="bg-surface relative flex size-[210px] items-center justify-center rounded-full md:size-[256px]">

@@ -19,7 +19,7 @@ export default function GlobalErrorPage({
       <body>
         <FullPageErrorScreen
           title="문제가 발생했어요"
-          description="잠시 후 다시 시도하거나 문제가 지속된다면 관리자에게 문의해주세요."
+          description={"잠시\u00A0후 다시 시도하거나 문제가 지속된다면 관리자에게 문의해주세요."}
           resetLabel="새로 시도"
           onReset={reset}
         />
