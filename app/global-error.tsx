@@ -18,8 +18,8 @@ export default function GlobalErrorPage({
     <html lang="ko">
       <body>
         <FullPageErrorScreen
-          title="예상치 못한 문제가 생겼어요"
-          description="서비스 전체 화면을 다시 정리하는 중입니다. 바로 새로 시도할 수 있고, 같은 문제가 반복되면 잠시 후 다시 접속해 주세요."
+          title="문제가 발생했어요"
+          description="잠시 후 다시 시도하거나 문제가 지속된다면 관리자에게 문의해주세요."
           resetLabel="새로 시도"
           onReset={reset}
         />
