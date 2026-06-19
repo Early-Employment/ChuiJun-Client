@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { FullPageErrorScreen } from "@/shared/ui/full-page-error-screen";
+import "./globals.css";
 
 export default function GlobalErrorPage({
   error,
