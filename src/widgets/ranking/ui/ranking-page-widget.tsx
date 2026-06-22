@@ -86,7 +86,7 @@ function RankingPageWidget() {
               }}
               className="border-line-strong bg-surface text-foreground inline-flex h-11 items-center justify-between gap-6 self-start rounded-md border px-4 text-sm font-medium whitespace-nowrap"
             >
-              {sortDirection === "desc" ? "오름차순" : "내림차순"}
+              {sortDirection === "desc" ? "내림차순" : "오름차순"}
               <span aria-hidden className={sortDirection === "desc" ? "rotate-0" : "rotate-180"}>
                 ⌄
               </span>
