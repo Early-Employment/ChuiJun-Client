@@ -6,7 +6,7 @@ interface Props {
 
 export function SubmitGateModal({ onConfirm }: Props) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-overlay px-4">
+    <div className="bg-overlay fixed inset-0 z-50 flex items-center justify-center px-4">
       <div className="bg-surface w-full max-w-sm space-y-4 rounded-md p-6">
         <p className="text-foreground text-sm">
           해당 문제를 1번 제출해야

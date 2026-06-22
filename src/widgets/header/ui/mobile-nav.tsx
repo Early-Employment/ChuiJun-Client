@@ -39,7 +39,7 @@ export function MobileNav() {
             type="button"
             aria-label="메뉴 닫기"
             onClick={() => setIsOpen(false)}
-            className="absolute inset-0 bg-overlay"
+            className="bg-overlay absolute inset-0"
           />
           <div className="bg-surface absolute inset-y-0 right-0 flex w-72 max-w-[80vw] flex-col px-6 py-5">
             <div className="flex items-center justify-end">

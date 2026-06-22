@@ -49,7 +49,7 @@ function ClassroomHero({ classroomName }: { classroomName: string }) {
       {/* 우측 마스코트 장식 (작은 화면에서는 숨김) */}
       <div className="pointer-events-none absolute inset-0 hidden lg:block" aria-hidden="true">
         <div className="bg-surface absolute top-9 right-[69px] size-[216px] rounded-full" />
-        <div className="absolute top-[144px] right-[190px] size-[216px] rounded-full bg-surface-subtle" />
+        <div className="bg-surface-subtle absolute top-[144px] right-[190px] size-[216px] rounded-full" />
         <LogoIcon className="text-accent absolute top-[156px] right-[91px] size-[199px]" />
       </div>
     </section>
