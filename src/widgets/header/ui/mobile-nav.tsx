@@ -39,7 +39,7 @@ export function MobileNav() {
             type="button"
             aria-label="메뉴 닫기"
             onClick={() => setIsOpen(false)}
-            className="absolute inset-0 bg-black/40"
+            className="absolute inset-0 bg-overlay"
           />
           <div className="bg-surface absolute inset-y-0 right-0 flex w-72 max-w-[80vw] flex-col px-6 py-5">
             <div className="flex items-center justify-end">
@@ -68,7 +68,7 @@ export function MobileNav() {
             <div className="border-line mt-auto flex flex-col gap-3 border-t pt-5">
               <Link
                 href="/signin"
-                className="bg-accent text-neutral-0 rounded-md px-4 py-2 text-center text-sm font-medium"
+                className="bg-accent text-foreground-inverse rounded-md px-4 py-2 text-center text-sm font-medium"
               >
                 로그인
               </Link>

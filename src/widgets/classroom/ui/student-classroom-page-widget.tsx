@@ -42,15 +42,15 @@ function StudentClassroomPageWidget() {
 function ClassroomHero({ classroomName }: { classroomName: string }) {
   return (
     <section className="bg-primary-350 relative h-[312px] overflow-hidden rounded-[20px]">
-      <h1 className="text-neutral-0 absolute top-9 left-9 text-[40px] font-bold whitespace-nowrap lg:text-[50px]">
+      <h1 className="text-foreground-inverse absolute top-9 left-9 text-[40px] font-bold whitespace-nowrap lg:text-[50px]">
         {classroomName}
       </h1>
 
       {/* 우측 마스코트 장식 (작은 화면에서는 숨김) */}
       <div className="pointer-events-none absolute inset-0 hidden lg:block" aria-hidden="true">
-        <div className="bg-neutral-0 absolute top-9 right-[69px] size-[216px] rounded-full" />
-        <div className="absolute top-[144px] right-[190px] size-[216px] rounded-full bg-neutral-100" />
-        <LogoIcon className="absolute top-[156px] right-[91px] size-[199px]" />
+        <div className="bg-surface absolute top-9 right-[69px] size-[216px] rounded-full" />
+        <div className="absolute top-[144px] right-[190px] size-[216px] rounded-full bg-surface-subtle" />
+        <LogoIcon className="text-accent absolute top-[156px] right-[91px] size-[199px]" />
       </div>
     </section>
   );
@@ -109,7 +109,7 @@ function AssignmentCard({ assignment }: { assignment: StudentAssignment }) {
           <p className="text-foreground text-label mt-1.5 font-light">{assignment.dateLabel}</p>
         </div>
         {assignment.required ? (
-          <span className="bg-state-danger text-neutral-0 text-label shrink-0 rounded-md px-3 py-2 font-semibold">
+          <span className="bg-state-danger text-foreground-inverse text-label shrink-0 rounded-md px-3 py-2 font-semibold">
             필수
           </span>
         ) : null}

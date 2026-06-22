@@ -40,7 +40,7 @@ function ClassroomPageWidget() {
             <button
               type="button"
               onClick={() => router.push("/assignments/new")}
-              className="bg-accent text-neutral-0 rounded-md px-7 py-4 text-base font-medium"
+              className="bg-accent text-foreground-inverse rounded-md px-7 py-4 text-base font-medium"
             >
               과제 추가하기
             </button>
@@ -93,7 +93,7 @@ function MetricCard({ metric }: { metric: ClassroomMetric }) {
 function StudentRow({ student }: { student: ClassroomStudent }) {
   const avatarClassName =
     student.avatarVariant === "highlight"
-      ? "border-line-strong bg-primary-50 text-reward border"
+      ? "border-line-strong bg-surface-accent-soft text-reward border"
       : "bg-line text-line";
 
   return (

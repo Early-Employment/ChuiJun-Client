@@ -7,7 +7,7 @@ export function Header() {
     <header className="bg-surface border-line sticky top-0 z-50 border-b">
       <div className="mx-auto flex h-[72px] w-full max-w-[1440px] items-center justify-between px-4 sm:px-8 xl:px-[140px]">
         <Link href="/" className="flex items-center gap-1" aria-label="취준 홈">
-          <LogoIcon className="size-8" />
+          <LogoIcon className="text-accent size-8" />
           <span className="text-[26px] leading-none font-normal">취준</span>
         </Link>
         <nav className="hidden items-center gap-12 text-base font-medium md:flex lg:gap-16">
@@ -24,7 +24,7 @@ export function Header() {
         <div className="hidden items-center gap-4 md:flex">
           <Link
             href="/signin"
-            className="bg-accent text-neutral-0 rounded-md px-4 py-2 text-base font-medium"
+            className="bg-accent text-foreground-inverse rounded-md px-4 py-2 text-base font-medium"
           >
             로그인
           </Link>
