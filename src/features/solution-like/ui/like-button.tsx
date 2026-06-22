@@ -44,7 +44,7 @@ export function LikeButton({ solutionId, liked }: Props) {
       type="button"
       onClick={() => like.mutate()}
       aria-pressed={liked}
-      className="bg-accent text-neutral-0 flex items-center gap-1 rounded-md px-4 py-2 text-sm font-medium"
+      className="bg-accent text-foreground-inverse flex items-center gap-1 rounded-md px-4 py-2 text-sm font-medium"
     >
       <HeartIcon filled={liked} className="size-4" />
       좋아요
