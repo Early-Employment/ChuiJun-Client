@@ -5,5 +5,4 @@ export interface ProblemListItem {
   title: string;
   level: string;
   solvedCount: string;
-  isHighlighted: boolean;
 }

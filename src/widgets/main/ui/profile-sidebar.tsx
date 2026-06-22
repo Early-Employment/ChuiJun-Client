@@ -18,7 +18,7 @@ export function ProfileSidebar() {
   const monthlyColumns = getMonthlyColumns();
 
   return (
-    <aside className="border-line bg-surface self-start rounded-lg border p-5 shadow-sm sm:p-6">
+    <aside className="border-line bg-surface self-start rounded-lg border p-5 sm:p-6">
       <ProfileSummaryBoundary />
 
       <div className="mt-7">

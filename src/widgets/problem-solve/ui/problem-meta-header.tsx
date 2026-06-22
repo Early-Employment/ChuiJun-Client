@@ -21,7 +21,7 @@ export function ProblemMetaHeader({
   return (
     <div className="space-y-2">
       <div className="flex items-center gap-1">
-        <span className="border-bronze-500 bg-bronze-100 text-bronze-500 rounded-full border px-3 py-1 text-sm font-medium">
+        <span className="border-reward bg-reward-soft text-reward rounded-full border px-3 py-1 text-sm font-medium">
           {tier}
         </span>
         <span className="text-muted text-sm font-medium">+ {score} 점</span>

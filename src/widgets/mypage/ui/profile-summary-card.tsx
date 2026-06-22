@@ -7,9 +7,9 @@ export function ProfileSummaryCard() {
     <section className="border-line bg-surface flex flex-col gap-8 rounded-lg border px-5 py-6 sm:px-8 sm:py-8 lg:flex-row lg:items-center lg:px-14">
       <div className="relative mx-auto size-40 shrink-0 lg:mx-0">
         <div className="flex size-40 items-center justify-center rounded-full bg-neutral-300">
-          <LogoIcon className="size-28" />
+          <LogoIcon className="text-accent size-28" />
         </div>
-        <div className="bg-warning-500 absolute right-0 bottom-0 size-12 rounded-full" />
+        <div className="bg-state-warning absolute right-0 bottom-0 size-12 rounded-full" />
       </div>
 
       <div className="min-w-0 flex-1">
@@ -38,7 +38,7 @@ export function ProfileSummaryCard() {
         <div className="mt-8 space-y-3">
           <div className="text-muted flex justify-end text-xs font-medium">67점</div>
           <div className="bg-surface-subtle h-3 overflow-hidden rounded-md">
-            <div className="bg-warning-500 h-full w-2/5 rounded-md" />
+            <div className="bg-state-warning h-full w-2/5 rounded-md" />
           </div>
           <div className="text-muted flex justify-between text-xs font-medium">
             <span>골드</span>

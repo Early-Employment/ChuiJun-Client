@@ -12,7 +12,6 @@ const rowsPerPage = 14;
 const podiumOrder = [1, 0, 2] as const;
 
 type SortDirection = "desc" | "asc";
-type RankingMotion = "left" | "right" | "up";
 
 function formatRank(rank: number) {
   return `${rank}위`;
@@ -22,18 +21,11 @@ function formatDelta(score: number) {
   return `${score > 0 ? "+" : ""}${score}점`;
 }
 
-function getMotionClass(motion: RankingMotion) {
-  if (motion === "left") return "ranking-content-enter-left";
-  if (motion === "right") return "ranking-content-enter-right";
-  return "ranking-content-enter-up";
-}
-
 function RankingPageWidget() {
   const { data: snapshots } = useSuspenseQuery(rankingKeys.snapshots());
   const [selectedCategory, setSelectedCategory] = useState<RankingCategory>("overall");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [currentPage, setCurrentPage] = useState(1);
-  const [motion, setMotion] = useState<RankingMotion>("up");
   const data = snapshots[selectedCategory];
 
   useEffect(() => {
@@ -73,20 +65,12 @@ function RankingPageWidget() {
                     onClick={() => {
                       if (category.id === selectedCategory) return;
 
-                      const currentIndex = rankingCategories.findIndex(
-                        (item) => item.id === selectedCategory,
-                      );
-                      const nextIndex = rankingCategories.findIndex(
-                        (item) => item.id === category.id,
-                      );
-
-                      setMotion(nextIndex > currentIndex ? "left" : "right");
                       setSelectedCategory(category.id);
                     }}
-                    className={`rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap transition-[background-color,border-color,color,transform,box-shadow] duration-200 ${
+                    className={`rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap ${
                       isSelected
-                        ? "bg-surface text-foreground border-line-strong border shadow-sm"
-                        : "text-foreground/80 hover:text-foreground hover:-translate-y-0.5"
+                        ? "bg-surface text-foreground border-line-strong border"
+                        : "text-foreground/80 hover:text-foreground"
                     }`}
                   >
                     {category.label}
@@ -98,26 +82,19 @@ function RankingPageWidget() {
             <button
               type="button"
               onClick={() => {
-                setMotion("up");
                 setSortDirection((direction) => (direction === "desc" ? "asc" : "desc"));
               }}
-              className="border-line-strong bg-surface text-foreground inline-flex h-11 min-w-28 items-center justify-between gap-6 self-start rounded-md border px-4 text-sm font-medium whitespace-nowrap transition-[transform,box-shadow,border-color] duration-200 hover:-translate-y-0.5 hover:shadow-sm"
+              className="border-line-strong bg-surface text-foreground inline-flex h-11 items-center justify-between gap-6 self-start rounded-md border px-4 text-sm font-medium whitespace-nowrap"
             >
-              {sortDirection === "desc" ? "오름차순" : "내림차순"}
-              <span
-                aria-hidden
-                className={`transition-transform duration-300 ${sortDirection === "desc" ? "rotate-0" : "rotate-180"}`}
-              >
+              {sortDirection === "desc" ? "내림차순" : "오름차순"}
+              <span aria-hidden className={sortDirection === "desc" ? "rotate-0" : "rotate-180"}>
                 ⌄
               </span>
             </button>
           </div>
         </header>
 
-        <div
-          key={`${selectedCategory}-${sortDirection}-summary`}
-          className={`grid gap-6 lg:grid-cols-2 ${getMotionClass(motion)}`}
-        >
+        <div className="grid gap-6 lg:grid-cols-2">
           <section className="border-line-strong bg-surface rounded-xl border px-6 py-7">
             <p className="text-body font-semibold">나의 순위</p>
             {myEntry ? (
@@ -166,14 +143,9 @@ function RankingPageWidget() {
         </div>
 
         <section className="space-y-4">
-          <div
-            key={`${selectedCategory}-${sortDirection}-${safeCurrentPage}-table`}
-            className={`border-line-strong bg-surface overflow-hidden rounded-lg border ${getMotionClass(
-              motion,
-            )}`}
-          >
+          <div className="border-line-strong bg-surface overflow-hidden rounded-lg border">
             <div className="hidden overflow-x-auto md:block">
-              <table className="w-full min-w-[720px] table-fixed border-collapse">
+              <table className="w-full table-fixed border-collapse">
                 <thead className="bg-surface-subtle">
                   <tr>
                     <th className="px-8 py-3 text-center text-sm font-medium">순위</th>
@@ -220,7 +192,6 @@ function RankingPageWidget() {
             totalPages={totalPages}
             onChange={(page) => {
               if (page === safeCurrentPage) return;
-              setMotion(page > safeCurrentPage ? "left" : "right");
               setCurrentPage(page);
             }}
           />
@@ -273,7 +244,7 @@ function Pagination({
         aria-label="이전 페이지"
         onClick={() => onChange(Math.max(1, currentPage - 1))}
         disabled={currentPage === 1}
-        className="hover:text-foreground text-lg transition-[transform,color,opacity] duration-200 hover:-translate-x-0.5 disabled:opacity-40"
+        className="hover:text-foreground text-lg disabled:opacity-40"
       >
         ‹
       </button>
@@ -285,7 +256,7 @@ function Pagination({
             key={page}
             type="button"
             onClick={() => onChange(page)}
-            className={`hover:text-foreground transition-[transform,color] duration-200 hover:-translate-y-0.5 ${
+            className={`hover:text-foreground ${
               page === currentPage ? "text-foreground font-bold" : ""
             }`}
           >
@@ -298,7 +269,7 @@ function Pagination({
         aria-label="다음 페이지"
         onClick={() => onChange(Math.min(totalPages, currentPage + 1))}
         disabled={currentPage === totalPages}
-        className="hover:text-foreground text-lg transition-[transform,color,opacity] duration-200 hover:translate-x-0.5 disabled:opacity-40"
+        className="hover:text-foreground text-lg disabled:opacity-40"
       >
         ›
       </button>

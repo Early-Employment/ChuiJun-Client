@@ -61,7 +61,7 @@ export function AssignmentForm() {
         <div className="flex justify-end">
           <button
             type="submit"
-            className="bg-accent border-accent-strong text-neutral-0 rounded-md border px-7 py-3 text-xl font-bold"
+            className="bg-accent border-accent-strong text-foreground-inverse rounded-md border px-7 py-3 text-xl font-bold"
           >
             작성 완료
           </button>

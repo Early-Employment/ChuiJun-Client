@@ -13,7 +13,7 @@ function HeroSummary() {
   }
 
   return (
-    <aside className="bg-surface self-start rounded-lg p-3 shadow-sm">
+    <aside className="bg-surface self-start rounded-lg p-3">
       <div className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-2">
         {cards.map((card, index) => (
           <SummaryCard
@@ -41,7 +41,9 @@ function SummaryCard({
   className?: string;
 }) {
   return (
-    <article className={`bg-primary-50 text-foreground relative rounded-md p-3 ${className}`}>
+    <article
+      className={`bg-surface-accent-soft text-foreground relative rounded-md p-3 ${className}`}
+    >
       <p className="text-caption text-accent-strong font-semibold">{eyebrow}</p>
       <div className="mt-1.5 flex items-start justify-between gap-2.5">
         <div>
@@ -56,7 +58,7 @@ function SummaryCard({
 
 function HeroSummaryLoading() {
   return (
-    <aside className="bg-surface self-start rounded-lg p-3 shadow-sm">
+    <aside className="bg-surface self-start rounded-lg p-3">
       <div className="grid gap-2.5 md:grid-cols-2 xl:grid-cols-2">
         {Array.from({ length: 4 }, (_, index) => (
           <Skeleton
@@ -71,7 +73,7 @@ function HeroSummaryLoading() {
 
 function HeroSummaryError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   return (
-    <aside className="bg-surface text-muted flex min-h-40 flex-col items-center justify-center gap-2 self-start rounded-lg p-3 text-sm shadow-sm">
+    <aside className="bg-surface text-muted flex min-h-40 flex-col items-center justify-center gap-2 self-start rounded-lg p-3 text-sm">
       <p>요약 정보를 불러오지 못했어요.</p>
       <button type="button" onClick={resetErrorBoundary} className="text-accent font-medium">
         다시 시도
@@ -82,7 +84,7 @@ function HeroSummaryError({ resetErrorBoundary }: QueryErrorFallbackProps) {
 
 function HeroSummaryEmpty() {
   return (
-    <aside className="bg-surface text-muted flex min-h-40 items-center justify-center self-start rounded-lg p-3 text-sm shadow-sm">
+    <aside className="bg-surface text-muted flex min-h-40 items-center justify-center self-start rounded-lg p-3 text-sm">
       아직 표시할 정보가 없어요.
     </aside>
   );

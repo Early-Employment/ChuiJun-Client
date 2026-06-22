@@ -49,7 +49,9 @@
   --color-surface: var(--color-neutral-0);
   --color-surface-subtle: var(--color-neutral-100);
   --color-surface-accent: var(--color-primary-100);
+  --color-surface-accent-soft: var(--color-primary-50);
   --color-foreground: var(--color-neutral-900);
+  --color-foreground-inverse: var(--color-neutral-0);
   --color-muted: var(--color-neutral-600);
   --color-placeholder: var(--color-neutral-500);
   --color-line: var(--color-neutral-200);
@@ -57,6 +59,8 @@
   --color-accent: var(--color-primary-500);
   --color-accent-strong: var(--color-primary-600);
   --color-reward: var(--color-bronze-500);
+  --color-reward-soft: var(--color-bronze-100);
+  --color-overlay: rgb(0 0 0 / 0.4);
 
   --color-state-success: var(--color-success-500);
   --color-state-success-soft: var(--color-success-50);
@@ -88,89 +92,6 @@ body {
   font-family: var(--font-family-base);
   overscroll-behavior: none;
   scroll-behavior: auto !important;
-}
-
-@keyframes page-swap-enter-left {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes page-swap-enter-right {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-.page-swap-enter-left {
-  animation: page-swap-enter-left 220ms ease-out !important;
-}
-
-.page-swap-enter-right {
-  animation: page-swap-enter-right 220ms ease-out !important;
-}
-
-@keyframes ranking-content-enter-left {
-  from {
-    opacity: 0;
-    transform: translate3d(18px, 0, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes ranking-content-enter-right {
-  from {
-    opacity: 0;
-    transform: translate3d(-18px, 0, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-@keyframes ranking-content-enter-up {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 14px, 0);
-  }
-
-  to {
-    opacity: 1;
-    transform: translate3d(0, 0, 0);
-  }
-}
-
-.ranking-content-enter-left {
-  animation: ranking-content-enter-left 260ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, opacity;
-}
-
-.ranking-content-enter-right {
-  animation: ranking-content-enter-right 260ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, opacity;
-}
-
-.ranking-content-enter-up {
-  animation: ranking-content-enter-up 240ms cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: transform, opacity;
 }
 
 [data-level="0"] {

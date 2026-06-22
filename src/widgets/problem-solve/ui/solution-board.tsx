@@ -24,7 +24,7 @@ function SolutionBoard({ problemId, selectedId, onSelect }: Props) {
   return (
     <div className="space-y-3">
       <div className="border-line bg-surface overflow-x-auto rounded-md border">
-        <table className="w-full min-w-[640px] border-collapse text-center text-sm">
+        <table className="w-full border-collapse text-center text-sm">
           <thead className="bg-surface-subtle text-muted font-medium">
             <tr>
               {COLUMNS.map((column) => (

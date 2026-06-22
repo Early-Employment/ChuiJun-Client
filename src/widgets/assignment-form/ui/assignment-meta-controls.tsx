@@ -13,7 +13,7 @@ export function AssignmentMetaControls() {
       <div className="flex flex-wrap items-center gap-6">
         <button
           type="button"
-          className="border-line-strong text-foreground flex min-w-36 items-center justify-between gap-2 rounded-md border px-4 py-3 text-base font-medium"
+          className="border-line-strong text-foreground flex items-center justify-between gap-2 rounded-md border px-4 py-3 text-base font-medium"
         >
           난이도
           <ChevronDownIcon className="size-5" />

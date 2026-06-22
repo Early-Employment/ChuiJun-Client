@@ -19,7 +19,7 @@ export function LogoutButton({ className }: LogoutButtonProps) {
     <button
       type="button"
       onClick={handleLogout}
-      className={`text-label text-muted hover:text-foreground font-medium transition-colors duration-150 ${className}`}
+      className={`text-label text-muted hover:text-foreground font-medium ${className}`}
     >
       로그아웃
     </button>

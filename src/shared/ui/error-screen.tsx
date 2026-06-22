@@ -38,9 +38,9 @@ export function FullPageErrorScreen({
       >
         <section className="bg-surface mx-auto grid w-full max-w-[1040px] gap-8 px-6 py-8 md:px-10 md:py-10 lg:grid-cols-[minmax(0,440px)_minmax(0,1fr)] lg:items-center lg:px-12">
           <div className="relative flex justify-center lg:justify-start">
-            <div className="bg-primary-50 relative flex size-[260px] items-center justify-center rounded-full md:size-[320px]">
+            <div className="bg-surface-accent-soft relative flex size-[260px] items-center justify-center rounded-full md:size-[320px]">
               <div className="bg-surface relative flex size-[210px] items-center justify-center rounded-full md:size-[256px]">
-                <LogoIcon className="h-auto w-[150px] md:w-[180px]" />
+                <LogoIcon className="text-accent h-auto w-[150px] md:w-[180px]" />
               </div>
             </div>
           </div>
@@ -59,7 +59,7 @@ export function FullPageErrorScreen({
                 <button
                   type="button"
                   onClick={onReset}
-                  className="bg-accent text-neutral-0 rounded-md px-5 py-3 text-base font-semibold"
+                  className="bg-accent text-foreground-inverse rounded-md px-5 py-3 text-base font-semibold"
                 >
                   {resetLabel}
                 </button>
@@ -81,7 +81,7 @@ function ErrorScreenLink({ action }: { action: ErrorScreenAction }) {
       className={`rounded-md px-5 py-3 text-center text-base font-semibold ${
         action.tone === "secondary"
           ? "bg-surface-subtle text-foreground"
-          : "bg-accent text-neutral-0"
+          : "bg-accent text-foreground-inverse"
       }`}
     >
       {action.label}
