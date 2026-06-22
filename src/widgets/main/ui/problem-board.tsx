@@ -12,7 +12,6 @@ const rowsPerPage = 10;
 function ProblemBoard() {
   const { data: problemRows } = useSuspenseQuery(problemKeys.list());
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageDirection, setPageDirection] = useState<"left" | "right">("left");
 
   if (problemRows.length === 0) {
     return <ProblemBoard.Empty />;
@@ -25,7 +24,7 @@ function ProblemBoard() {
 
   return (
     <section className="space-y-4">
-      <div className="border-line bg-surface rounded-lg border p-2 shadow-sm">
+      <div className="border-line bg-surface rounded-lg border p-2">
         <div className="border-line bg-surface flex items-center justify-between gap-3 rounded-md border px-4 py-4">
           <span className="text-body text-placeholder">문제 제목 입력</span>
           <span className="text-placeholder text-3xl leading-none">⌕</span>
@@ -37,7 +36,7 @@ function ProblemBoard() {
           <button
             key={chip}
             type="button"
-            className="border-line bg-surface text-body text-foreground flex h-14 items-center justify-between rounded-md border px-4 text-left font-semibold shadow-sm"
+            className="border-line bg-surface text-body text-foreground flex h-14 items-center justify-between rounded-md border px-4 text-left font-semibold"
           >
             {chip}
             <span className="text-muted text-lg">⌄</span>
@@ -45,23 +44,12 @@ function ProblemBoard() {
         ))}
       </div>
 
-      <div className="border-line bg-surface overflow-hidden rounded-lg border shadow-sm">
-        <ul
-          key={`cards-${currentPage}`}
-          className={`divide-line divide-y md:hidden ${
-            pageDirection === "left" ? "page-swap-enter-left" : "page-swap-enter-right"
-          }`}
-        >
+      <div className="border-line bg-surface overflow-hidden rounded-lg border">
+        <ul className="divide-line divide-y md:hidden">
           {pagedRows.map((row, index) => (
             <li key={`${row.title}-${index}`} className="space-y-3 px-4 py-4">
               <div className="flex items-start justify-between gap-3">
-                <span
-                  className={`text-body font-semibold ${
-                    row.isHighlighted ? "text-info-600 underline" : "text-foreground"
-                  }`}
-                >
-                  {row.title}
-                </span>
+                <span className="text-body text-foreground font-semibold">{row.title}</span>
                 <span className="text-muted text-label shrink-0">#{startIndex + index + 1}</span>
               </div>
               <dl className="text-label grid grid-cols-3 gap-2">
@@ -110,12 +98,7 @@ function ProblemBoard() {
                 </th>
               </tr>
             </thead>
-            <tbody
-              key={currentPage}
-              className={
-                pageDirection === "left" ? "page-swap-enter-left" : "page-swap-enter-right"
-              }
-            >
+            <tbody>
               {pagedRows.map((row, index) => (
                 <tr
                   key={`${row.title}-${index}`}
@@ -127,9 +110,7 @@ function ProblemBoard() {
                   >
                     {row.status}
                   </td>
-                  <td
-                    className={`px-6 py-5 text-center ${row.isHighlighted ? "text-info-600 font-semibold underline" : ""}`}
-                  >
+                  <td className="px-6 py-5 text-center">
                     <span className="block w-full text-center">{row.title}</span>
                   </td>
                   <td className="px-6 py-5 text-center">{row.level}</td>
@@ -158,7 +139,6 @@ function ProblemBoard() {
           type="button"
           className="cursor-pointer disabled:cursor-default disabled:opacity-40"
           onClick={() => {
-            setPageDirection("right");
             setCurrentPage((page) => Math.max(1, page - 1));
           }}
           disabled={currentPage === 1}
@@ -174,7 +154,6 @@ function ProblemBoard() {
               type="button"
               className={page === currentPage ? "text-foreground font-bold" : "cursor-pointer"}
               onClick={() => {
-                setPageDirection(page > currentPage ? "left" : "right");
                 setCurrentPage(page);
               }}
             >
@@ -186,7 +165,6 @@ function ProblemBoard() {
           type="button"
           className="cursor-pointer disabled:cursor-default disabled:opacity-40"
           onClick={() => {
-            setPageDirection("left");
             setCurrentPage((page) => Math.min(totalPages, page + 1));
           }}
           disabled={currentPage === totalPages}
