@@ -77,7 +77,7 @@ function ProblemBoard() {
         </ul>
 
         <div className="hidden overflow-x-auto md:block">
-          <table className="w-full min-w-[720px] table-fixed border-collapse">
+          <table className="w-full table-fixed border-collapse">
             <colgroup>
               <col className="w-[80px]" />
               <col className="w-[124px]" />

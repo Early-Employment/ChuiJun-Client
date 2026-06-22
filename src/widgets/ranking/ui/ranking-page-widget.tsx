@@ -84,7 +84,7 @@ function RankingPageWidget() {
               onClick={() => {
                 setSortDirection((direction) => (direction === "desc" ? "asc" : "desc"));
               }}
-              className="border-line-strong bg-surface text-foreground inline-flex h-11 min-w-28 items-center justify-between gap-6 self-start rounded-md border px-4 text-sm font-medium whitespace-nowrap"
+              className="border-line-strong bg-surface text-foreground inline-flex h-11 items-center justify-between gap-6 self-start rounded-md border px-4 text-sm font-medium whitespace-nowrap"
             >
               {sortDirection === "desc" ? "오름차순" : "내림차순"}
               <span aria-hidden className={sortDirection === "desc" ? "rotate-0" : "rotate-180"}>
@@ -145,7 +145,7 @@ function RankingPageWidget() {
         <section className="space-y-4">
           <div className="border-line-strong bg-surface overflow-hidden rounded-lg border">
             <div className="hidden overflow-x-auto md:block">
-              <table className="w-full min-w-[720px] table-fixed border-collapse">
+              <table className="w-full table-fixed border-collapse">
                 <thead className="bg-surface-subtle">
                   <tr>
                     <th className="px-8 py-3 text-center text-sm font-medium">순위</th>

@@ -40,7 +40,7 @@ function WrongProblemBoard() {
       </ul>
 
       <div className="border-line mt-2 hidden overflow-x-auto rounded-md border md:block">
-        <table className="bg-surface w-full min-w-[720px] border-collapse text-center text-sm">
+        <table className="bg-surface w-full border-collapse text-center text-sm">
           <thead className="bg-neutral-200 font-medium">
             <tr>
               <th className="px-6 py-3 font-medium">순번</th>
