@@ -41,7 +41,7 @@ export function MobileNav() {
             onClick={() => setIsOpen(false)}
             className="absolute inset-0 bg-black/40"
           />
-          <div className="bg-surface absolute inset-y-0 right-0 flex w-72 max-w-[80vw] flex-col px-6 py-5 shadow-lg">
+          <div className="bg-surface absolute inset-y-0 right-0 flex w-72 max-w-[80vw] flex-col px-6 py-5">
             <div className="flex items-center justify-end">
               <button
                 type="button"

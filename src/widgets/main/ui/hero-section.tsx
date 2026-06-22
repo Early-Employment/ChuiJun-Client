@@ -5,7 +5,7 @@ export function HeroSection() {
     <section className="bg-primary-500">
       <div className="mx-auto flex w-full max-w-[1320px] flex-col gap-3 px-4 py-4 sm:px-6 lg:py-5 xl:px-8">
         <div className="grid items-start gap-6 xl:grid-cols-[minmax(0,1fr)_460px]">
-          <article className="bg-surface flex min-h-56 flex-col justify-start rounded-lg px-8 py-7 shadow-sm lg:min-h-64 lg:px-10 lg:py-8">
+          <article className="bg-surface flex min-h-56 flex-col justify-start rounded-lg px-8 py-7 lg:min-h-64 lg:px-10 lg:py-8">
             <h1 className="text-foreground text-4xl font-extrabold tracking-tight lg:text-[44px]">
               안녕하세요
             </h1>
