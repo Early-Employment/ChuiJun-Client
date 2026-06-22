@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
 import { classroomSummaryKeys } from "@/entities/classroom/api/classroom-summary-keys";
 import { classroomViewerKeys } from "@/entities/classroom/api/classroom-viewer-keys";
 import type { ClassroomSummary } from "@/entities/classroom/model/classroom-summary";
@@ -15,8 +15,9 @@ import { Skeleton } from "@/shared/ui/skeleton";
  * "수업 추가"는 교사만 노출한다.
  */
 function ClassroomListWidget() {
-  const { data: classrooms } = useSuspenseQuery(classroomSummaryKeys.list());
-  const { data: viewer } = useSuspenseQuery(classroomViewerKeys.current());
+  const [{ data: classrooms }, { data: viewer }] = useSuspenseQueries({
+    queries: [classroomSummaryKeys.list(), classroomViewerKeys.current()],
+  });
 
   if (classrooms.length === 0) {
     return <ClassroomListWidget.Empty />;
