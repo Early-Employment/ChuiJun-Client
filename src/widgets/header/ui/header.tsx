@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { LogoIcon } from "@/shared/assets/LogoIcon";
+import { HeaderAuthActions } from "@/widgets/header/ui/header-auth-actions";
 import { MobileNav } from "@/widgets/header/ui/mobile-nav";
 
 export function Header() {
@@ -21,14 +22,7 @@ export function Header() {
             학급
           </Link>
         </nav>
-        <div className="hidden items-center gap-4 md:flex">
-          <Link
-            href="/signin"
-            className="bg-accent text-foreground-inverse rounded-md px-4 py-2 text-base font-medium"
-          >
-            로그인
-          </Link>
-        </div>
+        <HeaderAuthActions className="hidden items-center gap-4 md:flex" />
 
         <MobileNav />
       </div>
