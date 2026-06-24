@@ -23,6 +23,9 @@ export function Header() {
           <Link href="/class" className="text-foreground">
             학급
           </Link>
+          <Link href="/mypage" className="text-foreground">
+            마이페이지
+          </Link>
         </nav>
         <HeaderAuthActions className="hidden items-center gap-4 md:flex" />
 
