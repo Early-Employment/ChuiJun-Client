@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { DgOAuthProvider } from "@/shared/providers/oauth-provider";
 import { QueryProvider } from "@/shared/providers/query-provider";
 import "./globals.css";
 
@@ -18,9 +17,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body>
-        <DgOAuthProvider>
-          <QueryProvider>{children}</QueryProvider>
-        </DgOAuthProvider>
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

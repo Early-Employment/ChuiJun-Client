@@ -5,6 +5,8 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { CloseIcon } from "@/shared/assets/CloseIcon";
 import { MenuIcon } from "@/shared/assets/MenuIcon";
+import { useIsAuthenticated } from "@/shared/lib/use-is-authenticated";
+import { LogoutButton } from "@/shared/ui/logout-button";
 
 const navLinks = [
   { href: "/", label: "홈" },
@@ -15,6 +17,7 @@ const navLinks = [
 export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
+  const isAuthenticated = useIsAuthenticated();
 
   // 라우트 이동 시 드로어를 닫는다.
   useEffect(() => {
@@ -66,12 +69,18 @@ export function MobileNav() {
             </nav>
 
             <div className="border-line mt-auto flex flex-col gap-3 border-t pt-5">
-              <Link
-                href="/signin"
-                className="bg-accent text-foreground-inverse rounded-md px-4 py-2 text-center text-sm font-medium"
-              >
-                로그인
-              </Link>
+              {isAuthenticated === null ? (
+                <div className="h-9" aria-hidden />
+              ) : isAuthenticated ? (
+                <LogoutButton className="px-4 py-2 text-center" />
+              ) : (
+                <Link
+                  href="/signin"
+                  className="bg-accent text-foreground-inverse rounded-md px-4 py-2 text-center text-sm font-medium"
+                >
+                  로그인
+                </Link>
+              )}
             </div>
           </div>
         </div>
