@@ -9,7 +9,15 @@ import Link from "next/link";
 const fieldClassName =
   "border-line-strong bg-surface text-foreground placeholder:text-muted focus:border-accent w-full rounded-md border px-4 py-3 text-base font-medium outline-none";
 
-export function AssignmentForm() {
+type AssignmentFormMode = "create" | "edit";
+
+interface AssignmentFormProps {
+  mode?: AssignmentFormMode;
+}
+
+export function AssignmentForm({ mode = "create" }: AssignmentFormProps) {
+  const isEdit = mode === "edit";
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-9 sm:px-6">
       <form className="border-line-strong bg-surface flex flex-col gap-5 rounded-lg border px-6 py-8 sm:px-12 sm:py-10">
@@ -59,12 +67,21 @@ export function AssignmentForm() {
         <AssignmentMetaControls />
 
         <div className="flex justify-end">
-          <button
-            type="submit"
-            className="bg-accent border-accent-strong text-foreground-inverse rounded-md border px-7 py-3 text-xl font-bold"
-          >
-            작성 완료
-          </button>
+          {isEdit ? (
+            <button
+              type="submit"
+              className="bg-accent border-accent-strong text-foreground-inverse rounded-md border px-7 py-4 text-base font-bold"
+            >
+              저장
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="bg-accent border-accent-strong text-foreground-inverse rounded-md border px-7 py-3 text-xl font-bold"
+            >
+              작성 완료
+            </button>
+          )}
         </div>
       </form>
     </main>

@@ -1,5 +1,5 @@
 import { AssignmentForm } from "@/widgets/assignment-form/ui/assignment-form";
 
 export default function NewAssignmentPage() {
-  return <AssignmentForm />;
+  return <AssignmentForm mode="create" />;
 }
