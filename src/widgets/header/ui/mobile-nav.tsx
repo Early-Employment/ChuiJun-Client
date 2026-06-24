@@ -69,7 +69,9 @@ export function MobileNav() {
             </nav>
 
             <div className="border-line mt-auto flex flex-col gap-3 border-t pt-5">
-              {isAuthenticated ? (
+              {isAuthenticated === null ? (
+                <div className="h-9" aria-hidden />
+              ) : isAuthenticated ? (
                 <LogoutButton className="px-4 py-2 text-center" />
               ) : (
                 <Link
