@@ -30,7 +30,7 @@ function OAuthCallbackContent() {
       .get<DgLoginResponse>("/auth/dg/callback", { baseURL: "", params: { code, state } })
       .then(({ data }) => {
         setAccessToken(data.accessToken);
-        window.location.href = "/";
+        router.replace("/");
       })
       .catch(() => {
         router.replace("/signin");
