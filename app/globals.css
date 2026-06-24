@@ -79,6 +79,7 @@
 
   --font-family-base:
     "Pretendard Variable", Pretendard, -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --font-logo: "Black Han Sans", sans-serif;
 
   --radius-sm: 4px;
   --radius-md: 8px;
