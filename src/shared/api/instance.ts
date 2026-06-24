@@ -1,7 +1,6 @@
 import axios, { HttpStatusCode, type InternalAxiosRequestConfig } from "axios";
 import { clearAccessToken, getAccessToken, setAccessToken } from "@/shared/api/access-token-store";
-import { reissueAccessToken } from "@/shared/api/reissue-access-token";
-import { PUBLIC_ROUTES } from "@/shared/config/routes";
+import { AUTH_ROUTES, PUBLIC_ROUTES } from "@/shared/config/routes";
 
 export const instance = axios.create({
   baseURL: "/api",
@@ -12,13 +11,24 @@ export const serverInstance = axios.create({
   headers: { "Content-Type": "application/json" },
 });
 
+// POST /auth/dg/refresh — HttpOnly 쿠키(refreshToken)로 새 Access Token 을 발급한다.
+// 회전된 refreshToken 은 응답 바디·Set-Cookie 로 함께 내려오지만, 프론트는 쿠키로 refresh 하므로
+// accessToken 만 사용한다. baseURL "" 로 /api 프록시가 아닌 root(/auth/dg/*) 프록시를 탄다.
+interface RefreshResponse {
+  accessToken: string;
+  refreshToken: string;
+  expiresIn: number;
+}
+
 let reissuePromise: Promise<string> | null = null;
 
 async function runReissue(): Promise<string> {
   try {
-    const token = await reissueAccessToken();
-    setAccessToken(token);
-    return token;
+    const { data } = await instance.post<RefreshResponse>(AUTH_ROUTES.refresh, null, {
+      baseURL: "",
+    });
+    setAccessToken(data.accessToken);
+    return data.accessToken;
   } finally {
     reissuePromise = null;
   }
