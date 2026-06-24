@@ -16,9 +16,9 @@ export function middleware(request: NextRequest) {
 
   // 비공개 경로 + 미인증 → /signin 으로.
   const isPublic = PUBLIC_ROUTES.some((route) => route === pathname);
-  if (!isPublic && !refreshToken) {
-    return NextResponse.redirect(new URL("/signin", request.url));
-  }
+  // if (!isPublic && !refreshToken) {
+  //   return NextResponse.redirect(new URL("/signin", request.url));
+  // }
 
   return NextResponse.next();
 }
