@@ -26,15 +26,20 @@ function OAuthCallbackContent() {
     }
     requestInitiated.current = true;
 
-    instance
-      .get<DgLoginResponse>("/auth/dg/callback", { baseURL: "", params: { code, state } })
-      .then(({ data }) => {
+    const handleCallback = async () => {
+      try {
+        const { data } = await instance.get<DgLoginResponse>("/auth/dg/callback", {
+          baseURL: "",
+          params: { code, state },
+        });
         setAccessToken(data.accessToken);
         router.replace("/");
-      })
-      .catch(() => {
+      } catch {
         router.replace("/signin");
-      });
+      }
+    };
+
+    void handleCallback();
   }, [searchParams, router]);
 
   return (
