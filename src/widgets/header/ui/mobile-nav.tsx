@@ -12,6 +12,7 @@ const navLinks = [
   { href: "/", label: "홈" },
   { href: "/ranking", label: "랭킹" },
   { href: "/class", label: "학급" },
+  { href: "/mypage", label: "마이페이지" },
 ] as const;
 
 export function MobileNav() {

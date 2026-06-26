@@ -1,4 +1,6 @@
-// GET /auth/dg/callback 응답 계약. 백엔드 Swagger(DgLoginResponse) 기준.
+// GET /auth/dg/callback 응답 계약. 백엔드 DgLoginResponse 기준.
+// refreshToken 은 응답 바디로 내려오고 동시에 HttpOnly 쿠키(refreshToken)로도 내려온다.
+// 프론트는 refresh 를 쿠키(withCredentials)로 처리하므로 바디의 refreshToken 은 저장하지 않는다.
 export type MemberRole = "STUDENT" | "TEACHER" | "ADMIN";
 
 export interface DgLoginResponse {
@@ -7,7 +9,6 @@ export interface DgLoginResponse {
   name: string;
   role: MemberRole;
   accessToken: string;
-  // refreshToken 은 HttpOnly 쿠키로도 내려오며, 프론트에서는 저장하지 않는다.
   refreshToken: string;
   expiresIn: number;
 }
