@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { problemKeys } from "@/entities/problem/api/problem-keys";
@@ -47,29 +48,28 @@ function ProblemBoard() {
       <div className="border-line bg-surface overflow-hidden rounded-lg border">
         <ul className="divide-line divide-y md:hidden">
           {pagedRows.map((row, index) => (
-            <li key={`${row.title}-${index}`} className="space-y-3 px-4 py-4">
+            <li key={row.id} className="space-y-3 px-4 py-4">
               <div className="flex items-start justify-between gap-3">
-                <span className="text-body text-foreground font-semibold">{row.title}</span>
+                <Link
+                  href={`/problems/${row.id}`}
+                  className="text-body text-foreground font-semibold hover:underline"
+                >
+                  {row.title}
+                </Link>
                 <span className="text-muted text-label shrink-0">#{startIndex + index + 1}</span>
               </div>
               <dl className="text-label grid grid-cols-3 gap-2">
                 <div className="space-y-1">
-                  <dt className="text-muted">상태</dt>
-                  <dd
-                    className={
-                      row.status === "해결함" ? "text-accent font-semibold" : "text-foreground"
-                    }
-                  >
-                    {row.status}
-                  </dd>
+                  <dt className="text-muted">문제 코드</dt>
+                  <dd className="text-foreground">{row.code}</dd>
                 </div>
                 <div className="space-y-1">
                   <dt className="text-muted">난이도</dt>
                   <dd className="text-foreground">{row.level}</dd>
                 </div>
                 <div className="space-y-1">
-                  <dt className="text-muted">완료한 사람</dt>
-                  <dd className="text-foreground">{row.solvedCount}</dd>
+                  <dt className="text-muted">정답률</dt>
+                  <dd className="text-foreground">{row.acceptRate}%</dd>
                 </div>
               </dl>
             </li>
@@ -88,33 +88,33 @@ function ProblemBoard() {
             <thead className="bg-surface-subtle">
               <tr>
                 <th className="text-label text-foreground px-6 py-4 text-center font-bold">순번</th>
-                <th className="text-label text-foreground px-6 py-4 text-center font-bold">상태</th>
+                <th className="text-label text-foreground px-6 py-4 text-center font-bold">
+                  문제 코드
+                </th>
                 <th className="text-label text-foreground px-6 py-4 text-center font-bold">제목</th>
                 <th className="text-label text-foreground px-6 py-4 text-center font-bold">
                   난이도
                 </th>
                 <th className="text-label text-foreground px-6 py-4 text-center font-bold">
-                  완료한 사람
+                  정답률
                 </th>
               </tr>
             </thead>
             <tbody>
               {pagedRows.map((row, index) => (
-                <tr
-                  key={`${row.title}-${index}`}
-                  className="border-line text-body text-foreground border-t"
-                >
+                <tr key={row.id} className="border-line text-body text-foreground border-t">
                   <td className="px-6 py-5 text-center">{startIndex + index + 1}</td>
-                  <td
-                    className={`px-6 py-5 text-center ${row.status === "해결함" ? "text-accent font-semibold" : ""}`}
-                  >
-                    {row.status}
-                  </td>
+                  <td className="px-6 py-5 text-center">{row.code}</td>
                   <td className="px-6 py-5 text-center">
-                    <span className="block w-full text-center">{row.title}</span>
+                    <Link
+                      href={`/problems/${row.id}`}
+                      className="block w-full text-center hover:underline"
+                    >
+                      {row.title}
+                    </Link>
                   </td>
                   <td className="px-6 py-5 text-center">{row.level}</td>
-                  <td className="px-6 py-5 text-center">{row.solvedCount}</td>
+                  <td className="px-6 py-5 text-center">{row.acceptRate}%</td>
                 </tr>
               ))}
               {Array.from({ length: emptyRowCount }, (_, index) => (

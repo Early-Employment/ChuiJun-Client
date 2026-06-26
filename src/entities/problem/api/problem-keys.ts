@@ -1,8 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
 import { instance } from "@/shared/api/instance";
-import { mapProblemDetail } from "@/entities/problem/api/problem-api-mapper";
-import type { ProblemApiDetailResponse } from "@/entities/problem/api/problem-api-response";
-import { createProblemList } from "@/entities/problem/api/problem-list-mock";
+import { mapProblemDetail, mapProblemListItem } from "@/entities/problem/api/problem-api-mapper";
+import type {
+  ProblemApiDetailResponse,
+  ProblemApiPageResponse,
+} from "@/entities/problem/api/problem-api-response";
 import { createMockWrongProblems } from "@/entities/problem/api/wrong-problem-mock";
 
 export const problemKeys = {
@@ -10,9 +12,12 @@ export const problemKeys = {
   list: () =>
     queryOptions({
       queryKey: [...problemKeys.all, "list"] as const,
-      // 백엔드 미구현: 목 데이터 반환. 실전환 시 아래 한 줄로 교체한다.
-      // queryFn: async () => (await instance.get<ProblemListItem[]>("/problems")).data,
-      queryFn: async () => createProblemList(),
+      queryFn: async () => {
+        const { data } = await instance.get<ProblemApiPageResponse>("/problems", {
+          params: { page: 0, size: 100 },
+        });
+        return data.content.map(mapProblemListItem);
+      },
     }),
   wrong: () =>
     queryOptions({
