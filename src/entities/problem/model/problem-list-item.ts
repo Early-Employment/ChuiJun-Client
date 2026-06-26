@@ -1,8 +1,7 @@
-export type ProblemSolveStatus = "안 풀림" | "해결함";
-
 export interface ProblemListItem {
-  status: ProblemSolveStatus;
+  id: number;
+  code: string;
   title: string;
   level: string;
-  solvedCount: string;
+  acceptRate: number;
 }
