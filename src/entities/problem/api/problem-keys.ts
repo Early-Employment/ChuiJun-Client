@@ -1,6 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { instance } from "@/shared/api/instance";
-import { mapProblemDetail, mapProblemListItem } from "@/entities/problem/api/problem-api-mapper";
+import { mapProblemDetail, mapProblemListPage } from "@/entities/problem/api/problem-api-mapper";
 import type {
   ProblemApiDetailResponse,
   ProblemApiPageResponse,
@@ -9,14 +9,14 @@ import { createMockWrongProblems } from "@/entities/problem/api/wrong-problem-mo
 
 export const problemKeys = {
   all: ["problem"] as const,
-  list: () =>
+  list: (page: number, size: number) =>
     queryOptions({
-      queryKey: [...problemKeys.all, "list"] as const,
+      queryKey: [...problemKeys.all, "list", page, size] as const,
       queryFn: async () => {
         const { data } = await instance.get<ProblemApiPageResponse>("/problems", {
-          params: { page: 0, size: 100 },
+          params: { page, size },
         });
-        return data.content.map(mapProblemListItem);
+        return mapProblemListPage(data);
       },
     }),
   wrong: () =>

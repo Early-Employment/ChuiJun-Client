@@ -1,6 +1,7 @@
 import type {
   ProblemApiDetailResponse,
   ProblemApiListItemResponse,
+  ProblemApiPageResponse,
   ProblemApiTestCase,
 } from "@/entities/problem/api/problem-api-response";
 import type {
@@ -9,6 +10,7 @@ import type {
   Testcase,
 } from "@/entities/problem/model/problem-detail";
 import type { ProblemListItem } from "@/entities/problem/model/problem-list-item";
+import type { ProblemListPage } from "@/entities/problem/model/problem-list-page";
 
 function toMemoryLimitMb(memoryLimitKb: number) {
   return Math.round((memoryLimitKb / 1024) * 10) / 10;
@@ -55,5 +57,15 @@ export function mapProblemListItem(problem: ProblemApiListItemResponse): Problem
     title: problem.title,
     level: `lv. ${problem.level}`,
     acceptRate: problem.acceptRate,
+  };
+}
+
+export function mapProblemListPage(problemPage: ProblemApiPageResponse): ProblemListPage {
+  return {
+    items: problemPage.content.map(mapProblemListItem),
+    totalPages: problemPage.totalPages,
+    totalElements: problemPage.totalElements,
+    page: problemPage.number,
+    size: problemPage.size,
   };
 }

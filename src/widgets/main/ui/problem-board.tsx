@@ -11,17 +11,16 @@ const filterChips = ["난이도", "문제 상태", "언어", "문제집"] as con
 const rowsPerPage = 10;
 
 function ProblemBoard() {
-  const { data: problemRows } = useSuspenseQuery(problemKeys.list());
   const [currentPage, setCurrentPage] = useState(1);
+  const { data: problemPage } = useSuspenseQuery(problemKeys.list(currentPage - 1, rowsPerPage));
 
-  if (problemRows.length === 0) {
+  if (problemPage.items.length === 0) {
     return <ProblemBoard.Empty />;
   }
 
-  const totalPages = Math.ceil(problemRows.length / rowsPerPage);
-  const startIndex = (currentPage - 1) * rowsPerPage;
-  const pagedRows = problemRows.slice(startIndex, startIndex + rowsPerPage);
-  const emptyRowCount = rowsPerPage - pagedRows.length;
+  const totalPages = Math.max(1, problemPage.totalPages);
+  const startIndex = problemPage.page * problemPage.size;
+  const emptyRowCount = problemPage.size - problemPage.items.length;
 
   return (
     <section className="space-y-4">
@@ -47,7 +46,7 @@ function ProblemBoard() {
 
       <div className="border-line bg-surface overflow-hidden rounded-lg border">
         <ul className="divide-line divide-y md:hidden">
-          {pagedRows.map((row, index) => (
+          {problemPage.items.map((row, index) => (
             <li key={row.id} className="space-y-3 px-4 py-4">
               <div className="flex items-start justify-between gap-3">
                 <Link
@@ -101,7 +100,7 @@ function ProblemBoard() {
               </tr>
             </thead>
             <tbody>
-              {pagedRows.map((row, index) => (
+              {problemPage.items.map((row, index) => (
                 <tr key={row.id} className="border-line text-body text-foreground border-t">
                   <td className="px-6 py-5 text-center">{startIndex + index + 1}</td>
                   <td className="px-6 py-5 text-center">{row.code}</td>
