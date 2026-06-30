@@ -1,21 +1,23 @@
 import { queryOptions } from "@tanstack/react-query";
-import { createRankingSnapshot, createRankingSnapshots } from "@/entities/ranking/api/ranking-mock";
-import type { RankingCategory } from "@/entities/ranking/model/ranking-category";
+import { instance } from "@/shared/api/instance";
+import { getMemberId } from "@/shared/api/member-session-store";
+import { mapRankingEntries } from "@/entities/ranking/api/ranking-api-mapper";
+import type { MemberRankingPageResponse } from "@/entities/ranking/api/ranking-api-response";
+
+// 백엔드는 페이지네이션 단일 랭킹만 제공한다. 시상대·내 순위·표 정렬은 클라이언트에서
+// 한 번에 다루므로, 상위 구간을 한 페이지로 받아 위젯이 자체 페이징한다.
+const RANKING_PAGE_SIZE = 100;
 
 export const rankingKeys = {
   all: ["ranking"] as const,
-  snapshots: () =>
+  list: () =>
     queryOptions({
-      queryKey: [...rankingKeys.all, "snapshots"] as const,
-      // 백엔드 미구현: 목 데이터 반환. 실전환 시 아래 한 줄로 교체한다.
-      // queryFn: async () => (await instance.get<Record<RankingCategory, RankingSnapshot>>("/rankings")).data,
-      queryFn: async () => createRankingSnapshots(),
-    }),
-  category: (category: RankingCategory) =>
-    queryOptions({
-      queryKey: [...rankingKeys.all, "category", category] as const,
-      // 백엔드 미구현: 목 데이터 반환. 실전환 시 아래 한 줄로 교체한다.
-      // queryFn: async () => (await instance.get<RankingSnapshot>(`/rankings/${category}`)).data,
-      queryFn: async () => createRankingSnapshot(category),
+      queryKey: [...rankingKeys.all, "list"] as const,
+      queryFn: async () => {
+        const { data } = await instance.get<MemberRankingPageResponse>("/members/rankings", {
+          params: { page: 0, size: RANKING_PAGE_SIZE, sort: "rating,desc" },
+        });
+        return mapRankingEntries(data, getMemberId());
+      },
     }),
 };
