@@ -1,6 +1,7 @@
 "use client";
 
 import { clearAccessToken } from "@/shared/api/access-token-store";
+import { clearMemberSession } from "@/shared/api/member-session-store";
 
 interface LogoutButtonProps {
   className?: string;
@@ -11,6 +12,7 @@ interface LogoutButtonProps {
 export function LogoutButton({ className }: LogoutButtonProps) {
   const handleLogout = () => {
     clearAccessToken();
+    clearMemberSession();
     window.location.href = "/signin";
   };
 
