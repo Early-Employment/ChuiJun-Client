@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import type { ProblemDetail } from "@/entities/problem/model/problem-detail";
 import { submissionKeys } from "@/entities/submission/api/submission-keys";
@@ -24,6 +24,8 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
 
   const [code, setCode] = useState(STARTER_CODE);
   const [running, setRunning] = useState(false);
+  // 문제를 연 시점. 제출 시 studySeconds(풀이 소요 시간) 계산에 쓴다.
+  const openedAt = useRef(Date.now());
   const [report, setReport] = useState<JudgeReport | null>(null);
   const [exampleOutcomes, setExampleOutcomes] = useState<TestcaseOutcome[] | null>(null);
 
@@ -52,7 +54,13 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
       setReport(judged);
 
       submit.mutate(
-        { ...judged.result, code },
+        {
+          problemId: problem.id,
+          judgeStatus: judged.result.judgeStatus,
+          code,
+          score: judged.result.passed ? problem.score : 0,
+          studySeconds: Math.round((Date.now() - openedAt.current) / 1000),
+        },
         {
           onSuccess: () => {
             // 친구 풀이 보기 게이트 해제 (§5 계약: 실전환 시 invalidate 로 교체).

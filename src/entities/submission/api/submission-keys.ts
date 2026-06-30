@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
+import { instance } from "@/shared/api/instance";
+import { toSubmitProblemRequest } from "@/entities/submission/api/submission-api-mapper";
 import type { SubmissionPayload, SubmissionRecord } from "@/entities/submission/model/submission";
-import { createMockSubmissionRecord } from "@/entities/submission/api/submission-mock";
 
 export const submissionKeys = {
   all: ["submission"] as const,
@@ -8,16 +9,13 @@ export const submissionKeys = {
   hasSubmitted: (problemId: number) =>
     queryOptions({
       queryKey: [...submissionKeys.all, "hasSubmitted", problemId] as const,
-      // 백엔드 미구현: 목은 항상 false. 실전환 시 아래 한 줄로 교체한다.
+      // 백엔드 미구현: 항상 false. 실전환 시 아래 한 줄로 교체한다.
       // queryFn: async () => (await instance.get<boolean>(`/problems/${problemId}/submitted`)).data,
       queryFn: async () => false,
     }),
   submit: () => ({
     mutationKey: [...submissionKeys.all, "submit"] as const,
-    mutationFn: async (payload: SubmissionPayload): Promise<SubmissionRecord> => {
-      // 백엔드 미구현: 목 응답 반환. 실전환 시 아래 한 줄로 교체한다.
-      // return (await instance.post<SubmissionRecord>("/submissions", payload)).data;
-      return createMockSubmissionRecord(payload);
-    },
+    mutationFn: async (payload: SubmissionPayload): Promise<SubmissionRecord> =>
+      (await instance.post<SubmissionRecord>("/submissions", toSubmitProblemRequest(payload))).data,
   }),
 };
