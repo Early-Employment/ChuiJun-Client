@@ -52,12 +52,12 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
       const judged = await judge(problem.id, code, problem.testcases, problem.timeLimitMs);
       setReport(judged);
 
-      submit.mutate({
+      await submit.mutateAsync({
         problemId: problem.id,
         judgeStatus: judged.result.judgeStatus,
         code,
         score: judged.result.passed ? problem.score : 0,
-        studySeconds: Math.round((Date.now() - openedAt.current) / 1000),
+        studySeconds: Math.max(0, Math.round((Date.now() - openedAt.current) / 1000)),
       });
     } finally {
       setRunning(false);
