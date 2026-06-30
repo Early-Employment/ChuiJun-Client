@@ -71,6 +71,13 @@
   --color-state-info: var(--color-info-500);
   --color-state-info-soft: var(--color-info-50);
 
+  /* 티어별 대표 색. Figma "티어별 색깔"(node 185:433) 기준. */
+  --color-tier-bronze: var(--color-bronze-500);
+  --color-tier-silver: #cfd0d0;
+  --color-tier-gold: #ffda21;
+  --color-tier-platinum: #5da89e;
+  --color-tier-emerald: #3ed4be;
+
   --font-size-display: 32px;
   --font-size-heading: 24px;
   --font-size-body: 16px;
