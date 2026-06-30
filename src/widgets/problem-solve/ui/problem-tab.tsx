@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import type { ProblemDetail } from "@/entities/problem/model/problem-detail";
 import { submissionKeys } from "@/entities/submission/api/submission-keys";
 import { judge, type JudgeReport, type TestcaseOutcome } from "@/features/code-judge/model/judge";
@@ -19,7 +19,6 @@ const STARTER_CODE = "# 표준 입력은 input(), 출력은 print() 를 사용�
 const EXAMPLE_RUN_TIMEOUT_MS = 10000;
 
 export function ProblemTab({ problem }: { problem: ProblemDetail }) {
-  const queryClient = useQueryClient();
   const submit = useMutation(submissionKeys.submit());
 
   const [code, setCode] = useState(STARTER_CODE);
@@ -53,21 +52,13 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
       const judged = await judge(problem.id, code, problem.testcases, problem.timeLimitMs);
       setReport(judged);
 
-      submit.mutate(
-        {
-          problemId: problem.id,
-          judgeStatus: judged.result.judgeStatus,
-          code,
-          score: judged.result.passed ? problem.score : 0,
-          studySeconds: Math.round((Date.now() - openedAt.current) / 1000),
-        },
-        {
-          onSuccess: () => {
-            // 친구 풀이 보기 게이트 해제 (§5 계약: 실전환 시 invalidate 로 교체).
-            queryClient.setQueryData(submissionKeys.hasSubmitted(problem.id).queryKey, true);
-          },
-        },
-      );
+      submit.mutate({
+        problemId: problem.id,
+        judgeStatus: judged.result.judgeStatus,
+        code,
+        score: judged.result.passed ? problem.score : 0,
+        studySeconds: Math.round((Date.now() - openedAt.current) / 1000),
+      });
     } finally {
       setRunning(false);
     }

@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { problemKeys } from "@/entities/problem/api/problem-keys";
 import { useWarmPythonRuntime } from "@/shared/lib/pyodide/warm-runtime";
@@ -8,15 +7,11 @@ import { ChevronLeftIcon } from "@/shared/assets/ChevronLeftIcon";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
 import { Skeleton } from "@/shared/ui/skeleton";
 import { ProblemMetaHeader } from "@/widgets/problem-solve/ui/problem-meta-header";
-import { SolveTabs, type SolveTab } from "@/widgets/problem-solve/ui/solve-tabs";
 import { ProblemTab } from "@/widgets/problem-solve/ui/problem-tab";
-import { FriendSolutionsPanelBoundary } from "@/widgets/problem-solve/ui/friend-solutions-panel";
 
 function ProblemSolveView({ id }: { id: number }) {
   const { data: problem } = useSuspenseQuery(problemKeys.detail(id));
   useWarmPythonRuntime();
-
-  const [tab, setTab] = useState<SolveTab>("problem");
 
   return (
     <main className="mx-auto w-full max-w-[1440px] space-y-4 px-4 py-6 sm:px-8 xl:px-10">
@@ -34,8 +29,7 @@ function ProblemSolveView({ id }: { id: number }) {
         correctRate={problem.correctRate}
       />
 
-      <div className="flex items-center justify-between">
-        <SolveTabs active={tab} onChange={setTab} />
+      <div className="flex items-center justify-end">
         <button
           type="button"
           className="border-line bg-surface text-foreground rounded-md border px-4 py-2 text-sm font-semibold opacity-90"
@@ -44,14 +38,7 @@ function ProblemSolveView({ id }: { id: number }) {
         </button>
       </div>
 
-      {tab === "problem" ? (
-        <ProblemTab problem={problem} />
-      ) : (
-        <FriendSolutionsPanelBoundary
-          problemId={problem.id}
-          onRequireProblemTab={() => setTab("problem")}
-        />
-      )}
+      <ProblemTab problem={problem} />
     </main>
   );
 }
