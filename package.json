@@ -26,6 +26,7 @@
     "@eslint/eslintrc": "^3.3.5",
     "@feature-sliced/steiger-plugin": "latest",
     "@tailwindcss/postcss": "^4.0.0",
+    "@tanstack/react-query-devtools": "^5.101.2",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
