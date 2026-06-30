@@ -1,5 +1,5 @@
 import type { Testcase } from "@/entities/problem/model/problem-detail";
-import type { SubmissionResult } from "@/entities/submission/model/submission";
+import type { JudgeStatus, SubmissionResult } from "@/entities/submission/model/submission";
 import { runPython, type RunResult } from "@/shared/lib/pyodide/python-runner";
 import { normalizeOutput } from "@/features/code-judge/model/normalize-output";
 
@@ -63,9 +63,18 @@ export async function judge(
       passedCount,
       totalCount: testcases.length,
       durationMs: Math.round(performance.now() - start),
+      judgeStatus: deriveJudgeStatus(outcomes),
     },
     outcomes,
   };
+}
+
+/** 케이스별 결과로 서버 제출용 판정을 정한다. 전부 통과 → AC, 그 외엔 실패 사유 우선순위로. */
+function deriveJudgeStatus(outcomes: TestcaseOutcome[]): JudgeStatus {
+  if (outcomes.length > 0 && outcomes.every((outcome) => outcome.passed)) return "AC";
+  if (outcomes.some((outcome) => outcome.status === "timeout")) return "TLE";
+  if (outcomes.some((outcome) => outcome.status === "error")) return "RE";
+  return "WA";
 }
 
 function describeOutput(run: RunResult): string {
