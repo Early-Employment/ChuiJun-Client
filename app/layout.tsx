@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { DgOAuthProvider } from "@/shared/providers/oauth-provider";
 import { QueryProvider } from "@/shared/providers/query-provider";
 import "./globals.css";
 
@@ -16,11 +15,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
         />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap"
+        />
       </head>
       <body>
-        <DgOAuthProvider>
-          <QueryProvider>{children}</QueryProvider>
-        </DgOAuthProvider>
+        <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );

@@ -10,11 +10,11 @@ import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-b
  * /class 라우트를 사용자 역할(teacher/student)에 따라 분기한다.
  * 역할 조회는 가볍게 끝나므로, 실제 학급 데이터의 로딩/에러는 각 역할별 위젯의 Boundary가 담당한다.
  */
-function ClassroomRouteSwitch() {
+function ClassroomRouteSwitch({ classroomId }: { classroomId: string }) {
   const { data } = useSuspenseQuery(classroomViewerKeys.current());
 
   if (data.role === "teacher") {
-    return <ClassroomPageWidgetBoundary />;
+    return <ClassroomPageWidgetBoundary classroomId={classroomId} />;
   }
 
   return <StudentClassroomPageWidgetBoundary />;
@@ -31,10 +31,10 @@ function ClassroomRouteError({ resetErrorBoundary }: QueryErrorFallbackProps) {
   );
 }
 
-export function ClassroomRouteWidget() {
+export function ClassroomRouteWidget({ classroomId }: { classroomId: string }) {
   return (
     <QueryBoundary loadingFallback={null} errorFallback={ClassroomRouteError}>
-      <ClassroomRouteSwitch />
+      <ClassroomRouteSwitch classroomId={classroomId} />
     </QueryBoundary>
   );
 }

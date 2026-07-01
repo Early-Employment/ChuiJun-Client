@@ -2,21 +2,22 @@
 
 import { Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useOAuth } from "@themoment-team/datagsm-oauth-react";
 import { instance } from "@/shared/api/instance";
+import { setAccessToken } from "@/shared/api/access-token-store";
+import { setMemberSession } from "@/shared/api/member-session-store";
+import type { DgLoginResponse } from "@/shared/api/dg-login-response";
 import { Spinner } from "@/shared/ui/spinner";
 
 function OAuthCallbackContent() {
-  const { getCodeVerifier, clearVerifier } = useOAuth();
   const searchParams = useSearchParams();
   const router = useRouter();
   const requestInitiated = useRef(false);
 
   useEffect(() => {
     const code = searchParams.get("code");
-    const verifier = getCodeVerifier();
+    const state = searchParams.get("state");
 
-    if (!code || !verifier) {
+    if (!code || !state) {
       router.replace("/signin");
       return;
     }
@@ -26,17 +27,22 @@ function OAuthCallbackContent() {
     }
     requestInitiated.current = true;
 
-    instance
-      .post("/auth/token", { code, codeVerifier: verifier })
-      .then(() => {
-        clearVerifier();
+    const handleCallback = async () => {
+      try {
+        const { data } = await instance.get<DgLoginResponse>("/auth/dg/callback", {
+          baseURL: "",
+          params: { code, state },
+        });
+        setAccessToken(data.accessToken);
+        setMemberSession(data.memberId, data.role);
         router.replace("/");
-      })
-      .catch(() => {
-        clearVerifier();
+      } catch {
         router.replace("/signin");
-      });
-  }, [searchParams, getCodeVerifier, clearVerifier, router]);
+      }
+    };
+
+    void handleCallback();
+  }, [searchParams, router]);
 
   return (
     <div className="flex h-screen items-center justify-center">

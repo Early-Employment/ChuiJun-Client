@@ -1,13 +1,16 @@
 import { queryOptions } from "@tanstack/react-query";
-import { createMockClassroomViewer } from "@/entities/classroom/api/classroom-viewer-mock";
+import { getMemberRole } from "@/shared/api/member-session-store";
+import type { ClassroomViewer } from "@/entities/classroom/model/classroom-viewer";
 
+// 학급 화면의 교사/학생 분기 역할. 로그인 시 보관한 role(STUDENT/TEACHER/ADMIN)에서 파생한다.
+// TEACHER 만 교사 화면을 보고, 그 외(STUDENT/ADMIN/미인증)는 학생 화면으로 둔다.
 export const classroomViewerKeys = {
   all: ["classroom-viewer"] as const,
   current: () =>
     queryOptions({
       queryKey: [...classroomViewerKeys.all, "current"] as const,
-      // 백엔드 미구현: 목 데이터 반환. 실전환 시 아래 한 줄로 교체한다.
-      // queryFn: async () => (await instance.get<ClassroomViewer>("/classroom/me")).data,
-      queryFn: async () => createMockClassroomViewer(),
+      queryFn: async (): Promise<ClassroomViewer> => ({
+        role: getMemberRole() === "TEACHER" ? "teacher" : "student",
+      }),
     }),
 };

@@ -1,9 +1,11 @@
 "use client";
 
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useSuspenseQueries } from "@tanstack/react-query";
+import { classroomAssignmentKeys } from "@/entities/classroom/api/classroom-assignment-keys";
 import { classroomDashboardKeys } from "@/entities/classroom/api/classroom-dashboard-keys";
+import { classroomDetailKeys } from "@/entities/classroom/api/classroom-detail-keys";
+import type { ClassroomAssignmentItem } from "@/entities/classroom/model/classroom-assignment-item";
 import type {
-  ClassroomAssignment,
   ClassroomMetric,
   ClassroomStudent,
 } from "@/entities/classroom/model/classroom-dashboard";
@@ -13,11 +15,28 @@ import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-b
 import { Skeleton } from "@/shared/ui/skeleton";
 import { useRouter } from "next/navigation";
 
-function ClassroomPageWidget() {
-  const { data } = useSuspenseQuery(classroomDashboardKeys.current());
+// 마감일 ISO → "6월 30일 18시 마감" 형태의 안내 문구.
+function formatDueLabel(dueDate: string, required: boolean) {
+  const date = new Date(dueDate);
+  const label = Number.isNaN(date.getTime())
+    ? dueDate
+    : `${date.getMonth() + 1}월 ${date.getDate()}일 ${date.getHours()}시 마감`;
+  return required ? `필수 · ${label}` : label;
+}
+
+function ClassroomPageWidget({ classroomId }: { classroomId: string }) {
+  const numericClassroomId = Number(classroomId);
+  const [{ data: detail }, { data: assignments }, { data: dashboard }] = useSuspenseQueries({
+    queries: [
+      classroomDetailKeys.detail(numericClassroomId),
+      classroomAssignmentKeys.list(numericClassroomId),
+      // 대시보드 지표·학생 명단은 백엔드 미제공으로 보류 — 격리된 목 유지.
+      classroomDashboardKeys.current(),
+    ],
+  });
   const router = useRouter();
 
-  if (data.students.length === 0 && data.assignments.length === 0) {
+  if (dashboard.students.length === 0 && assignments.length === 0) {
     return <ClassroomPageWidget.Empty />;
   }
 
@@ -27,7 +46,7 @@ function ClassroomPageWidget() {
         <header className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
             <h1 className="text-foreground text-[40px] leading-none font-semibold">학급</h1>
-            <p className="text-muted pt-1 text-xl font-medium">{data.classLabel}</p>
+            <p className="text-muted pt-1 text-xl font-medium">{detail.classLabel}</p>
           </div>
 
           <div className="flex flex-wrap gap-3">
@@ -39,7 +58,7 @@ function ClassroomPageWidget() {
             </button>
             <button
               type="button"
-              onClick={() => router.push("/assignments/new")}
+              onClick={() => router.push(`/assignments/new?classroomId=${numericClassroomId}`)}
               className="bg-accent text-foreground-inverse rounded-md px-7 py-4 text-base font-medium"
             >
               과제 추가하기
@@ -48,7 +67,7 @@ function ClassroomPageWidget() {
         </header>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 lg:gap-9">
-          {data.metrics.map((metric) => (
+          {dashboard.metrics.map((metric) => (
             <MetricCard key={metric.id} metric={metric} />
           ))}
         </div>
@@ -56,7 +75,7 @@ function ClassroomPageWidget() {
         <div className="grid gap-6 lg:grid-cols-[minmax(0,261px)_minmax(0,1fr)] lg:items-start lg:gap-[22px]">
           <section className="border-line-strong bg-surface rounded-xl border p-5">
             <ul className="space-y-1">
-              {data.students.map((student) => (
+              {dashboard.students.map((student) => (
                 <StudentRow key={student.id} student={student} />
               ))}
             </ul>
@@ -64,11 +83,16 @@ function ClassroomPageWidget() {
 
           <section className="border-line-strong bg-surface overflow-hidden rounded-xl border">
             <ul>
-              {data.assignments.map((assignment, index) => (
+              {assignments.map((assignment, index) => (
                 <AssignmentRow
-                  key={assignment.id}
+                  key={assignment.assignmentId}
                   assignment={assignment}
-                  isLast={index === data.assignments.length - 1}
+                  isLast={index === assignments.length - 1}
+                  onEdit={() =>
+                    router.push(
+                      `/assignments/${assignment.assignmentId}/edit?classroomId=${numericClassroomId}`,
+                    )
+                  }
                 />
               ))}
             </ul>
@@ -122,27 +146,34 @@ function StudentRow({ student }: { student: ClassroomStudent }) {
 function AssignmentRow({
   assignment,
   isLast,
+  onEdit,
 }: {
-  assignment: ClassroomAssignment;
+  assignment: ClassroomAssignmentItem;
   isLast: boolean;
+  onEdit: () => void;
 }) {
   return (
     <li className={`px-7 py-6 ${isLast ? "" : "border-line-strong border-b"}`}>
       <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <p className="text-foreground truncate text-base font-semibold">{assignment.title}</p>
-            {assignment.isPinned ? (
+            <p className="text-foreground truncate text-base font-semibold">
+              {assignment.problemTitle}
+            </p>
+            {assignment.required ? (
               <span className="bg-line text-muted flex size-8 shrink-0 items-center justify-center rounded-[10px]">
                 <AssignmentIcon className="size-4" />
               </span>
             ) : null}
           </div>
-          <p className="text-muted mt-2 text-[15px] font-medium">{assignment.submissionLabel}</p>
+          <p className="text-muted mt-2 text-[15px] font-medium">
+            {formatDueLabel(assignment.dueDate, assignment.required)}
+          </p>
         </div>
 
         <button
           type="button"
+          onClick={onEdit}
           className="border-line-strong bg-surface text-foreground shrink-0 self-start rounded-xl border px-4 py-2 text-[15px] font-medium"
         >
           수정
@@ -205,13 +236,13 @@ ClassroomPageWidget.Loading = ClassroomPageWidgetLoading;
 ClassroomPageWidget.Error = ClassroomPageWidgetError;
 ClassroomPageWidget.Empty = ClassroomPageWidgetEmpty;
 
-export function ClassroomPageWidgetBoundary() {
+export function ClassroomPageWidgetBoundary({ classroomId }: { classroomId: string }) {
   return (
     <QueryBoundary
       loadingFallback={<ClassroomPageWidget.Loading />}
       errorFallback={ClassroomPageWidget.Error}
     >
-      <ClassroomPageWidget />
+      <ClassroomPageWidget classroomId={classroomId} />
     </QueryBoundary>
   );
 }

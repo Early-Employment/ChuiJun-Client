@@ -73,7 +73,12 @@ export default function HomePage() {
 
 ## 8. 데이터 패칭
 
+- **백엔드 API 계약의 단일 진실 공급원은 Swagger 다.** 엔드포인트·DTO·파라미터(쿠키 포함)는 항상 Swagger 로 확인한 뒤 코드에 반영한다.
+  - Swagger UI: http://ssh.gsmsv.site:30440/swagger-ui/index.html
+  - OpenAPI JSON: http://ssh.gsmsv.site:30440/v3/api-docs
 - 모든 HTTP 요청은 `src/shared/api/instance.ts`의 axios 인스턴스 경유.
+- HTTP 상태 코드는 raw 숫자(`401` 등)를 직접 비교하지 말고 **항상 axios의 `HttpStatusCode` enum**으로 처리한다 (예: `error.response?.status === HttpStatusCode.Unauthorized`).
+- 비동기는 **`async`/`await`로 처리한다. Promise 체이닝(`.then()`/`.catch()`/`.finally()`) 금지** — 에러·정리 로직은 `try`/`catch`/`finally` 문으로 작성한다.
 - Query Key Factory 패턴: 각 entity가 `queryOptions` 기반 keys 모듈을 가진다.
 
 ```ts

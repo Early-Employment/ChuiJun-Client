@@ -15,7 +15,6 @@
   "dependencies": {
     "@codemirror/lang-python": "^6.2.1",
     "@tanstack/react-query": "^5.62.0",
-    "@themoment-team/datagsm-oauth-react": "^1.1.1",
     "@uiw/react-codemirror": "^4.25.10",
     "axios": "^1.7.0",
     "next": "^15.5.0",
@@ -27,6 +26,7 @@
     "@eslint/eslintrc": "^3.3.5",
     "@feature-sliced/steiger-plugin": "latest",
     "@tailwindcss/postcss": "^4.0.0",
+    "@tanstack/react-query-devtools": "^5.101.2",
     "@types/node": "^22.10.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
