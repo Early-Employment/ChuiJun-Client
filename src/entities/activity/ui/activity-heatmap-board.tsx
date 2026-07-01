@@ -1,10 +1,11 @@
 "use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { activityKeys } from "@/entities/activity/api/activity-keys";
+import { buildActivityDays } from "@/entities/activity/model/build-activity-days";
 import { getActivityLevel } from "@/entities/activity/model/activity-level";
 import { formatActivityTooltip } from "@/entities/activity/model/activity-tooltip";
 import { ActivityCalendar } from "@/entities/activity/ui/activity-calendar";
+import { memberKeys } from "@/entities/member/api/member-keys";
 import { monthRange } from "@/shared/lib/date";
 import { ActivityHeatmap } from "@/shared/ui/activity-heatmap";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -18,16 +19,20 @@ interface ActivityHeatmapBoardProps {
   period: ActivityPeriod;
 }
 
-// month 는 표시 형태(달력)만 다를 뿐 같은 활동 데이터다. 어떤 기간이든 동일한
-// range(from, to) 키로 조회해 useSuspenseQuery 가 단일 옵션 타입으로 추론되게 한다.
-function periodQuery(period: ActivityPeriod) {
-  if (period.type === "range") return activityKeys.range(period.from, period.to);
-  const { from, to } = monthRange(period.year, period.month);
-  return activityKeys.range(from, to);
+// month 는 표시 형태(달력)만 다를 뿐 같은 활동 데이터다. 어떤 기간이든 [from, to] 로 정규화한다.
+function periodRange(period: ActivityPeriod): { from: string; to: string } {
+  if (period.type === "range") return { from: period.from, to: period.to };
+  return monthRange(period.year, period.month);
 }
 
 function ActivityHeatmapBoard({ period }: ActivityHeatmapBoardProps) {
-  const { data } = useSuspenseQuery(periodQuery(period));
+  const { from, to } = periodRange(period);
+  // member.me 쿼리를 그대로 구독한다(별도 쿼리 키로 분리하지 않음).
+  // devtools 로 member.me 캐시를 바꾸면 select 가 재계산되어 즉시 반영된다.
+  const { data } = useSuspenseQuery({
+    ...memberKeys.me(),
+    select: (profile) => buildActivityDays(profile.grassRecord, from, to),
+  });
 
   if (data.length === 0) {
     return <ActivityHeatmapBoard.Empty />;

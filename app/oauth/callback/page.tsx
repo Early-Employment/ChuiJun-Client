@@ -4,6 +4,7 @@ import { Suspense, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { instance } from "@/shared/api/instance";
 import { setAccessToken } from "@/shared/api/access-token-store";
+import { setMemberSession } from "@/shared/api/member-session-store";
 import type { DgLoginResponse } from "@/shared/api/dg-login-response";
 import { Spinner } from "@/shared/ui/spinner";
 
@@ -33,6 +34,7 @@ function OAuthCallbackContent() {
           params: { code, state },
         });
         setAccessToken(data.accessToken);
+        setMemberSession(data.memberId, data.role);
         router.replace("/");
       } catch {
         router.replace("/signin");

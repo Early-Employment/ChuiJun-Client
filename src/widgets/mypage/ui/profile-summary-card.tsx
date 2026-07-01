@@ -2,7 +2,10 @@
 
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { memberKeys } from "@/entities/member/api/member-keys";
-import { MEMBER_TIER_LABELS } from "@/entities/member/model/member-profile";
+import {
+  MEMBER_TIER_COLOR_CLASSES,
+  MEMBER_TIER_LABELS,
+} from "@/entities/member/model/member-profile";
 import { EditIcon } from "@/shared/assets/EditIcon";
 import { LogoIcon } from "@/shared/assets/LogoIcon";
 import { TrophyIcon } from "@/shared/assets/TrophyIcon";
@@ -11,6 +14,7 @@ import { Skeleton } from "@/shared/ui/skeleton";
 
 function ProfileSummaryCard() {
   const { data: profile } = useSuspenseQuery(memberKeys.me());
+  const tierColor = MEMBER_TIER_COLOR_CLASSES[profile.tier];
 
   return (
     <section className="border-line bg-surface flex flex-col gap-8 rounded-lg border px-5 py-6 sm:px-8 sm:py-8 lg:flex-row lg:items-center lg:px-14">
@@ -23,7 +27,7 @@ function ProfileSummaryCard() {
             <LogoIcon className="text-accent size-28" />
           )}
         </div>
-        <div className="bg-state-warning absolute right-0 bottom-0 size-12 rounded-full" />
+        <div className={`absolute right-0 bottom-0 size-12 rounded-full ${tierColor.background}`} />
       </div>
 
       <div className="min-w-0 flex-1">
@@ -34,7 +38,7 @@ function ProfileSummaryCard() {
               {/* TODO(backend): /members/me 는 학년·반을 주지 않음 — placeholder */}
               <span className="bg-surface-subtle text-muted rounded-lg px-3 py-1 text-sm">—</span>
             </div>
-            <div className="mt-2 flex items-center gap-1 text-sm font-semibold">
+            <div className={`mt-2 flex items-center gap-1 text-sm font-semibold ${tierColor.text}`}>
               <TrophyIcon className="size-5" />
               <span>{MEMBER_TIER_LABELS[profile.tier]}</span>
             </div>
@@ -52,7 +56,7 @@ function ProfileSummaryCard() {
           <div className="text-muted flex justify-end text-xs font-medium">{profile.rating}점</div>
           {/* TODO(backend): 티어 진행률(다음 티어 임계값)이 응답에 없음 — 막대는 디자인 유지, %는 placeholder */}
           <div className="bg-surface-subtle h-3 overflow-hidden rounded-md">
-            <div className="bg-state-warning h-full w-2/5 rounded-md" />
+            <div className={`h-full w-2/5 rounded-md ${tierColor.background}`} />
           </div>
           <div className="text-muted flex justify-between text-xs font-medium">
             <span>{MEMBER_TIER_LABELS[profile.tier]}</span>

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { rankingKeys } from "@/entities/ranking/api/ranking-keys";
-import { rankingCategories, type RankingCategory } from "@/entities/ranking/model/ranking-category";
 import type { RankingEntry } from "@/entities/ranking/model/ranking-entry";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -17,34 +16,26 @@ function formatRank(rank: number) {
   return `${rank}위`;
 }
 
-function formatDelta(score: number) {
-  return `${score > 0 ? "+" : ""}${score}점`;
-}
-
 function RankingPageWidget() {
-  const { data: snapshots } = useSuspenseQuery(rankingKeys.snapshots());
-  const [selectedCategory, setSelectedCategory] = useState<RankingCategory>("overall");
+  const { data: entries } = useSuspenseQuery(rankingKeys.list());
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
   const [currentPage, setCurrentPage] = useState(1);
-  const data = snapshots[selectedCategory];
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedCategory, sortDirection]);
+  }, [sortDirection]);
 
-  const sortedEntries = [...data.entries].sort((left, right) =>
+  const sortedEntries = [...entries].sort((left, right) =>
     sortDirection === "desc" ? right.score - left.score : left.score - right.score,
   );
   const totalPages = Math.max(1, Math.ceil(sortedEntries.length / rowsPerPage));
   const safeCurrentPage = Math.min(currentPage, totalPages);
   const startIndex = (safeCurrentPage - 1) * rowsPerPage;
   const pageEntries = sortedEntries.slice(startIndex, startIndex + rowsPerPage);
-  const myEntry = data.entries.find((entry) => entry.isMe);
-  const podiumEntries = [...data.entries]
-    .sort((left, right) => right.score - left.score)
-    .slice(0, 3);
+  const myEntry = entries.find((entry) => entry.isMe);
+  const podiumEntries = [...entries].sort((left, right) => right.score - left.score).slice(0, 3);
 
-  if (data.entries.length === 0) {
+  if (entries.length === 0) {
     return <RankingPageWidget.Empty />;
   }
 
@@ -52,32 +43,8 @@ function RankingPageWidget() {
     <main className="mx-auto w-full max-w-[1240px] px-4 py-10 sm:px-6 lg:px-10">
       <section className="space-y-6">
         <header className="space-y-4">
-          <h1 className="text-foreground text-display font-extrabold">랭킹</h1>
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="border-line-strong bg-line-strong inline-flex w-full max-w-full gap-1 overflow-x-auto rounded-md border p-1">
-              {rankingCategories.map((category) => {
-                const isSelected = category.id === selectedCategory;
-
-                return (
-                  <button
-                    key={category.id}
-                    type="button"
-                    onClick={() => {
-                      if (category.id === selectedCategory) return;
-
-                      setSelectedCategory(category.id);
-                    }}
-                    className={`rounded-md px-3 py-1.5 text-sm font-medium whitespace-nowrap ${
-                      isSelected
-                        ? "bg-surface text-foreground border-line-strong border"
-                        : "text-foreground/80 hover:text-foreground"
-                    }`}
-                  >
-                    {category.label}
-                  </button>
-                );
-              })}
-            </div>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <h1 className="text-foreground text-display font-extrabold">랭킹</h1>
 
             <button
               type="button"
@@ -102,17 +69,7 @@ function RankingPageWidget() {
                 <p className="text-foreground text-[clamp(2rem,3vw,2.75rem)] leading-none font-extrabold">
                   {formatRank(myEntry.rank)}
                 </p>
-                <p
-                  className={`text-lg font-medium ${
-                    data.myDelta > 0
-                      ? "text-state-success"
-                      : data.myDelta < 0
-                        ? "text-muted"
-                        : "text-foreground"
-                  }`}
-                >
-                  {formatDelta(data.myDelta)}
-                </p>
+                <p className="text-muted text-lg font-medium">{myEntry.score}점</p>
               </div>
             ) : (
               <div className="mt-6 flex min-h-18 items-end">
@@ -127,10 +84,19 @@ function RankingPageWidget() {
               {podiumOrder.map((podiumIndex) => {
                 const entry = podiumEntries[podiumIndex];
 
-                if (!entry) return <div key={podiumIndex} />;
+                if (!entry) {
+                  return (
+                    <div key={podiumIndex} className="min-w-0">
+                      <p className="text-muted text-caption">{formatRank(podiumIndex + 1)}</p>
+                      <p className="text-muted mt-2 truncate text-2xl font-extrabold sm:text-3xl">
+                        없음
+                      </p>
+                    </div>
+                  );
+                }
 
                 return (
-                  <div key={entry.id} className="min-w-0">
+                  <div key={podiumIndex} className="min-w-0">
                     <p className="text-muted text-caption">{formatRank(entry.rank)}</p>
                     <p className="text-foreground mt-2 truncate text-2xl font-extrabold sm:text-3xl">
                       {entry.name}
@@ -150,7 +116,7 @@ function RankingPageWidget() {
                   <tr>
                     <th className="px-8 py-3 text-center text-sm font-medium">순위</th>
                     <th className="px-8 py-3 text-center text-sm font-medium">이름</th>
-                    <th className="px-8 py-3 text-center text-sm font-medium">학번</th>
+                    <th className="px-8 py-3 text-center text-sm font-medium">학년/반</th>
                     <th className="px-8 py-3 text-center text-sm font-medium">통합 점수</th>
                   </tr>
                 </thead>
@@ -174,8 +140,8 @@ function RankingPageWidget() {
                   </div>
                   <dl className="grid grid-cols-2 gap-2 text-sm">
                     <div>
-                      <dt className="text-muted">학번</dt>
-                      <dd className="text-foreground mt-1">{entry.studentNumber}</dd>
+                      <dt className="text-muted">학년/반</dt>
+                      <dd className="text-foreground mt-1">{entry.classLabel}</dd>
                     </div>
                     <div>
                       <dt className="text-muted">통합 점수</dt>
@@ -212,7 +178,7 @@ function RankingTableRow({ entry }: { entry: RankingEntry }) {
       >
         {entry.name}
       </td>
-      <td className="px-8 py-3.5 text-center text-sm">{entry.studentNumber}</td>
+      <td className="px-8 py-3.5 text-center text-sm">{entry.classLabel}</td>
       <td className="px-8 py-3.5 text-center text-sm">{entry.score}</td>
     </tr>
   );

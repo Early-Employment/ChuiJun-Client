@@ -1,5 +1,6 @@
 import axios, { HttpStatusCode, type InternalAxiosRequestConfig } from "axios";
 import { clearAccessToken, getAccessToken, setAccessToken } from "@/shared/api/access-token-store";
+import { clearMemberSession } from "@/shared/api/member-session-store";
 import { AUTH_ROUTES, PUBLIC_ROUTES } from "@/shared/config/routes";
 
 export const instance = axios.create({
@@ -41,6 +42,7 @@ function reissue(): Promise<string> {
 
 function redirectToSignin() {
   clearAccessToken();
+  clearMemberSession();
   if (!PUBLIC_ROUTES.some((route) => route === window.location.pathname)) {
     window.location.replace("/signin");
   }

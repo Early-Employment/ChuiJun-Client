@@ -3,7 +3,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { memberKeys } from "@/entities/member/api/member-keys";
 import { CheckCircleIcon } from "@/shared/assets/CheckCircleIcon";
-import { CodeIcon } from "@/shared/assets/CodeIcon";
 import { TrendIcon } from "@/shared/assets/TrendIcon";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -12,8 +11,6 @@ function ProfileStatCards() {
   const { data: profile } = useSuspenseQuery(memberKeys.me());
 
   const profileStats = [
-    // TODO(backend): '시도한 문제' 수는 /members/me 응답에 없음 — placeholder
-    { label: "시도한 문제", value: "—", icon: <CodeIcon className="size-5" /> },
     {
       label: "맞춘 문제",
       value: `${profile.totalSolvedCount}`,
@@ -27,7 +24,7 @@ function ProfileStatCards() {
   ];
 
   return (
-    <section className="grid gap-6 md:grid-cols-3">
+    <section className="grid gap-6 md:grid-cols-2">
       {profileStats.map((stat) => (
         <article
           key={stat.label}
@@ -46,8 +43,8 @@ function ProfileStatCards() {
 
 function ProfileStatCardsLoading() {
   return (
-    <section className="grid gap-6 md:grid-cols-3">
-      {Array.from({ length: 3 }, (_, index) => (
+    <section className="grid gap-6 md:grid-cols-2">
+      {Array.from({ length: 2 }, (_, index) => (
         <div
           key={index}
           className="border-line bg-surface flex h-36 flex-col justify-between rounded-lg border px-5 py-6 sm:px-8 sm:py-7"
