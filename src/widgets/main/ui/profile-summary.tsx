@@ -1,12 +1,13 @@
 "use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { homeProfileKeys } from "@/entities/home/api/home-profile-keys";
+import { buildHomeProfile } from "@/entities/home/model/build-home-profile";
+import { memberKeys } from "@/entities/member/api/member-keys";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
 import { Skeleton } from "@/shared/ui/skeleton";
 
 function ProfileSummary() {
-  const { data: profile } = useSuspenseQuery(homeProfileKeys.detail());
+  const { data: profile } = useSuspenseQuery({ ...memberKeys.me(), select: buildHomeProfile });
 
   return (
     <>
