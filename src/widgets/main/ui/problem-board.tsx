@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { problemKeys } from "@/entities/problem/api/problem-keys";
 import { useDebouncedValue } from "@/shared/lib/use-debounced-value";
@@ -17,6 +17,7 @@ function ProblemBoard() {
   const [keyword, setKeyword] = useState("");
   const debouncedKeyword = useDebouncedValue(keyword, searchDebounceMs);
   const [currentPage, setCurrentPage] = useState(1);
+  const [, startTransition] = useTransition();
 
   return (
     <section className="space-y-4">
@@ -27,7 +28,7 @@ function ProblemBoard() {
             value={keyword}
             onChange={(event) => {
               setKeyword(event.target.value);
-              setCurrentPage(1);
+              startTransition(() => setCurrentPage(1));
             }}
             placeholder="문제 제목 입력"
             className="text-body placeholder:text-placeholder w-full bg-transparent outline-none"
@@ -43,7 +44,7 @@ function ProblemBoard() {
         <ProblemBoardResults
           keyword={debouncedKeyword}
           currentPage={currentPage}
-          onPageChange={setCurrentPage}
+          onPageChange={(page) => startTransition(() => setCurrentPage(page))}
         />
       </QueryBoundary>
     </section>
