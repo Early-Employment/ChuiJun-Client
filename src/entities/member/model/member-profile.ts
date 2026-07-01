@@ -1,9 +1,25 @@
 // GET /members/me 응답 계약. 백엔드 Swagger(GetMemberProfileResponse) 기준.
-// 응답에는 grassRecord·recentActivities 도 포함되지만, 여기서는 마이페이지 프로필 카드가
-// 소비하는 식별/통계 필드만 선언한다(잔디·활동은 별도 엔티티에서 다룬다).
 export const MEMBER_TIERS = ["BRONZE", "SILVER", "GOLD", "PLATINUM", "EMERALD"] as const;
 
 export type MemberTier = (typeof MEMBER_TIERS)[number];
+
+/** 잔디밭 일별 기록 한 건. activity 엔티티가 히트맵·달력으로 가공해 소비한다. */
+export interface GrassRecord {
+  /** ISO 날짜 (yyyy-mm-dd) */
+  date: string;
+  solvedCount: number;
+  studySeconds: number;
+}
+
+/** 최근 활동(제출) 한 건. */
+export interface RecentActivity {
+  submissionId: number;
+  problemTitle: string;
+  problemLevel: number;
+  score: number;
+  /** 제출 일시 ISO 문자열. */
+  submittedAt: string;
+}
 
 export interface MemberProfile {
   memberId: number;
@@ -13,6 +29,10 @@ export interface MemberProfile {
   rating: number;
   currentStreak: number;
   totalSolvedCount: number;
+  /** 일별 학습 통계(잔디밭 기록). */
+  grassRecord: GrassRecord[];
+  /** 최근 활동 기록 리스트(최대 4개). */
+  recentActivities: RecentActivity[];
 }
 
 export const MEMBER_TIER_LABELS: Record<MemberTier, string> = {
