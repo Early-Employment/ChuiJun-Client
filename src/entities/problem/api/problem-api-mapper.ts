@@ -16,6 +16,11 @@ function toMemoryLimitMb(memoryLimitKb: number) {
   return Math.round((memoryLimitKb / 1024) * 10) / 10;
 }
 
+// 백엔드 level enum("LEVEL_1"~"LEVEL_5")에서 숫자만 뽑아 "lv. N"으로 표시한다.
+function toLevelLabel(level: string) {
+  return `lv. ${level.replace("LEVEL_", "")}`;
+}
+
 function toProblemExamples(testCases: ProblemApiTestCase[]): ProblemExample[] {
   return testCases
     .filter((testCase) => testCase.caseType === "PUBLIC")
@@ -36,7 +41,7 @@ export function mapProblemDetail(problem: ProblemApiDetailResponse): ProblemDeta
   return {
     id: problem.problemId,
     title: problem.title,
-    tier: `lv. ${problem.level}`,
+    tier: toLevelLabel(problem.level),
     score: problem.point,
     description: problem.descriptionMd,
     category: problem.primaryTag,
@@ -55,7 +60,7 @@ export function mapProblemListItem(problem: ProblemApiListItemResponse): Problem
     id: problem.problemId,
     code: problem.problemCode,
     title: problem.title,
-    level: `lv. ${problem.level}`,
+    level: toLevelLabel(problem.level),
     acceptRate: problem.acceptRate,
   };
 }
