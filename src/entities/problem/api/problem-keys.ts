@@ -9,12 +9,12 @@ import { createMockWrongProblems } from "@/entities/problem/api/wrong-problem-mo
 
 export const problemKeys = {
   all: ["problem"] as const,
-  list: (page: number, size: number) =>
+  list: (page: number, size: number, keyword?: string) =>
     queryOptions({
-      queryKey: [...problemKeys.all, "list", page, size] as const,
+      queryKey: [...problemKeys.all, "list", page, size, keyword ?? ""] as const,
       queryFn: async () => {
         const { data } = await instance.get<ProblemApiPageResponse>("/problems", {
-          params: { page, size },
+          params: { page, size, keyword: keyword || undefined },
         });
         return mapProblemListPage(data);
       },
