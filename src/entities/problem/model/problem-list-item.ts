@@ -3,5 +3,6 @@ export interface ProblemListItem {
   code: string;
   title: string;
   level: string;
+  category: string;
   acceptRate: number;
 }
