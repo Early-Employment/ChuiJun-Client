@@ -4,8 +4,8 @@ import { DGIcon } from "@/shared/assets/DGIcon";
 
 export function DgSigninButton() {
   const handleLogin = () => {
-    // 백엔드(/auth/dg/login)가 PKCE 쿠키를 심고 DataGSM 으로 리다이렉트해야 하므로
-    // SPA 라우팅이 아니라 same-origin 프록시를 타는 전체 페이지 이동이어야 한다.
+    // same-origin Route Handler 가 현재 origin 기준 PKCE 쿠키를 심고
+    // DataGSM 인증 페이지로 넘겨야 하므로 전체 페이지 이동으로 시작한다.
     window.location.href = "/auth/dg/login";
   };
 

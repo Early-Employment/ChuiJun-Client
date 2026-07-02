@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
+import { Black_Han_Sans } from "next/font/google";
 import { QueryProvider } from "@/shared/providers/query-provider";
 import "./globals.css";
+
+const blackHanSans = Black_Han_Sans({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-black-han-sans",
+});
 
 export const metadata: Metadata = {
   title: "취준",
@@ -9,17 +16,11 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko">
+    <html lang="ko" className={blackHanSans.variable}>
       <head>
         <link
           rel="stylesheet"
           href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable.min.css"
-        />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap"
         />
       </head>
       <body>
