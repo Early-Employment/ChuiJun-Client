@@ -61,6 +61,7 @@ export function mapProblemListItem(problem: ProblemApiListItemResponse): Problem
     code: problem.problemCode,
     title: problem.title,
     level: toLevelLabel(problem.level),
+    category: problem.primaryTag,
     acceptRate: problem.acceptRate,
   };
 }
