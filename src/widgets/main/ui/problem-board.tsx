@@ -16,7 +16,6 @@ const searchDebounceMs = 200;
 // 그래야 디바운스 후 재조회로 목록이 로딩 상태에 빠져도 입력창(과 포커스)이 유지된다.
 function ProblemBoard() {
   const [keyword, setKeyword] = useState("");
-  const [selectedLevel, setSelectedLevel] = useState("전체");
   const [selectedProblemStatus, setSelectedProblemStatus] = useState("전체");
   const [selectedLanguage, setSelectedLanguage] = useState("전체");
   const debouncedKeyword = useDebouncedValue(keyword, searchDebounceMs);
@@ -42,13 +41,8 @@ function ProblemBoard() {
       </div>
 
       <ProblemSelectFilters
-        selectedLevel={selectedLevel}
         selectedProblemStatus={selectedProblemStatus}
         selectedLanguage={selectedLanguage}
-        onSelectLevel={(level) => {
-          setSelectedLevel(level);
-          startTransition(() => setCurrentPage(1));
-        }}
         onSelectProblemStatus={(problemStatus) => {
           setSelectedProblemStatus(problemStatus);
           startTransition(() => setCurrentPage(1));
@@ -65,7 +59,6 @@ function ProblemBoard() {
       >
         <ProblemBoardResults
           keyword={debouncedKeyword}
-          selectedLevel={selectedLevel}
           currentPage={currentPage}
           onPageChange={(page) => startTransition(() => setCurrentPage(page))}
         />
@@ -76,37 +69,29 @@ function ProblemBoard() {
 
 function ProblemBoardResults({
   keyword,
-  selectedLevel,
   currentPage,
   onPageChange,
 }: {
   keyword: string;
-  selectedLevel: string;
   currentPage: number;
   onPageChange: (page: number) => void;
 }) {
   const { data: problemPage } = useSuspenseQuery(
     problemKeys.list(currentPage - 1, rowsPerPage, keyword),
   );
-  const filteredItems = problemPage.items.filter((item) => {
-    const matchesLevel = selectedLevel === "전체" || item.level === selectedLevel;
-
-    return matchesLevel;
-  });
-
-  if (filteredItems.length === 0) {
+  if (problemPage.items.length === 0) {
     return <ProblemBoardResults.Empty />;
   }
 
   const totalPages = Math.max(1, problemPage.totalPages);
   const startIndex = problemPage.page * problemPage.size;
-  const emptyRowCount = problemPage.size - filteredItems.length;
+  const emptyRowCount = problemPage.size - problemPage.items.length;
 
   return (
     <>
       <div className="border-line bg-surface overflow-hidden rounded-lg border">
         <ul className="divide-line divide-y md:hidden">
-          {filteredItems.map((row, index) => (
+          {problemPage.items.map((row, index) => (
             <li key={row.id} className="space-y-3 px-4 py-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0 space-y-1">
@@ -157,7 +142,7 @@ function ProblemBoardResults({
               </tr>
             </thead>
             <tbody>
-              {filteredItems.map((row, index) => (
+              {problemPage.items.map((row, index) => (
                 <tr key={row.id} className="border-line text-body text-foreground border-t">
                   <td className="px-6 py-5 text-center">{startIndex + index + 1}</td>
                   <td className="px-6 py-5 text-center">
@@ -236,21 +221,17 @@ function ProblemBoardResults({
 }
 
 function ProblemSelectFilters({
-  selectedLevel,
   selectedProblemStatus,
   selectedLanguage,
-  onSelectLevel,
   onSelectProblemStatus,
   onSelectLanguage,
 }: {
-  selectedLevel: string;
   selectedProblemStatus: string;
   selectedLanguage: string;
-  onSelectLevel: (level: string) => void;
   onSelectProblemStatus: (problemStatus: string) => void;
   onSelectLanguage: (language: string) => void;
 }) {
-  const levels = ["전체", "lv. 1", "lv. 2", "lv. 3", "lv. 4", "lv. 5"];
+  const levels = ["전체"];
   const problemStatuses = ["전체"];
   const languages = ["전체"];
 
@@ -258,9 +239,9 @@ function ProblemSelectFilters({
     <div className="border-line bg-surface grid gap-3 rounded-lg border p-2 md:grid-cols-2 xl:grid-cols-3">
       <FilterSelect
         label="난이도"
-        value={selectedLevel}
+        value={levels[0] ?? "전체"}
         options={levels}
-        onChange={onSelectLevel}
+        onChange={() => undefined}
       />
       <FilterSelect
         label="문제 상태"
@@ -289,13 +270,16 @@ function FilterSelect({
   options: string[];
   onChange: (value: string) => void;
 }) {
+  const isDisabled = options.length === 1;
+
   return (
     <label className="border-line bg-surface text-foreground relative flex items-center rounded-md border px-5 py-4">
       <span className="text-body pointer-events-none">{label}</span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        className="text-body absolute inset-0 w-full cursor-pointer appearance-none rounded-md bg-transparent px-5 pr-14 text-transparent outline-none"
+        disabled={isDisabled}
+        className="text-body absolute inset-0 w-full appearance-none rounded-md bg-transparent px-5 pr-14 text-transparent outline-none disabled:cursor-default"
         aria-label={label}
       >
         {options.map((option) => (
