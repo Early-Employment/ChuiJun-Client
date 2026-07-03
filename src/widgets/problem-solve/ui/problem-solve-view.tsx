@@ -39,7 +39,7 @@ function ProblemSolveView({ id }: { id: number }) {
       <div className="flex items-center justify-start">
         <button
           type="button"
-          className="bg-surface-accent-soft text-accent-strong border-accent/20 flex cursor-pointer items-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold shadow-sm transition-colors hover:bg-surface-accent"
+          className="bg-surface-accent-soft text-accent-strong border-accent/20 hover:bg-surface-accent flex cursor-pointer items-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold shadow-sm transition-colors"
         >
           <EditIcon className="size-4" />
           건의
