@@ -16,11 +16,9 @@ const searchDebounceMs = 200;
 // 그래야 디바운스 후 재조회로 목록이 로딩 상태에 빠져도 입력창(과 포커스)이 유지된다.
 function ProblemBoard() {
   const [keyword, setKeyword] = useState("");
-  const [selectedProblemStatus, setSelectedProblemStatus] = useState("전체");
-  const [selectedLanguage, setSelectedLanguage] = useState("전체");
   const debouncedKeyword = useDebouncedValue(keyword, searchDebounceMs);
   const [currentPage, setCurrentPage] = useState(1);
-  const [, startTransition] = useTransition();
+  const [isPending, startTransition] = useTransition();
 
   return (
     <section className="space-y-4">
@@ -40,18 +38,7 @@ function ProblemBoard() {
         </div>
       </div>
 
-      <ProblemSelectFilters
-        selectedProblemStatus={selectedProblemStatus}
-        selectedLanguage={selectedLanguage}
-        onSelectProblemStatus={(problemStatus) => {
-          setSelectedProblemStatus(problemStatus);
-          startTransition(() => setCurrentPage(1));
-        }}
-        onSelectLanguage={(language) => {
-          setSelectedLanguage(language);
-          startTransition(() => setCurrentPage(1));
-        }}
-      />
+      <ProblemSelectFilters />
 
       <QueryBoundary
         loadingFallback={<ProblemBoardResults.Loading />}
@@ -60,6 +47,7 @@ function ProblemBoard() {
         <ProblemBoardResults
           keyword={debouncedKeyword}
           currentPage={currentPage}
+          isPending={isPending}
           onPageChange={(page) => startTransition(() => setCurrentPage(page))}
         />
       </QueryBoundary>
@@ -70,10 +58,12 @@ function ProblemBoard() {
 function ProblemBoardResults({
   keyword,
   currentPage,
+  isPending,
   onPageChange,
 }: {
   keyword: string;
   currentPage: number;
+  isPending: boolean;
   onPageChange: (page: number) => void;
 }) {
   const { data: problemPage } = useSuspenseQuery(
@@ -89,7 +79,11 @@ function ProblemBoardResults({
 
   return (
     <>
-      <div className="border-line bg-surface overflow-hidden rounded-lg border">
+      <div
+        className={`border-line bg-surface overflow-hidden rounded-lg border transition-opacity ${
+          isPending ? "opacity-60" : "opacity-100"
+        }`}
+      >
         <ul className="divide-line divide-y md:hidden">
           {problemPage.items.map((row, index) => (
             <li key={row.id} className="space-y-3 px-4 py-4">
@@ -216,21 +210,16 @@ function ProblemBoardResults({
           ›
         </button>
       </div>
+      {isPending ? (
+        <p className="text-muted text-center text-xs" aria-live="polite">
+          문제 목록을 불러오는 중이에요.
+        </p>
+      ) : null}
     </>
   );
 }
 
-function ProblemSelectFilters({
-  selectedProblemStatus,
-  selectedLanguage,
-  onSelectProblemStatus,
-  onSelectLanguage,
-}: {
-  selectedProblemStatus: string;
-  selectedLanguage: string;
-  onSelectProblemStatus: (problemStatus: string) => void;
-  onSelectLanguage: (language: string) => void;
-}) {
+function ProblemSelectFilters() {
   const levels = ["전체"];
   const problemStatuses = ["전체"];
   const languages = ["전체"];
@@ -245,15 +234,15 @@ function ProblemSelectFilters({
       />
       <FilterSelect
         label="문제 상태"
-        value={selectedProblemStatus}
+        value={problemStatuses[0] ?? "전체"}
         options={problemStatuses}
-        onChange={onSelectProblemStatus}
+        onChange={() => undefined}
       />
       <FilterSelect
         label="언어"
-        value={selectedLanguage}
+        value={languages[0] ?? "전체"}
         options={languages}
-        onChange={onSelectLanguage}
+        onChange={() => undefined}
       />
     </div>
   );
@@ -279,7 +268,7 @@ function FilterSelect({
         value={value}
         onChange={(event) => onChange(event.target.value)}
         disabled={isDisabled}
-        className="text-body absolute inset-0 w-full appearance-none rounded-md bg-transparent px-5 pr-14 text-transparent outline-none disabled:cursor-default"
+        className="absolute inset-0 w-full appearance-none rounded-md bg-transparent opacity-0 outline-none disabled:cursor-default"
         aria-label={label}
       >
         {options.map((option) => (

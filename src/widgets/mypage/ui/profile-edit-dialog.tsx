@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { memberKeys } from "@/entities/member/api/member-keys";
 import type { MemberProfile } from "@/entities/member/model/member-profile";
@@ -20,19 +20,21 @@ export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogP
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
-  const previewUrl = useMemo(() => {
-    if (!selectedFile) return profile.profileImageUrl;
-    return URL.createObjectURL(selectedFile);
-  }, [profile.profileImageUrl, selectedFile]);
+  const [previewUrl, setPreviewUrl] = useState(profile.profileImageUrl);
 
   useEffect(() => {
+    if (!selectedFile) {
+      setPreviewUrl(profile.profileImageUrl);
+      return;
+    }
+
+    const objectUrl = URL.createObjectURL(selectedFile);
+    setPreviewUrl(objectUrl);
+
     return () => {
-      if (selectedFile && previewUrl.startsWith("blob:")) {
-        URL.revokeObjectURL(previewUrl);
-      }
+      URL.revokeObjectURL(objectUrl);
     };
-  }, [previewUrl, selectedFile]);
+  }, [profile.profileImageUrl, selectedFile]);
 
   useEffect(() => {
     if (!open) {
@@ -113,7 +115,7 @@ export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogP
           <button
             type="button"
             onClick={() => {
-              void saveProfileImageMutation.mutateAsync();
+              saveProfileImageMutation.mutate();
             }}
             disabled={!selectedFile || saveProfileImageMutation.isPending}
             className="bg-accent text-foreground-inverse inline-flex h-11 items-center justify-center gap-2 rounded-xl text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
