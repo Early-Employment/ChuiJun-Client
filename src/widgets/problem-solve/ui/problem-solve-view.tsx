@@ -3,6 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { problemKeys } from "@/entities/problem/api/problem-keys";
+import { EditIcon } from "@/shared/assets/EditIcon";
 import { useWarmPythonRuntime } from "@/shared/lib/pyodide/warm-runtime";
 import { ChevronLeftIcon } from "@/shared/assets/ChevronLeftIcon";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
@@ -35,11 +36,12 @@ function ProblemSolveView({ id }: { id: number }) {
         correctRate={problem.correctRate}
       />
 
-      <div className="flex items-center justify-end">
+      <div className="flex items-center justify-start">
         <button
           type="button"
-          className="border-line bg-surface text-foreground rounded-md border px-4 py-2 text-sm font-semibold opacity-90"
+          className="bg-surface-accent-soft text-accent-strong border-accent/20 flex cursor-pointer items-center gap-2 rounded-md border px-4 py-2 text-sm font-semibold shadow-sm transition-colors hover:bg-surface-accent"
         >
+          <EditIcon className="size-4" />
           건의
         </button>
       </div>
