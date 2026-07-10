@@ -34,6 +34,9 @@ const WARM_TIMEOUT_MS = 30000;
 
 let worker: Worker | null = null;
 let warmPromise: Promise<void> | null = null;
+// 진행 중인 warm 을 중단한다. 타이머·리스너를 걷어내는 것만으로는 부족하다 —
+// warmPromise 를 await 하던 호출자가 영원히 멈추므로 반드시 reject 까지 해야 한다.
+let abortWarm: ((reason: Error) => void) | null = null;
 let sequence = 0;
 let generation = 0;
 let queue: Promise<unknown> = Promise.resolve();
@@ -82,8 +85,15 @@ function warmWorker(activeWorker: Worker): Promise<void> {
       clearTimeout(timer);
       activeWorker.removeEventListener("message", onMessage);
       activeWorker.removeEventListener("error", onError);
+      if (abortWarm === abort) abortWarm = null;
     }
 
+    function abort(reason: Error) {
+      cleanup();
+      reject(reason);
+    }
+
+    abortWarm = abort;
     activeWorker.addEventListener("message", onMessage);
     activeWorker.addEventListener("error", onError);
     activeWorker.postMessage({ type: "warm" });
@@ -105,8 +115,15 @@ export function warmRuntime(): void {
 export function discardWorker(): void {
   worker?.terminate();
   worker = null;
-  warmPromise = null;
+
+  // 세대를 먼저 올린다. 그래야 warm 을 기다리던 runOnce 가 아래 reject 를 받고
+  // 에러가 아니라 cancelled 로 매듭짓는다.
   generation += 1;
+
+  // 진행 중이던 warm 의 타이머·리스너를 걷어내고 대기자를 즉시 풀어 준다.
+  abortWarm?.(new PythonRuntimeError("채점기 로드가 취소되었어요."));
+  abortWarm = null;
+  warmPromise = null;
 
   for (const cancel of pendingCancels) cancel();
   pendingCancels.clear();

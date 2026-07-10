@@ -15,7 +15,7 @@ import {
   type TestcaseOutcome,
 } from "@/features/code-judge/model/judge";
 import { runExamples } from "@/features/code-judge/model/run-examples";
-import { discardWorker } from "@/shared/lib/pyodide/python-runner";
+import { discardWorker, warmRuntime } from "@/shared/lib/pyodide/python-runner";
 
 // 예제 실행은 문제의 채점 제한시간이 아니라, Pyodide 콜드 로드까지 견딜 넉넉한
 // 벽시계 타임아웃을 쓴다. (채점은 judge 가 케이스별로 timeLimitMs 를 적용한다.)
@@ -132,8 +132,12 @@ export function useSolveFlow(problem: ProblemDetail) {
   // 채점기 로드 실패는 실행·제출 어느 쪽에서도 난다. 재시도가 엉뚱한 동작을 하지 않도록 기억한다.
   const lastIntent = useRef<"run" | "submit">("submit");
 
-  // 화면을 떠나면 진행 중인 채점을 취소한다. 안 그러면 전역 큐에 남아 다음 화면의 실행을 막는다.
-  useEffect(() => discardWorker, []);
+  // Pyodide 로드(수 초)를 첫 실행 전에 끝내 두고, 화면을 떠나면 진행 중인 채점을 취소한다.
+  // 취소하지 않으면 전역 큐에 남아 다음 화면의 실행을 뒤에 줄 세운다.
+  useEffect(() => {
+    warmRuntime();
+    return discardWorker;
+  }, []);
 
   const invalidateAfterSubmit = useCallback(async () => {
     // 오답도 서버에 기록된다 — 틀린 문제 목록·잔디·정답률이 모두 바뀐다.

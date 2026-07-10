@@ -15,7 +15,7 @@ interface ResultDialogProps {
   tone: ResultTone;
   title: string;
   children: ReactNode;
-  /** Esc·backdrop·닫기 버튼 모두 이 콜백으로 모인다. */
+  /** Esc 와 닫기 버튼이 이 콜백으로 모인다. */
   onClose: () => void;
   retryLabel?: string;
   onRetry?: () => void;
@@ -23,7 +23,7 @@ interface ResultDialogProps {
 
 /**
  * 네이티브 <dialog> 기반 결과 모달.
- * 포커스 트랩·Esc·backdrop 은 브라우저가 처리하므로 직접 구현하지 않는다.
+ * 포커스 트랩과 Esc 는 브라우저가 처리한다. backdrop 은 그려질 뿐 클릭해도 닫히지 않는다.
  */
 export function ResultDialog({
   open,
