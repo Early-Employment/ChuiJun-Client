@@ -30,10 +30,7 @@ function toRemainingDays(dateTime: string) {
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const target = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  return Math.max(
-    0,
-    Math.floor((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)),
-  );
+  return Math.max(0, Math.floor((target.getTime() - today.getTime()) / (1000 * 60 * 60 * 24)));
 }
 
 function mapStudentClassroom(
@@ -76,13 +73,14 @@ export const studentClassroomKeys = {
           throw new Error("학생 회원 ID가 없어 학급을 조회할 수 없습니다.");
         }
 
-        const [{ data: classrooms }, { data: classroom }, { data: assignments }] = await Promise.all([
-          instance.get<ClassroomResponse[]>("/classrooms/me", {
-            params: { studentId },
-          }),
-          instance.get<ClassroomResponse>(`/classrooms/${classroomId}`),
-          instance.get<ClassroomAssignmentResponse[]>(`/classrooms/${classroomId}/assignments`),
-        ]);
+        const [{ data: classrooms }, { data: classroom }, { data: assignments }] =
+          await Promise.all([
+            instance.get<ClassroomResponse[]>("/classrooms/me", {
+              params: { studentId },
+            }),
+            instance.get<ClassroomResponse>(`/classrooms/${classroomId}`),
+            instance.get<ClassroomAssignmentResponse[]>(`/classrooms/${classroomId}/assignments`),
+          ]);
 
         const hasAccess = classrooms.some((candidate) => candidate.id === classroomId);
         if (!hasAccess) {
