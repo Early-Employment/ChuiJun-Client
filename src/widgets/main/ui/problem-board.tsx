@@ -4,21 +4,86 @@ import Link from "next/link";
 import { useState, useTransition } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { problemKeys } from "@/entities/problem/api/problem-keys";
+import {
+  PROBLEM_ALGORITHM_TYPES,
+  PROBLEM_ALGORITHM_TYPE_LABELS,
+  type ProblemAlgorithmType,
+} from "@/entities/problem/model/problem-algorithm-type";
+import type { ProblemFilter } from "@/entities/problem/model/problem-filter";
+import {
+  PROBLEM_LEVELS,
+  toProblemLevelLabel,
+  type ProblemLevel,
+} from "@/entities/problem/model/problem-level";
+import {
+  PROBLEM_SOLVE_STATUSES,
+  PROBLEM_SOLVE_STATUS_LABELS,
+  type ProblemSolveStatus,
+} from "@/entities/problem/model/problem-solve-status";
 import { ChevronDownIcon } from "@/shared/assets/ChevronDownIcon";
 import { useDebouncedValue } from "@/shared/lib/use-debounced-value";
+import { useIsAuthenticated } from "@/shared/lib/use-is-authenticated";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
 import { Skeleton } from "@/shared/ui/skeleton";
 
 const rowsPerPage = 10;
 const searchDebounceMs = 200;
 
+// "전체" 는 필터를 걸지 않는다는 뜻이므로 빈 문자열을 값으로 쓰고, 요청에서는 제외한다.
+const ALL_OPTION_VALUE = "";
+
+interface FilterOption {
+  value: string;
+  label: string;
+}
+
+const allOption: FilterOption = { value: ALL_OPTION_VALUE, label: "전체" };
+
+const levelOptions: FilterOption[] = [
+  allOption,
+  ...PROBLEM_LEVELS.map((level) => ({ value: level, label: toProblemLevelLabel(level) })),
+];
+
+const solveStatusOptions: FilterOption[] = [
+  allOption,
+  ...PROBLEM_SOLVE_STATUSES.map((status) => ({
+    value: status,
+    label: PROBLEM_SOLVE_STATUS_LABELS[status],
+  })),
+];
+
+const algorithmTypeOptions: FilterOption[] = [
+  allOption,
+  ...PROBLEM_ALGORITHM_TYPES.map((algorithmType) => ({
+    value: algorithmType,
+    label: PROBLEM_ALGORITHM_TYPE_LABELS[algorithmType],
+  })),
+];
+
 // 검색어 입력창은 결과 목록과 별도 Suspense 경계에 둔다.
 // 그래야 디바운스 후 재조회로 목록이 로딩 상태에 빠져도 입력창(과 포커스)이 유지된다.
 function ProblemBoard() {
   const [keyword, setKeyword] = useState("");
   const debouncedKeyword = useDebouncedValue(keyword, searchDebounceMs);
+  const [level, setLevel] = useState<ProblemLevel | undefined>(undefined);
+  const [solveStatus, setSolveStatus] = useState<ProblemSolveStatus | undefined>(undefined);
+  const [algorithmType, setAlgorithmType] = useState<ProblemAlgorithmType | undefined>(undefined);
   const [currentPage, setCurrentPage] = useState(1);
   const [isPending, startTransition] = useTransition();
+
+  // solveStatus 는 회원 기준으로 계산돼 비로그인 요청은 401 이 난다. 로그인 전에는 잠근다.
+  const isAuthenticated = useIsAuthenticated();
+  const canFilterBySolveStatus = isAuthenticated === true;
+
+  const filter: ProblemFilter = {
+    keyword: debouncedKeyword,
+    level,
+    solveStatus: canFilterBySolveStatus ? solveStatus : undefined,
+    algorithmType,
+  };
+
+  // 필터가 바뀌면 이전 페이지 번호가 새 결과 범위를 벗어날 수 있으므로 첫 페이지로 되돌린다.
+  const resetToFirstPage = () => startTransition(() => setCurrentPage(1));
 
   return (
     <section className="space-y-4">
@@ -29,7 +94,7 @@ function ProblemBoard() {
             value={keyword}
             onChange={(event) => {
               setKeyword(event.target.value);
-              startTransition(() => setCurrentPage(1));
+              resetToFirstPage();
             }}
             placeholder="문제 제목 입력"
             className="text-body placeholder:text-placeholder w-full bg-transparent outline-none"
@@ -38,14 +103,31 @@ function ProblemBoard() {
         </div>
       </div>
 
-      <ProblemSelectFilters />
+      <ProblemSelectFilters
+        level={level}
+        solveStatus={solveStatus}
+        algorithmType={algorithmType}
+        canFilterBySolveStatus={canFilterBySolveStatus}
+        onLevelChange={(value) => {
+          setLevel(value);
+          resetToFirstPage();
+        }}
+        onSolveStatusChange={(value) => {
+          setSolveStatus(value);
+          resetToFirstPage();
+        }}
+        onAlgorithmTypeChange={(value) => {
+          setAlgorithmType(value);
+          resetToFirstPage();
+        }}
+      />
 
       <QueryBoundary
         loadingFallback={<ProblemBoardResults.Loading />}
         errorFallback={ProblemBoardResults.Error}
       >
         <ProblemBoardResults
-          keyword={debouncedKeyword}
+          filter={filter}
           currentPage={currentPage}
           isPending={isPending}
           onPageChange={(page) => startTransition(() => setCurrentPage(page))}
@@ -56,21 +138,22 @@ function ProblemBoard() {
 }
 
 function ProblemBoardResults({
-  keyword,
+  filter,
   currentPage,
   isPending,
   onPageChange,
 }: {
-  keyword: string;
+  filter: ProblemFilter;
   currentPage: number;
   isPending: boolean;
   onPageChange: (page: number) => void;
 }) {
   const { data: problemPage } = useSuspenseQuery(
-    problemKeys.list(currentPage - 1, rowsPerPage, keyword),
+    problemKeys.list(currentPage - 1, rowsPerPage, filter),
   );
   if (problemPage.items.length === 0) {
-    return <ProblemBoardResults.Empty />;
+    const isFiltered = Object.values(filter).some(Boolean);
+    return <ProblemBoardResults.Empty isFiltered={isFiltered} />;
   }
 
   const totalPages = Math.max(1, problemPage.totalPages);
@@ -96,7 +179,7 @@ function ProblemBoardResults({
                     {row.title}
                   </Link>
                   <span className="bg-surface-accent text-accent-strong inline-flex rounded-full px-2.5 py-1 text-xs font-medium">
-                    {row.category}
+                    {PROBLEM_ALGORITHM_TYPE_LABELS[row.algorithmType]}
                   </span>
                 </div>
                 <span className="text-muted text-label shrink-0">#{startIndex + index + 1}</span>
@@ -148,7 +231,7 @@ function ProblemBoardResults({
                         {row.title}
                       </Link>
                       <span className="bg-surface-accent text-accent-strong inline-flex rounded-full px-2.5 py-1 text-xs font-medium">
-                        {row.category}
+                        {PROBLEM_ALGORITHM_TYPE_LABELS[row.algorithmType]}
                       </span>
                     </div>
                   </td>
@@ -219,30 +302,44 @@ function ProblemBoardResults({
   );
 }
 
-function ProblemSelectFilters() {
-  const levels = ["전체"];
-  const problemStatuses = ["전체"];
-  const languages = ["전체"];
-
+function ProblemSelectFilters({
+  level,
+  solveStatus,
+  algorithmType,
+  canFilterBySolveStatus,
+  onLevelChange,
+  onSolveStatusChange,
+  onAlgorithmTypeChange,
+}: {
+  level: ProblemLevel | undefined;
+  solveStatus: ProblemSolveStatus | undefined;
+  algorithmType: ProblemAlgorithmType | undefined;
+  canFilterBySolveStatus: boolean;
+  onLevelChange: (value: ProblemLevel | undefined) => void;
+  onSolveStatusChange: (value: ProblemSolveStatus | undefined) => void;
+  onAlgorithmTypeChange: (value: ProblemAlgorithmType | undefined) => void;
+}) {
   return (
     <div className="border-line bg-surface grid gap-3 rounded-lg border p-2 md:grid-cols-2 xl:grid-cols-3">
       <FilterSelect
         label="난이도"
-        value={levels[0] ?? "전체"}
-        options={levels}
-        onChange={() => undefined}
+        value={level ?? ALL_OPTION_VALUE}
+        options={levelOptions}
+        onChange={(value) => onLevelChange((value as ProblemLevel) || undefined)}
       />
       <FilterSelect
         label="문제 상태"
-        value={problemStatuses[0] ?? "전체"}
-        options={problemStatuses}
-        onChange={() => undefined}
+        value={solveStatus ?? ALL_OPTION_VALUE}
+        options={solveStatusOptions}
+        disabled={!canFilterBySolveStatus}
+        hint={canFilterBySolveStatus ? undefined : "로그인 후 사용할 수 있어요."}
+        onChange={(value) => onSolveStatusChange((value as ProblemSolveStatus) || undefined)}
       />
       <FilterSelect
-        label="언어"
-        value={languages[0] ?? "전체"}
-        options={languages}
-        onChange={() => undefined}
+        label="알고리즘 유형"
+        value={algorithmType ?? ALL_OPTION_VALUE}
+        options={algorithmTypeOptions}
+        onChange={(value) => onAlgorithmTypeChange((value as ProblemAlgorithmType) || undefined)}
       />
     </div>
   );
@@ -252,32 +349,41 @@ function FilterSelect({
   label,
   value,
   options,
+  disabled = false,
+  hint,
   onChange,
 }: {
   label: string;
   value: string;
-  options: string[];
+  options: FilterOption[];
+  disabled?: boolean;
+  hint?: string;
   onChange: (value: string) => void;
 }) {
-  const isDisabled = options.length === 1;
+  const selectedLabel = options.find((option) => option.value === value)?.label ?? allOption.label;
 
   return (
-    <label className="border-line bg-surface text-foreground relative flex items-center rounded-md border px-5 py-4">
+    <label
+      title={hint}
+      className={`border-line bg-surface text-foreground relative flex items-center rounded-md border px-5 py-4 ${
+        disabled ? "opacity-60" : ""
+      }`}
+    >
       <span className="text-body pointer-events-none">{label}</span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        disabled={isDisabled}
-        className="absolute inset-0 w-full appearance-none rounded-md bg-transparent opacity-0 outline-none disabled:cursor-default"
-        aria-label={label}
+        disabled={disabled}
+        className="absolute inset-0 w-full cursor-pointer appearance-none rounded-md bg-transparent opacity-0 outline-none disabled:cursor-default"
+        aria-label={hint ? `${label} (${hint})` : label}
       >
         {options.map((option) => (
-          <option key={option} value={option}>
-            {option}
+          <option key={option.value} value={option.value}>
+            {option.label}
           </option>
         ))}
       </select>
-      <span className="text-muted ml-auto text-sm">{value}</span>
+      <span className="text-muted ml-auto text-sm">{selectedLabel}</span>
       <ChevronDownIcon className="text-foreground pointer-events-none ml-3 size-4 shrink-0" />
     </label>
   );
@@ -298,10 +404,10 @@ function ProblemBoardResultsError({ resetErrorBoundary }: QueryErrorFallbackProp
   );
 }
 
-function ProblemBoardResultsEmpty() {
+function ProblemBoardResultsEmpty({ isFiltered = false }: { isFiltered?: boolean }) {
   return (
     <div className="text-muted flex h-[480px] items-center justify-center text-sm">
-      아직 표시할 문제가 없어요.
+      {isFiltered ? "조건에 맞는 문제가 없어요." : "아직 표시할 문제가 없어요."}
     </div>
   );
 }
