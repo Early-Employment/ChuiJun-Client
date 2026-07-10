@@ -22,7 +22,6 @@ import {
 } from "@/entities/problem/model/problem-solve-status";
 import { ChevronDownIcon } from "@/shared/assets/ChevronDownIcon";
 import { useDebouncedValue } from "@/shared/lib/use-debounced-value";
-import { useIsAuthenticated } from "@/shared/lib/use-is-authenticated";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
 import { Skeleton } from "@/shared/ui/skeleton";
 
@@ -71,16 +70,7 @@ function ProblemBoard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [isPending, startTransition] = useTransition();
 
-  // solveStatus 는 회원 기준으로 계산돼 비로그인 요청은 401 이 난다. 로그인 전에는 잠근다.
-  const isAuthenticated = useIsAuthenticated();
-  const canFilterBySolveStatus = isAuthenticated === true;
-
-  const filter: ProblemFilter = {
-    keyword: debouncedKeyword,
-    level,
-    solveStatus: canFilterBySolveStatus ? solveStatus : undefined,
-    algorithmType,
-  };
+  const filter: ProblemFilter = { keyword: debouncedKeyword, level, solveStatus, algorithmType };
 
   // 필터가 바뀌면 이전 페이지 번호가 새 결과 범위를 벗어날 수 있으므로 첫 페이지로 되돌린다.
   const resetToFirstPage = () => startTransition(() => setCurrentPage(1));
@@ -107,7 +97,6 @@ function ProblemBoard() {
         level={level}
         solveStatus={solveStatus}
         algorithmType={algorithmType}
-        canFilterBySolveStatus={canFilterBySolveStatus}
         onLevelChange={(value) => {
           setLevel(value);
           resetToFirstPage();
@@ -306,7 +295,6 @@ function ProblemSelectFilters({
   level,
   solveStatus,
   algorithmType,
-  canFilterBySolveStatus,
   onLevelChange,
   onSolveStatusChange,
   onAlgorithmTypeChange,
@@ -314,7 +302,6 @@ function ProblemSelectFilters({
   level: ProblemLevel | undefined;
   solveStatus: ProblemSolveStatus | undefined;
   algorithmType: ProblemAlgorithmType | undefined;
-  canFilterBySolveStatus: boolean;
   onLevelChange: (value: ProblemLevel | undefined) => void;
   onSolveStatusChange: (value: ProblemSolveStatus | undefined) => void;
   onAlgorithmTypeChange: (value: ProblemAlgorithmType | undefined) => void;
@@ -328,11 +315,9 @@ function ProblemSelectFilters({
         onChange={(value) => onLevelChange((value as ProblemLevel) || undefined)}
       />
       <FilterSelect
-        label="문제 상태"
+        label="풀이 상태"
         value={solveStatus ?? ALL_OPTION_VALUE}
         options={solveStatusOptions}
-        disabled={!canFilterBySolveStatus}
-        hint={canFilterBySolveStatus ? undefined : "로그인 후 사용할 수 있어요."}
         onChange={(value) => onSolveStatusChange((value as ProblemSolveStatus) || undefined)}
       />
       <FilterSelect
@@ -349,33 +334,24 @@ function FilterSelect({
   label,
   value,
   options,
-  disabled = false,
-  hint,
   onChange,
 }: {
   label: string;
   value: string;
   options: FilterOption[];
-  disabled?: boolean;
-  hint?: string;
   onChange: (value: string) => void;
 }) {
   const selectedLabel = options.find((option) => option.value === value)?.label ?? allOption.label;
+  const isActive = value !== ALL_OPTION_VALUE;
 
   return (
-    <label
-      title={hint}
-      className={`border-line bg-surface text-foreground relative flex items-center rounded-md border px-5 py-4 ${
-        disabled ? "opacity-60" : ""
-      }`}
-    >
+    <label className="border-line bg-surface text-foreground relative flex cursor-pointer items-center rounded-md border px-5 py-4">
       <span className="text-body pointer-events-none">{label}</span>
       <select
         value={value}
         onChange={(event) => onChange(event.target.value)}
-        disabled={disabled}
-        className="absolute inset-0 w-full cursor-pointer appearance-none rounded-md bg-transparent opacity-0 outline-none disabled:cursor-default"
-        aria-label={hint ? `${label} (${hint})` : label}
+        className="absolute inset-0 w-full cursor-pointer appearance-none rounded-md bg-transparent opacity-0 outline-none"
+        aria-label={label}
       >
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -383,7 +359,11 @@ function FilterSelect({
           </option>
         ))}
       </select>
-      <span className="text-muted ml-auto text-sm">{selectedLabel}</span>
+      <span
+        className={`ml-auto text-sm ${isActive ? "text-accent-strong font-semibold" : "text-muted"}`}
+      >
+        {selectedLabel}
+      </span>
       <ChevronDownIcon className="text-foreground pointer-events-none ml-3 size-4 shrink-0" />
     </label>
   );
