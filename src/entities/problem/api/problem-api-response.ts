@@ -1,3 +1,7 @@
+import type { ProblemAlgorithmType } from "@/entities/problem/model/problem-algorithm-type";
+import type { ProblemLevel } from "@/entities/problem/model/problem-level";
+import type { ProblemSolveStatus } from "@/entities/problem/model/problem-solve-status";
+
 export interface ProblemApiTestCase {
   testCaseId: number;
   caseType: string;
@@ -13,8 +17,8 @@ export interface ProblemApiDetailResponse {
   descriptionMd: string;
   inputMd: string;
   outputMd: string;
-  level: string;
-  primaryTag: string;
+  level: ProblemLevel;
+  algorithmType: ProblemAlgorithmType;
   point: number;
   timeLimitMs: number;
   memoryLimitKb: number;
@@ -26,8 +30,10 @@ export interface ProblemApiListItemResponse {
   problemId: number;
   problemCode: string;
   title: string;
-  level: string;
-  primaryTag: string;
+  level: ProblemLevel;
+  algorithmType: ProblemAlgorithmType;
+  /** 비로그인 조회에서는 null 로 내려온다. */
+  solveStatus: ProblemSolveStatus | null;
   point: number;
   acceptRate: number;
 }
