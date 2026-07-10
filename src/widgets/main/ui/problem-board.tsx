@@ -72,7 +72,16 @@ function ProblemBoard() {
 
   const filter: ProblemFilter = { keyword: debouncedKeyword, level, solveStatus, algorithmType };
 
-  // 필터가 바뀌면 이전 페이지 번호가 새 결과 범위를 벗어날 수 있으므로 첫 페이지로 되돌린다.
+  // 검색어는 디바운스되므로 입력 즉시가 아니라 debouncedKeyword 가 실제로 바뀐 렌더에서 리셋한다.
+  // 입력 시점에 리셋하면 "이전 검색어 + 1페이지" 조합으로 한 번 조회하게 된다.
+  const [previousKeyword, setPreviousKeyword] = useState(debouncedKeyword);
+  if (debouncedKeyword !== previousKeyword) {
+    setPreviousKeyword(debouncedKeyword);
+    setCurrentPage(1);
+  }
+
+  // select 필터는 디바운스가 없어 값이 곧바로 확정되므로 변경 즉시 되돌린다.
+  // 이전 페이지 번호가 새 결과 범위를 벗어날 수 있기 때문이다.
   const resetToFirstPage = () => startTransition(() => setCurrentPage(1));
 
   return (
@@ -82,10 +91,7 @@ function ProblemBoard() {
           <input
             type="text"
             value={keyword}
-            onChange={(event) => {
-              setKeyword(event.target.value);
-              resetToFirstPage();
-            }}
+            onChange={(event) => setKeyword(event.target.value)}
             placeholder="문제 제목 입력"
             className="text-body placeholder:text-placeholder w-full bg-transparent outline-none"
           />
