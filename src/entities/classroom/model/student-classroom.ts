@@ -9,7 +9,7 @@ export interface StudentUpcomingAssignment {
   remainingDays: number;
 }
 
-export type StudentSubmissionStatus = "submitted" | "not-submitted" | "unknown";
+export type StudentSubmissionStatus = "submitted" | "not-submitted";
 
 /** 학생이 보는 과제 목록 한 건. */
 export interface StudentAssignment {
@@ -20,7 +20,6 @@ export interface StudentAssignment {
   dateLabel: string;
   /** 필수 과제 여부. true면 "필수" 뱃지 노출. */
   required: boolean;
-  /** 제출 상태 API가 아직 없으면 unknown 이다. */
   submissionStatus: StudentSubmissionStatus;
 }
 

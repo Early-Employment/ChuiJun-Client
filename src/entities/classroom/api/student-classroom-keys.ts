@@ -60,8 +60,7 @@ function mapStudentClassroom(
       title: assignment.problemTitle,
       dateLabel: formatDateLabel(assignment.dueDate),
       required: assignment.required,
-      // 학생 제출 여부 API는 아직 미제공이다.
-      submissionStatus: "unknown",
+      submissionStatus: assignment.submitted ? "submitted" : "not-submitted",
     })),
   };
 }

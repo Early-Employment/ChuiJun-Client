@@ -109,7 +109,6 @@ function UpcomingAssignmentRow({
 }
 
 function AssignmentCard({ assignment }: { assignment: StudentAssignment }) {
-  const isUnknown = assignment.submissionStatus === "unknown";
   const isSubmitted = assignment.submissionStatus === "submitted";
 
   return (
@@ -132,16 +131,10 @@ function AssignmentCard({ assignment }: { assignment: StudentAssignment }) {
         ) : null}
       </div>
 
-      {isUnknown ? null : (
-        <div className="text-foreground flex w-9 shrink-0 flex-col items-center gap-1">
-          {isSubmitted ? (
-            <CheckCircleIcon className="size-6" />
-          ) : (
-            <XCircleIcon className="size-6" />
-          )}
-          <span className="text-caption text-[10px]">{isSubmitted ? "제출완료" : "미제출"}</span>
-        </div>
-      )}
+      <div className="text-foreground flex w-9 shrink-0 flex-col items-center gap-1">
+        {isSubmitted ? <CheckCircleIcon className="size-6" /> : <XCircleIcon className="size-6" />}
+        <span className="text-caption text-[10px]">{isSubmitted ? "제출완료" : "미제출"}</span>
+      </div>
     </Link>
   );
 }
