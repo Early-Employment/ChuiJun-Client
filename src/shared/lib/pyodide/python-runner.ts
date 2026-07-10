@@ -23,7 +23,7 @@ let queue: Promise<unknown> = Promise.resolve();
 
 function getWorker(): Worker {
   if (!worker) {
-    worker = new Worker(new URL("./pyodide.worker.ts", import.meta.url));
+    worker = new Worker("/pyodide.worker.js");
     warmPromise = null; // 새 워커는 아직 콜드 상태.
   }
   return worker;

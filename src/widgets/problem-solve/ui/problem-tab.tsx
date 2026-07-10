@@ -1,7 +1,9 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { classroomAssignmentKeys } from "@/entities/classroom/api/classroom-assignment-keys";
+import { studentClassroomKeys } from "@/entities/classroom/api/student-classroom-keys";
 import type { ProblemDetail } from "@/entities/problem/model/problem-detail";
 import { submissionKeys } from "@/entities/submission/api/submission-keys";
 import { judge, type JudgeReport, type TestcaseOutcome } from "@/features/code-judge/model/judge";
@@ -19,6 +21,7 @@ const STARTER_CODE = "# 표준 입력은 input(), 출력은 print() 를 사용�
 const EXAMPLE_RUN_TIMEOUT_MS = 10000;
 
 export function ProblemTab({ problem }: { problem: ProblemDetail }) {
+  const queryClient = useQueryClient();
   const submit = useMutation(submissionKeys.submit());
 
   const [code, setCode] = useState(STARTER_CODE);
@@ -60,6 +63,10 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
         studySeconds: Math.max(0, Math.round((Date.now() - openedAt.current) / 1000)),
       });
     } finally {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: studentClassroomKeys.all }),
+        queryClient.invalidateQueries({ queryKey: classroomAssignmentKeys.all }),
+      ]);
       setRunning(false);
     }
   }

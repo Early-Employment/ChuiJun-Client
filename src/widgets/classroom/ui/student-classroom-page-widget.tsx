@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { studentClassroomKeys } from "@/entities/classroom/api/student-classroom-keys";
 import type {
@@ -13,8 +14,8 @@ import { XCircleIcon } from "@/shared/assets/XCircleIcon";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
 import { Skeleton } from "@/shared/ui/skeleton";
 
-function StudentClassroomPageWidget() {
-  const { data } = useSuspenseQuery(studentClassroomKeys.current());
+function StudentClassroomPageWidget({ classroomId }: { classroomId: number }) {
+  const { data } = useSuspenseQuery(studentClassroomKeys.current(classroomId));
 
   if (data.assignments.length === 0 && data.upcomingAssignments.length === 0) {
     return <StudentClassroomPageWidget.Empty />;
@@ -23,7 +24,7 @@ function StudentClassroomPageWidget() {
   return (
     <main className="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-8 lg:py-10 xl:px-10">
       <section className="mx-auto w-full max-w-[1160px] space-y-6">
-        <ClassroomHero classroomName={data.classroomName} />
+        <ClassroomHero classroomName={data.classroomName} teacherName={data.teacherName} />
 
         <div className="grid gap-6 lg:grid-cols-[minmax(0,268px)_minmax(0,1fr)] lg:items-start lg:gap-[22px]">
           <UpcomingAssignmentsCard items={data.upcomingAssignments} />
@@ -39,12 +40,21 @@ function StudentClassroomPageWidget() {
   );
 }
 
-function ClassroomHero({ classroomName }: { classroomName: string }) {
+function ClassroomHero({
+  classroomName,
+  teacherName,
+}: {
+  classroomName: string;
+  teacherName: string;
+}) {
   return (
     <section className="bg-primary-350 relative h-[312px] overflow-hidden rounded-[20px]">
       <h1 className="text-foreground-inverse absolute top-9 left-9 text-[40px] font-bold whitespace-nowrap lg:text-[50px]">
         {classroomName}
       </h1>
+      <p className="text-foreground-inverse/90 absolute top-36 left-9 text-xl font-medium lg:text-2xl">
+        담당 선생님 {teacherName}
+      </p>
 
       {/* 우측 마스코트 장식 (작은 화면에서는 숨김) */}
       <div className="pointer-events-none absolute inset-0 hidden lg:block" aria-hidden="true">
@@ -78,19 +88,22 @@ function UpcomingAssignmentRow({
   isLast: boolean;
 }) {
   return (
-    <li
-      className={`flex items-center justify-between gap-3 py-2 ${
-        isLast ? "" : "border-line-strong border-b"
-      }`}
-    >
-      <div className="flex min-w-0 gap-2">
-        <span className="bg-accent mt-1.5 size-3 shrink-0 rounded-full" aria-hidden="true" />
-        <div className="min-w-0">
-          <p className="text-foreground text-label truncate">{item.title}</p>
-          <p className="text-muted text-caption mt-1.5">{item.deadlineLabel}</p>
+    <li className={isLast ? "" : "border-line-strong border-b"}>
+      <Link
+        href={`/problems/${item.problemId}`}
+        className="flex items-center justify-between gap-3 py-2 transition-opacity hover:opacity-80"
+      >
+        <div className="flex min-w-0 gap-2">
+          <span className="bg-accent mt-1.5 size-3 shrink-0 rounded-full" aria-hidden="true" />
+          <div className="min-w-0">
+            <p className="text-foreground text-label truncate">{item.title}</p>
+            <div className="text-muted text-caption mt-1.5 flex items-center gap-2 whitespace-nowrap">
+              <span>{item.deadlineLabel}</span>
+              <span className="text-foreground text-body font-medium">D-{item.remainingDays}</span>
+            </div>
+          </div>
         </div>
-      </div>
-      <span className="text-foreground text-body shrink-0 font-medium">D-{item.remainingDays}</span>
+      </Link>
     </li>
   );
 }
@@ -99,7 +112,10 @@ function AssignmentCard({ assignment }: { assignment: StudentAssignment }) {
   const isSubmitted = assignment.submissionStatus === "submitted";
 
   return (
-    <article className="border-line-strong bg-surface-subtle flex items-center justify-between gap-4 rounded-[10px] border px-4 py-5">
+    <Link
+      href={`/problems/${assignment.problemId}`}
+      className="border-line-strong bg-surface-subtle flex items-center justify-between gap-4 rounded-[10px] border px-4 py-5 transition-opacity hover:opacity-80"
+    >
       <div className="flex min-w-0 items-center gap-3">
         <span className="bg-line text-muted flex size-8 shrink-0 items-center justify-center rounded-md">
           <AssignmentIcon className="size-4" />
@@ -119,7 +135,7 @@ function AssignmentCard({ assignment }: { assignment: StudentAssignment }) {
         {isSubmitted ? <CheckCircleIcon className="size-6" /> : <XCircleIcon className="size-6" />}
         <span className="text-caption text-[10px]">{isSubmitted ? "제출완료" : "미제출"}</span>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -165,13 +181,15 @@ StudentClassroomPageWidget.Loading = StudentClassroomPageWidgetLoading;
 StudentClassroomPageWidget.Error = StudentClassroomPageWidgetError;
 StudentClassroomPageWidget.Empty = StudentClassroomPageWidgetEmpty;
 
-export function StudentClassroomPageWidgetBoundary() {
+export function StudentClassroomPageWidgetBoundary({ classroomId }: { classroomId: string }) {
+  const numericClassroomId = Number(classroomId);
+
   return (
     <QueryBoundary
       loadingFallback={<StudentClassroomPageWidget.Loading />}
       errorFallback={StudentClassroomPageWidget.Error}
     >
-      <StudentClassroomPageWidget />
+      <StudentClassroomPageWidget classroomId={numericClassroomId} />
     </QueryBoundary>
   );
 }
