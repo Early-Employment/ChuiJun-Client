@@ -6,15 +6,25 @@ import type {
   ProblemApiPageResponse,
 } from "@/entities/problem/api/problem-api-response";
 import { createMockWrongProblems } from "@/entities/problem/api/wrong-problem-mock";
+import type { ProblemFilter } from "@/entities/problem/model/problem-filter";
 
 export const problemKeys = {
   all: ["problem"] as const,
-  list: (page: number, size: number, keyword?: string) =>
+  // 필터는 서버가 처리한다. 값이 비어 있는 필터는 파라미터 자체를 보내지 않는다
+  // (백엔드가 빈 문자열을 유효하지 않은 enum 으로 보고 400 을 낸다).
+  list: (page: number, size: number, filter: ProblemFilter = {}) =>
     queryOptions({
-      queryKey: [...problemKeys.all, "list", page, size, keyword ?? ""] as const,
+      queryKey: [...problemKeys.all, "list", page, size, filter] as const,
       queryFn: async () => {
         const { data } = await instance.get<ProblemApiPageResponse>("/problems", {
-          params: { page, size, keyword: keyword || undefined },
+          params: {
+            page,
+            size,
+            keyword: filter.keyword || undefined,
+            level: filter.level,
+            solveStatus: filter.solveStatus,
+            algorithmType: filter.algorithmType,
+          },
         });
         return mapProblemListPage(data);
       },

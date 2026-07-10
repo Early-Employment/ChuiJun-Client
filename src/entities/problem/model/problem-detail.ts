@@ -1,3 +1,5 @@
+import type { ProblemAlgorithmType } from "@/entities/problem/model/problem-algorithm-type";
+
 /** 백준 스타일 채점 단위: stdin 입력과 기대 stdout 한 쌍. */
 export interface Testcase {
   /** 표준 입력으로 주입할 문자열 */
@@ -21,8 +23,8 @@ export interface ProblemDetail {
   score: number;
   /** 문제 설명 (평문/줄바꿈) */
   description: string;
-  /** 분야 (분야별 현황 집계 키와 동일) */
-  category: string;
+  /** 알고리즘 유형 */
+  algorithmType: ProblemAlgorithmType;
   /** 실행 제한 시간(ms) */
   timeLimitMs: number;
   /** 메모리 제한(MB) */
