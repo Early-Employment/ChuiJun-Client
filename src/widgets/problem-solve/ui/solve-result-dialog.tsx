@@ -37,11 +37,6 @@ export function SolveResultDialog({ state, onClose, onRetry }: Props) {
   const content = resolveContent(state);
   const hasRetry = content?.retryLabel !== undefined;
 
-  // [solve-debug] dialog 이 무엇을 받는지. open 이 true 인데도 안 뜨면 렌더/스택 문제.
-  console.log(
-    `[solve-debug] SolveResultDialog: phase=${state.phase} open=${isResultOpen(state)} title=${content?.title ?? "(none)"}`,
-  );
-
   return (
     <ResultDialog
       open={isResultOpen(state)}
