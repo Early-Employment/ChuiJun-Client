@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { memberKeys } from "@/entities/member/api/member-keys";
 import type { MemberProfile } from "@/entities/member/model/member-profile";
@@ -57,12 +56,12 @@ export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogP
     },
   });
 
-  // 스크롤 컨테이너(overflow-y-auto) 안에서 렌더되면 fixed 오버레이가 뷰포트 전체를
-  // 덮지 못하므로, 다이얼로그를 body 로 포털해 최상위에서 화면 전체를 덮게 한다.
-  if (!open || typeof document === "undefined") return null;
+  if (!open) return null;
 
-  return createPortal(
-    <div className="bg-overlay fixed inset-0 z-50 flex items-center justify-center px-4">
+  return (
+    // 스크롤 컨테이너(overflow-y-auto) 안에서 렌더되어 inset-0 만으로는 오버레이 높이가
+    // 뷰포트 전체를 덮지 못하므로, 높이를 h-dvh(뷰포트 높이)로 명시한다.
+    <div className="bg-overlay fixed inset-x-0 top-0 z-50 flex h-dvh items-center justify-center px-4">
       <div className="bg-surface w-full max-w-[434px] rounded-[28px] px-8 py-7 shadow-[0_24px_60px_rgb(17_17_17_/_0.16)]">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-heading font-bold">프로필 수정</h2>
@@ -121,7 +120,6 @@ export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogP
           </button>
         </div>
       </div>
-    </div>,
-    document.body,
+    </div>
   );
 }
