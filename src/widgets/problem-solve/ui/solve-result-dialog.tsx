@@ -32,11 +32,7 @@ interface DialogContent {
   retryLabel?: string;
 }
 
-/**
- * 종단 상태(solved/wrong/error)를 결과 모달 문구로 옮긴다.
- * ResultDialog 는 항상 렌더링하고 open 으로만 여닫는다 — 상태 전이마다 <dialog> 를
- * 새로 마운트하면 showModal() 타이밍이 어긋나 모달이 뜨지 않을 수 있다.
- */
+/** 종단 상태(solved/wrong/error)를 결과 모달 문구로 옮긴다. */
 export function SolveResultDialog({ state, onClose, onRetry }: Props) {
   const content = resolveContent(state);
   const hasRetry = content?.retryLabel !== undefined;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 export type ResultTone = "success" | "danger" | "warning";
 
@@ -15,15 +15,15 @@ interface ResultDialogProps {
   tone: ResultTone;
   title: string;
   children: ReactNode;
-  /** Esc 와 닫기 버튼이 이 콜백으로 모인다. */
+  /** Esc·닫기 버튼이 이 콜백으로 모인다. backdrop 클릭은 닫지 않는다(오조작 방지). */
   onClose: () => void;
   retryLabel?: string;
   onRetry?: () => void;
 }
 
 /**
- * 네이티브 <dialog> 기반 결과 모달.
- * 포커스 트랩과 Esc 는 브라우저가 처리한다. backdrop 은 그려질 뿐 클릭해도 닫히지 않는다.
+ * 결과 모달. 프로젝트의 검증된 오버레이 패턴(fixed inset-0)을 따른다.
+ * 화면 상단에서 내려온 것처럼 상단 중앙에 배치한다.
  */
 export function ResultDialog({
   open,
@@ -34,43 +34,49 @@ export function ResultDialog({
   retryLabel,
   onRetry,
 }: ResultDialogProps) {
-  const dialogRef = useRef<HTMLDialogElement>(null);
-
   useEffect(() => {
-    const dialog = dialogRef.current;
-    if (!dialog) return;
+    if (!open) return;
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") onClose();
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [open, onClose]);
 
-    if (open && !dialog.open) dialog.showModal();
-    if (!open && dialog.open) dialog.close();
-  }, [open]);
+  if (!open) return null;
 
   return (
-    <dialog
-      ref={dialogRef}
-      onClose={onClose}
-      className="bg-surface text-foreground animate-drop-in backdrop:bg-overlay backdrop:animate-fade-in mx-auto mt-8 mb-auto w-full max-w-md rounded-lg px-8 py-7"
+    <div
+      role="presentation"
+      className="bg-overlay fixed inset-0 z-50 flex justify-center px-4 pt-16 sm:pt-24"
     >
-      <h2 className={`text-heading font-bold ${TONE_TITLE_CLASSES[tone]}`}>{title}</h2>
-      <div className="text-muted mt-3 space-y-1 text-sm">{children}</div>
+      <div
+        role="alertdialog"
+        aria-modal="true"
+        className="bg-surface text-foreground h-fit w-full max-w-md rounded-lg px-8 py-7 shadow-lg"
+      >
+        <h2 className={`text-heading font-bold ${TONE_TITLE_CLASSES[tone]}`}>{title}</h2>
+        <div className="text-muted mt-3 space-y-1 text-sm">{children}</div>
 
-      <div className="mt-7 flex justify-end gap-2">
-        {onRetry && (
+        <div className="mt-7 flex justify-end gap-2">
+          {onRetry && (
+            <button
+              type="button"
+              onClick={onRetry}
+              className="bg-accent text-canvas cursor-pointer rounded-md px-4 py-2 text-sm font-semibold"
+            >
+              {retryLabel ?? "다시 시도"}
+            </button>
+          )}
           <button
             type="button"
-            onClick={onRetry}
-            className="bg-accent text-canvas cursor-pointer rounded-md px-4 py-2 text-sm font-semibold"
+            onClick={onClose}
+            className="border-line bg-surface cursor-pointer rounded-md border px-4 py-2 text-sm font-medium"
           >
-            {retryLabel ?? "다시 시도"}
+            {onRetry ? "닫기" : "확인"}
           </button>
-        )}
-        <button
-          type="button"
-          onClick={onClose}
-          className="border-line bg-surface cursor-pointer rounded-md border px-4 py-2 text-sm font-medium"
-        >
-          {onRetry ? "닫기" : "확인"}
-        </button>
+        </div>
       </div>
-    </dialog>
+    </div>
   );
 }
