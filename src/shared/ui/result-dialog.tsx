@@ -4,12 +4,6 @@ import { useEffect, type ReactNode } from "react";
 
 export type ResultTone = "success" | "danger" | "warning";
 
-const TONE_TITLE_CLASSES: Record<ResultTone, string> = {
-  success: "text-state-success",
-  danger: "text-state-danger",
-  warning: "text-state-warning",
-};
-
 interface ResultDialogProps {
   open: boolean;
   tone: ResultTone;
@@ -22,12 +16,12 @@ interface ResultDialogProps {
 }
 
 /**
- * 결과 모달. 프로젝트의 검증된 오버레이 패턴(fixed inset-0)을 따른다.
- * 화면 상단에서 내려온 것처럼 상단 중앙에 배치한다.
+ * 결과 배너(Figma node 1156:749 / 1191:749). 어둡게 가리는 오버레이 없이,
+ * 화면 최상단에 헤더를 덮는 카드 형태다. tone 은 문구 분기에만 쓰이고
+ * 배너 자체는 성공·실패 모두 동일한 스타일(흰 배경·teal 버튼)을 쓴다.
  */
 export function ResultDialog({
   open,
-  tone,
   title,
   children,
   onClose,
@@ -43,40 +37,37 @@ export function ResultDialog({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open, onClose]);
 
-  // [solve-debug] 실제 오버레이 DOM 을 그리는지. 이 로그가 뜨는데 화면에 없으면 CSS/z-index 문제.
-  console.log(`[solve-debug] ResultDialog: open=${open} -> ${open ? "render overlay" : "null"}`);
-
   if (!open) return null;
 
   return (
     <div
       role="presentation"
-      className="bg-overlay fixed inset-0 z-50 flex justify-center px-4 pt-16 sm:pt-24"
+      className="pointer-events-none fixed inset-x-0 top-0 z-[60] flex justify-center px-4"
     >
       <div
         role="alertdialog"
         aria-modal="true"
-        className="bg-surface text-foreground h-fit w-full max-w-md rounded-lg px-8 py-7 shadow-lg"
+        className="border-line-strong bg-surface text-foreground pointer-events-auto w-full max-w-[360px] rounded-b-lg border pt-6 pr-5 pb-4 pl-[17px] shadow-lg"
       >
-        <h2 className={`text-heading font-bold ${TONE_TITLE_CLASSES[tone]}`}>{title}</h2>
-        <div className="text-muted mt-3 space-y-1 text-sm">{children}</div>
+        <p className="text-[15px] leading-normal font-medium">{title}</p>
+        <div className="text-muted mt-1 space-y-0.5 text-xs">{children}</div>
 
-        <div className="mt-7 flex justify-end gap-2">
+        <div className="mt-4 flex justify-end gap-2">
           {onRetry && (
             <button
               type="button"
-              onClick={onRetry}
-              className="bg-accent text-canvas cursor-pointer rounded-md px-4 py-2 text-sm font-semibold"
+              onClick={onClose}
+              className="border-line-strong bg-surface text-foreground h-[30px] cursor-pointer rounded-md border px-4 text-xs font-medium"
             >
-              {retryLabel ?? "다시 시도"}
+              닫기
             </button>
           )}
           <button
             type="button"
-            onClick={onClose}
-            className="border-line bg-surface cursor-pointer rounded-md border px-4 py-2 text-sm font-medium"
+            onClick={onRetry ?? onClose}
+            className="bg-accent h-[30px] cursor-pointer rounded-md px-4 text-xs font-medium text-white"
           >
-            {onRetry ? "닫기" : "확인"}
+            {onRetry ? (retryLabel ?? "다시 시도") : "확인"}
           </button>
         </div>
       </div>
