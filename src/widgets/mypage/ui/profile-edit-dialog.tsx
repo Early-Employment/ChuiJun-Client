@@ -46,15 +46,7 @@ export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogP
   }, [open]);
 
   const saveProfileImageMutation = useMutation({
-    mutationFn: async () => {
-      if (!selectedFile) return profile.profileImageUrl;
-      return await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(selectedFile);
-      });
-    },
+    ...memberKeys.updateProfileImage(),
     onSuccess: (profileImageUrl) => {
       queryClient.setQueryData<MemberProfile>(memberKeys.me().queryKey, {
         ...profile,
@@ -115,7 +107,8 @@ export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogP
           <button
             type="button"
             onClick={() => {
-              saveProfileImageMutation.mutate();
+              if (!selectedFile) return;
+              saveProfileImageMutation.mutate(selectedFile);
             }}
             disabled={!selectedFile || saveProfileImageMutation.isPending}
             className="bg-accent text-foreground-inverse inline-flex h-11 items-center justify-center gap-2 rounded-xl text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
