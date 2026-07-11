@@ -13,15 +13,15 @@ export function RunResultPanel({ state }: { state: SolveState }) {
     <div className="border-line bg-surface space-y-3 rounded-md border p-3">
       <p className="text-muted text-lg font-medium">실행 결과</p>
       <hr className="border-line" />
-      <Body state={state} />
+      <RunResultBody state={state} />
     </div>
   );
 }
 
-function Body({ state }: { state: SolveState }) {
+function RunResultBody({ state }: { state: SolveState }) {
   if (state.phase === "running" || state.phase === "judging" || state.phase === "submitting") {
     return (
-      <div className="text-muted flex h-24 items-center justify-center gap-2 text-sm">
+      <div className="text-muted flex h-80 items-center justify-center gap-2 text-sm">
         <Spinner size={18} />
         {PENDING_LABELS[state.phase]}
       </div>
@@ -31,7 +31,7 @@ function Body({ state }: { state: SolveState }) {
   if (state.phase === "ran") {
     if (state.examples.length === 0) {
       return (
-        <div className="text-muted flex h-24 items-center justify-center text-sm">
+        <div className="text-muted flex h-80 items-center justify-center text-sm">
           제공된 예제가 없어요.
         </div>
       );
@@ -58,7 +58,7 @@ function Body({ state }: { state: SolveState }) {
   }
 
   return (
-    <div className="text-muted flex h-24 items-center justify-center text-sm">
+    <div className="text-muted flex h-80 items-center justify-center text-sm">
       코드를 실행하거나 제출해 보세요.
     </div>
   );
@@ -81,13 +81,13 @@ function OutcomeReport({
   summary: string;
 }) {
   return (
-    <div className="space-y-3">
-      <div className="bg-surface-subtle space-y-4 rounded-md px-5 py-3">
+    <div className="flex h-80 flex-col gap-3">
+      <div className="bg-surface-subtle min-h-0 flex-1 space-y-4 overflow-y-auto rounded-md px-5 py-3">
         {outcomes.map((outcome) => (
           <TestcaseBlock key={outcome.index} label={label} outcome={outcome} />
         ))}
       </div>
-      <p className="text-sm font-medium">{summary}</p>
+      <p className="shrink-0 text-sm font-medium">{summary}</p>
     </div>
   );
 }
