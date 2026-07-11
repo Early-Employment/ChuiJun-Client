@@ -12,5 +12,6 @@ export interface ClassroomAssignmentResponse {
   problemId: number;
   problemTitle: string;
   dueDate: string;
+  submitted: boolean;
   required: boolean;
 }
