@@ -1,74 +1,26 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { classroomAssignmentKeys } from "@/entities/classroom/api/classroom-assignment-keys";
-import { studentClassroomKeys } from "@/entities/classroom/api/student-classroom-keys";
+import { useState } from "react";
 import type { ProblemDetail } from "@/entities/problem/model/problem-detail";
-import { submissionKeys } from "@/entities/submission/api/submission-keys";
-import { judge, type JudgeReport, type TestcaseOutcome } from "@/features/code-judge/model/judge";
-import { runExamples } from "@/features/code-judge/model/run-examples";
+import { isSolveBusy, useSolveFlow } from "@/features/code-judge/model/use-solve-flow";
 import { ChevronRightIcon } from "@/shared/assets/ChevronRightIcon";
 import { RefreshIcon } from "@/shared/assets/RefreshIcon";
 import { CodeEditor } from "@/widgets/problem-solve/ui/code-editor";
 import { ProblemDescriptionCard } from "@/widgets/problem-solve/ui/problem-description-card";
 import { RunResultPanel } from "@/widgets/problem-solve/ui/run-result-panel";
+import { SolveResultDialog } from "@/widgets/problem-solve/ui/solve-result-dialog";
 
 const STARTER_CODE = "# 표준 입력은 input(), 출력은 print() 를 사용하세요.\n";
 
-// 예제 실행은 문제의 채점 제한시간이 아니라, Pyodide 콜드 로드까지 견딜 넉넉한
-// 벽시계 타임아웃을 쓴다. (채점은 judge 가 케이스별로 timeLimitMs 를 적용한다.)
-const EXAMPLE_RUN_TIMEOUT_MS = 10000;
-
 export function ProblemTab({ problem }: { problem: ProblemDetail }) {
-  const queryClient = useQueryClient();
-  const submit = useMutation(submissionKeys.submit());
-
   const [code, setCode] = useState(STARTER_CODE);
-  const [running, setRunning] = useState(false);
-  // 문제를 연 시점. 제출 시 studySeconds(풀이 소요 시간) 계산에 쓴다.
-  const openedAt = useRef(Date.now());
-  const [report, setReport] = useState<JudgeReport | null>(null);
-  const [exampleOutcomes, setExampleOutcomes] = useState<TestcaseOutcome[] | null>(null);
+  const { state, run, submitCode, retry, reset, dismiss } = useSolveFlow(problem);
+
+  const busy = isSolveBusy(state);
 
   function handleReset() {
     setCode(STARTER_CODE);
-    setReport(null);
-    setExampleOutcomes(null);
-  }
-
-  async function handleRun() {
-    setRunning(true);
-    setReport(null);
-    try {
-      const outcomes = await runExamples(code, problem.examples, EXAMPLE_RUN_TIMEOUT_MS);
-      setExampleOutcomes(outcomes);
-    } finally {
-      setRunning(false);
-    }
-  }
-
-  async function handleSubmit() {
-    setRunning(true);
-    setExampleOutcomes(null);
-    try {
-      const judged = await judge(problem.id, code, problem.testcases, problem.timeLimitMs);
-      setReport(judged);
-
-      await submit.mutateAsync({
-        problemId: problem.id,
-        judgeStatus: judged.result.judgeStatus,
-        code,
-        score: judged.result.passed ? problem.score : 0,
-        studySeconds: Math.max(0, Math.round((Date.now() - openedAt.current) / 1000)),
-      });
-    } finally {
-      await Promise.all([
-        queryClient.invalidateQueries({ queryKey: studentClassroomKeys.all }),
-        queryClient.invalidateQueries({ queryKey: classroomAssignmentKeys.all }),
-      ]);
-      setRunning(false);
-    }
+    reset();
   }
 
   return (
@@ -92,16 +44,16 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
             </button>
             <button
               type="button"
-              onClick={handleRun}
-              disabled={running}
+              onClick={() => run(code)}
+              disabled={busy}
               className="border-line bg-surface rounded-md border px-4 py-3 text-sm font-medium disabled:opacity-50"
             >
               실행
             </button>
             <button
               type="button"
-              onClick={handleSubmit}
-              disabled={running}
+              onClick={() => submitCode(code)}
+              disabled={busy}
               className="border-line-strong bg-surface rounded-md border px-4 py-3 text-sm font-medium disabled:opacity-50"
             >
               제출하기
@@ -111,8 +63,9 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
 
         <CodeEditor value={code} onChange={setCode} />
 
-        <RunResultPanel running={running} exampleOutcomes={exampleOutcomes} report={report} />
+        <RunResultPanel state={state} />
       </section>
+      <SolveResultDialog state={state} onClose={dismiss} onRetry={() => retry(code)} />
     </div>
   );
 }

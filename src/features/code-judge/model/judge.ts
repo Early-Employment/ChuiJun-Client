@@ -3,10 +3,13 @@ import type { JudgeStatus, SubmissionResult } from "@/entities/submission/model/
 import { runPython, type RunResult } from "@/shared/lib/pyodide/python-runner";
 import { normalizeOutput } from "@/features/code-judge/model/normalize-output";
 
+/** 취소된 실행은 결과가 없다. 케이스별 결과가 가질 수 있는 상태는 그 나머지다. */
+type SettledRun = Exclude<RunResult, { status: "cancelled" }>;
+
 export interface TestcaseOutcome {
   index: number;
   passed: boolean;
-  status: RunResult["status"];
+  status: SettledRun["status"];
   /** 주입한 표준 입력값 */
   input: string;
   expected: string;
@@ -19,6 +22,14 @@ export interface JudgeReport {
   outcomes: TestcaseOutcome[];
 }
 
+/** 화면 이탈 등으로 채점이 중단된 경우. 결과가 없으므로 리포트를 만들 수 없다. */
+export class JudgeCancelledError extends Error {
+  constructor() {
+    super("채점이 취소되었어요.");
+    this.name = "JudgeCancelledError";
+  }
+}
+
 /** 테스트케이스를 순차 실행해 케이스별 결과를 만든다. 각 케이스는 timeLimitMs 안에 끝나야 한다. */
 export async function runTestcases(
   code: string,
@@ -29,6 +40,9 @@ export async function runTestcases(
 
   for (const [index, testcase] of testcases.entries()) {
     const run = await runPython(code, testcase.input, timeLimitMs);
+    // 취소되면 남은 케이스를 돌지 않는다. 이미 폐기된 워커라 어차피 전부 취소된다.
+    if (run.status === "cancelled") throw new JudgeCancelledError();
+
     const expected = normalizeOutput(testcase.expectedOutput);
     const received = describeOutput(run);
     const passed = run.status === "ok" && received === expected;
@@ -77,7 +91,7 @@ function deriveJudgeStatus(outcomes: TestcaseOutcome[]): JudgeStatus {
   return "WA";
 }
 
-function describeOutput(run: RunResult): string {
+function describeOutput(run: SettledRun): string {
   if (run.status === "ok") return normalizeOutput(run.stdout);
   if (run.status === "error") return run.message;
   return "시간 초과";
