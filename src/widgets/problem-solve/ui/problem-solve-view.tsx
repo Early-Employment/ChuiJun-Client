@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { problemKeys } from "@/entities/problem/api/problem-keys";
 import { EditIcon } from "@/shared/assets/EditIcon";
-import { useWarmPythonRuntime } from "@/shared/lib/pyodide/warm-runtime";
 import { ChevronLeftIcon } from "@/shared/assets/ChevronLeftIcon";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
 import { Skeleton } from "@/shared/ui/skeleton";
@@ -14,7 +13,6 @@ import { ProblemTab } from "@/widgets/problem-solve/ui/problem-tab";
 function ProblemSolveView({ id }: { id: number }) {
   const { data: problem } = useSuspenseQuery(problemKeys.detail(id));
   const router = useRouter();
-  useWarmPythonRuntime();
 
   return (
     <main className="mx-auto w-full max-w-[1440px] space-y-4 px-4 py-6 sm:px-8 xl:px-10">
@@ -46,7 +44,9 @@ function ProblemSolveView({ id }: { id: number }) {
         </button>
       </div>
 
-      <ProblemTab problem={problem} />
+      {/* 문제 간 이동은 같은 라우트 세그먼트라 리마운트되지 않는다.
+          key 로 코드·풀이 시간·제출 상태를 문제마다 새로 시작한다. */}
+      <ProblemTab key={problem.id} problem={problem} />
     </main>
   );
 }
