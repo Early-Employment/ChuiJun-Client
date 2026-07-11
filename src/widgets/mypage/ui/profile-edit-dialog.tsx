@@ -46,15 +46,7 @@ export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogP
   }, [open]);
 
   const saveProfileImageMutation = useMutation({
-    mutationFn: async () => {
-      if (!selectedFile) return profile.profileImageUrl;
-      return await new Promise<string>((resolve, reject) => {
-        const reader = new FileReader();
-        reader.onload = () => resolve(typeof reader.result === "string" ? reader.result : "");
-        reader.onerror = () => reject(reader.error);
-        reader.readAsDataURL(selectedFile);
-      });
-    },
+    ...memberKeys.updateProfileImage(),
     onSuccess: (profileImageUrl) => {
       queryClient.setQueryData<MemberProfile>(memberKeys.me().queryKey, {
         ...profile,
@@ -67,7 +59,9 @@ export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogP
   if (!open) return null;
 
   return (
-    <div className="bg-overlay fixed inset-0 z-50 flex items-center justify-center px-4">
+    // 스크롤 컨테이너(overflow-y-auto) 안에서 렌더되어 inset-0 만으로는 오버레이 높이가
+    // 뷰포트 전체를 덮지 못하므로, 높이를 h-dvh(뷰포트 높이)로 명시한다.
+    <div className="bg-overlay fixed inset-x-0 top-0 z-50 flex h-dvh items-center justify-center px-4">
       <div className="bg-surface w-full max-w-[434px] rounded-[28px] px-8 py-7 shadow-[0_24px_60px_rgb(17_17_17_/_0.16)]">
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-heading font-bold">프로필 수정</h2>
@@ -115,7 +109,8 @@ export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogP
           <button
             type="button"
             onClick={() => {
-              saveProfileImageMutation.mutate();
+              if (!selectedFile) return;
+              saveProfileImageMutation.mutate(selectedFile);
             }}
             disabled={!selectedFile || saveProfileImageMutation.isPending}
             className="bg-accent text-foreground-inverse inline-flex h-11 items-center justify-center gap-2 rounded-xl text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50"
