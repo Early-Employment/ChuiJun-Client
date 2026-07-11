@@ -17,7 +17,7 @@ function ClassroomRouteSwitch({ classroomId }: { classroomId: string }) {
     return <ClassroomPageWidgetBoundary classroomId={classroomId} />;
   }
 
-  return <StudentClassroomPageWidgetBoundary />;
+  return <StudentClassroomPageWidgetBoundary classroomId={classroomId} />;
 }
 
 function ClassroomRouteError({ resetErrorBoundary }: QueryErrorFallbackProps) {

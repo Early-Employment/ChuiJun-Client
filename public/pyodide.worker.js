@@ -1,25 +1,9 @@
-/// <reference lib="webworker" />
-
 // Pyodide(WASM CPython)를 CDN에서 lazy-load 해 사용자 파이썬 코드를 실행하는 Web Worker.
 // 무한루프 대응은 메인 스레드(python-runner.ts)가 worker.terminate()로 처리하므로,
 // 이 워커는 단일 실행에만 집중한다. stdlib만 사용한다.
 
 const PYODIDE_CDN = "https://cdn.jsdelivr.net/pyodide/v0.27.2/full";
 
-declare function loadPyodide(config: { indexURL: string }): Promise<PyodideRuntime>;
-
-interface PyProxy {
-  toJs(): [string, string | null];
-  destroy(): void;
-}
-
-interface PyodideRuntime {
-  globals: { set(name: string, value: unknown): void };
-  runPythonAsync(code: string): Promise<PyProxy>;
-}
-
-// stdin 주입 + stdout 캡처. 사용자 코드는 격리된 globals 딕셔너리에서 exec 되어
-// 실행 간 전역이 새지 않는다. 예외는 traceback 문자열로 회수한다.
 const RUN_WRAPPER = `
 import sys, io, traceback
 
@@ -38,9 +22,9 @@ finally:
 (_buf.getvalue(), _err)
 `;
 
-let runtimePromise: Promise<PyodideRuntime> | null = null;
+let runtimePromise = null;
 
-function getRuntime(): Promise<PyodideRuntime> {
+function getRuntime() {
   if (!runtimePromise) {
     importScripts(`${PYODIDE_CDN}/pyodide.js`);
     runtimePromise = loadPyodide({ indexURL: `${PYODIDE_CDN}/` });
@@ -48,9 +32,7 @@ function getRuntime(): Promise<PyodideRuntime> {
   return runtimePromise;
 }
 
-type WorkerRequest = { type: "warm" } | { type: "run"; id: number; code: string; stdin: string };
-
-self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
+self.onmessage = async (event) => {
   const message = event.data;
 
   if (message.type === "warm") {

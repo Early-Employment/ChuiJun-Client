@@ -2,6 +2,8 @@
 
 import { useCallback, useEffect, useReducer, useRef } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { classroomAssignmentKeys } from "@/entities/classroom/api/classroom-assignment-keys";
+import { studentClassroomKeys } from "@/entities/classroom/api/student-classroom-keys";
 import { memberKeys } from "@/entities/member/api/member-keys";
 import type { ProblemDetail } from "@/entities/problem/model/problem-detail";
 import { problemKeys } from "@/entities/problem/api/problem-keys";
@@ -146,6 +148,9 @@ export function useSolveFlow(problem: ProblemDetail) {
       queryClient.invalidateQueries({ queryKey: memberKeys.all }),
       queryClient.invalidateQueries({ queryKey: rankingKeys.all }),
       queryClient.invalidateQueries({ queryKey: problemKeys.all }),
+      // 과제 진행률도 제출로 바뀐다.
+      queryClient.invalidateQueries({ queryKey: studentClassroomKeys.all }),
+      queryClient.invalidateQueries({ queryKey: classroomAssignmentKeys.all }),
     ]);
   }, [queryClient]);
 
