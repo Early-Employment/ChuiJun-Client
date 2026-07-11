@@ -9,7 +9,11 @@ import type { ProblemDetail } from "@/entities/problem/model/problem-detail";
 import { problemKeys } from "@/entities/problem/api/problem-keys";
 import { rankingKeys } from "@/entities/ranking/api/ranking-keys";
 import { submissionKeys } from "@/entities/submission/api/submission-keys";
-import type { SubmissionPayload, SubmissionRecord } from "@/entities/submission/model/submission";
+import {
+  isSubmissionPassed,
+  type SubmissionPayload,
+  type SubmissionRecord,
+} from "@/entities/submission/model/submission";
 import {
   judge,
   JudgeCancelledError,
@@ -43,7 +47,7 @@ export type SolveState =
   | { phase: "judging" }
   | { phase: "submitting"; payload: SubmissionPayload; report: JudgeReport }
   | { phase: "solved"; report: JudgeReport; record: SubmissionRecord; dismissed: boolean }
-  | { phase: "wrong"; report: JudgeReport; dismissed: boolean }
+  | { phase: "wrong"; report: JudgeReport; record: SubmissionRecord; dismissed: boolean }
   | { phase: "error"; cause: "judge"; message: string; dismissed: boolean }
   | {
       phase: "error";
@@ -88,9 +92,11 @@ function solveReducer(state: SolveState, action: SolveAction): SolveState {
 
     case "submit-succeeded": {
       if (state.phase !== "submitting") return state;
-      return state.report.result.passed
+      // 성공/실패의 단일 진실은 서버 응답이다. 프론트 채점(report.passed)이 아니다 —
+      // 서버가 RE/WA 로 되돌리면 프론트가 AC 라 판정했어도 오답 모달을 띄워야 한다.
+      return isSubmissionPassed(action.record)
         ? { phase: "solved", report: state.report, record: action.record, dismissed: false }
-        : { phase: "wrong", report: state.report, dismissed: false };
+        : { phase: "wrong", report: state.report, record: action.record, dismissed: false };
     }
 
     case "submit-failed": {
