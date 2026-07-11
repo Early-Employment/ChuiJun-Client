@@ -65,7 +65,6 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
 
         <RunResultPanel state={state} />
       </section>
-
       <SolveResultDialog state={state} onClose={dismiss} onRetry={() => retry(code)} />
     </div>
   );

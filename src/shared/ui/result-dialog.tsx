@@ -48,7 +48,7 @@ export function ResultDialog({
     <dialog
       ref={dialogRef}
       onClose={onClose}
-      className="bg-surface text-foreground backdrop:bg-overlay m-auto w-full max-w-md rounded-lg px-8 py-7"
+      className="bg-surface text-foreground animate-drop-in backdrop:bg-overlay backdrop:animate-fade-in mx-auto mt-8 mb-auto w-full max-w-md rounded-lg px-8 py-7"
     >
       <h2 className={`text-heading font-bold ${TONE_TITLE_CLASSES[tone]}`}>{title}</h2>
       <div className="text-muted mt-3 space-y-1 text-sm">{children}</div>

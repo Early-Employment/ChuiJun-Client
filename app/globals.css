@@ -91,6 +91,32 @@
   --radius-sm: 4px;
   --radius-md: 8px;
   --radius-lg: 16px;
+
+  /* 결과 모달: 화면 상단에서 미끄러져 내려오는 진입. 배경은 페이드. */
+  --animate-drop-in: drop-in 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fade-in: fade-in 0.2s ease-out;
+}
+
+/* 네이티브 <dialog> 는 열릴 때 display:none→block 이라 transition 이 씹힌다.
+   display 전환에도 동작하는 keyframes 로 진입 모션을 준다. */
+@keyframes drop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-120%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 html,
