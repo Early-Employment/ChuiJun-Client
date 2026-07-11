@@ -43,6 +43,9 @@ export function ResultDialog({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open, onClose]);
 
+  // [solve-debug] 실제 오버레이 DOM 을 그리는지. 이 로그가 뜨는데 화면에 없으면 CSS/z-index 문제.
+  console.log(`[solve-debug] ResultDialog: open=${open} -> ${open ? "render overlay" : "null"}`);
+
   if (!open) return null;
 
   return (

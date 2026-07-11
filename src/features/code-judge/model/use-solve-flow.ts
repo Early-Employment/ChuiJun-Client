@@ -133,7 +133,18 @@ export function isResultOpen(state: SolveState): boolean {
 export function useSolveFlow(problem: ProblemDetail) {
   const queryClient = useQueryClient();
   const submit = useMutation(submissionKeys.submit());
-  const [state, dispatch] = useReducer(solveReducer, { phase: "idle" });
+  const [state, dispatch] = useReducer(
+    // [solve-debug] 모든 상태 전이를 찍는다. 디버깅 끝나면 solveReducer 로 되돌릴 것.
+    (prev: SolveState, action: SolveAction) => {
+      const next = solveReducer(prev, action);
+      console.log(`[solve-debug] reducer: ${action.type} | ${prev.phase} -> ${next.phase}`);
+      return next;
+    },
+    { phase: "idle" },
+  );
+
+  // [solve-debug] 렌더마다 현재 phase 확인.
+  console.log(`[solve-debug] useSolveFlow render: id=${problem.id} phase=${state.phase}`);
 
   // 문제를 연 시점. 첫 제출 시도에서 studySeconds(풀이 소요 시간)를 한 번만 계산한다.
   const openedAt = useRef(Date.now());
@@ -143,9 +154,14 @@ export function useSolveFlow(problem: ProblemDetail) {
   // Pyodide 로드(수 초)를 첫 실행 전에 끝내 두고, 화면을 떠나면 진행 중인 채점을 취소한다.
   // 취소하지 않으면 전역 큐에 남아 다음 화면의 실행을 뒤에 줄 세운다.
   useEffect(() => {
+    // [solve-debug] 마운트/언마운트 추적. 제출 도중 언마운트되면 상태가 날아가 모달이 안 뜬다.
+    console.log(`[solve-debug] useSolveFlow MOUNT id=${problem.id}`);
     warmRuntime();
-    return discardWorker;
-  }, []);
+    return () => {
+      console.log(`[solve-debug] useSolveFlow UNMOUNT id=${problem.id} (discardWorker)`);
+      discardWorker();
+    };
+  }, [problem.id]);
 
   const invalidateAfterSubmit = useCallback(async () => {
     // 오답도 서버에 기록된다 — 틀린 문제 목록·잔디·정답률이 모두 바뀐다.
@@ -165,12 +181,23 @@ export function useSolveFlow(problem: ProblemDetail) {
       dispatch({ type: "submit-started", payload, report });
       try {
         const record = await submit.mutateAsync(payload);
+        // [solve-debug] 서버 응답 확인. isSubmissionPassed 판정도 함께.
+        console.log(
+          "[solve-debug] mutateAsync resolved:",
+          record,
+          "passed=",
+          isSubmissionPassed(record),
+        );
         dispatch({ type: "submit-succeeded", record });
-      } catch {
+      } catch (error) {
+        console.log("[solve-debug] mutateAsync rejected:", error);
         dispatch({ type: "submit-failed" });
         return;
       }
+      // [solve-debug] 무효화 시작. 이 도중 언마운트/리마운트가 나는지 위 로그로 확인.
+      console.log("[solve-debug] invalidateAfterSubmit start");
       await invalidateAfterSubmit();
+      console.log("[solve-debug] invalidateAfterSubmit done");
     },
     [invalidateAfterSubmit, submit],
   );
