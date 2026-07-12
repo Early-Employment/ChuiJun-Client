@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { CloseIcon } from "@/shared/assets/CloseIcon";
 import { MenuIcon } from "@/shared/assets/MenuIcon";
 import { useIsAuthenticated } from "@/shared/lib/use-is-authenticated";
+import { useMountAnimation } from "@/shared/lib/use-mount-animation";
 import { LogoutButton } from "@/shared/ui/logout-button";
 
 const navLinks = [
@@ -19,6 +20,7 @@ export function MobileNav() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const isAuthenticated = useIsAuthenticated();
+  const { shouldRender, dataState, handleAnimationEnd } = useMountAnimation(isOpen);
 
   // 라우트 이동 시 드로어를 닫는다.
   useEffect(() => {
@@ -37,15 +39,20 @@ export function MobileNav() {
         <MenuIcon className="size-6" />
       </button>
 
-      {isOpen && (
+      {shouldRender && (
         <div className="fixed inset-0 z-50" role="dialog" aria-modal="true">
           <button
             type="button"
             aria-label="메뉴 닫기"
             onClick={() => setIsOpen(false)}
-            className="bg-overlay absolute inset-0"
+            data-state={dataState}
+            className="bg-overlay data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in absolute inset-0"
           />
-          <div className="bg-surface absolute inset-y-0 right-0 flex w-72 max-w-[80vw] flex-col px-6 py-5">
+          <div
+            data-state={dataState}
+            onAnimationEnd={handleAnimationEnd}
+            className="bg-surface data-[state=closed]:animate-drawer-out data-[state=open]:animate-drawer-in absolute inset-y-0 right-0 flex w-72 max-w-[80vw] flex-col px-6 py-5"
+          >
             <div className="flex items-center justify-end">
               <button
                 type="button"
