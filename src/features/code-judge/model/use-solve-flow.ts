@@ -22,10 +22,15 @@ import {
 } from "@/features/code-judge/model/judge";
 import { runExamples } from "@/features/code-judge/model/run-examples";
 import { discardWorker, warmRuntime } from "@/shared/lib/pyodide/python-runner";
+import { withMinDuration } from "@/shared/lib/with-min-duration";
 
 // 예제 실행은 문제의 채점 제한시간이 아니라, Pyodide 콜드 로드까지 견딜 넉넉한
 // 벽시계 타임아웃을 쓴다. (채점은 judge 가 케이스별로 timeLimitMs 를 적용한다.)
 const EXAMPLE_RUN_TIMEOUT_MS = 10000;
+
+// Pyodide 로컬 실행은 네트워크를 안 타 예제가 적으면 순식간에 끝난다. 최소 시간을
+// 줘야 running 스피너 → ran 스태거로 이어지는 전환이 체감된다.
+const MIN_RUN_DURATION_MS = 500;
 
 /**
  * 문제 풀이 화면의 단일 상태 머신.
@@ -207,7 +212,10 @@ export function useSolveFlow(problem: ProblemDetail) {
       lastIntent.current = "run";
       dispatch({ type: "run-started" });
       try {
-        const examples = await runExamples(code, problem.examples, EXAMPLE_RUN_TIMEOUT_MS);
+        const examples = await withMinDuration(
+          runExamples(code, problem.examples, EXAMPLE_RUN_TIMEOUT_MS),
+          MIN_RUN_DURATION_MS,
+        );
         dispatch({ type: "run-finished", examples });
       } catch (error) {
         if (error instanceof JudgeCancelledError) return;

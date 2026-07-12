@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, type ReactNode } from "react";
+import { useMountAnimation } from "@/shared/lib/use-mount-animation";
 
 export type ResultTone = "success" | "danger" | "warning";
 
@@ -28,6 +29,8 @@ export function ResultDialog({
   retryLabel,
   onRetry,
 }: ResultDialogProps) {
+  const { shouldRender, dataState, handleAnimationEnd } = useMountAnimation(open);
+
   useEffect(() => {
     if (!open) return;
     function handleKeyDown(event: KeyboardEvent) {
@@ -37,7 +40,7 @@ export function ResultDialog({
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!shouldRender) return null;
 
   return (
     <div
@@ -47,7 +50,9 @@ export function ResultDialog({
       <div
         role="alertdialog"
         aria-modal="true"
-        className="border-line-strong bg-surface text-foreground pointer-events-auto w-full max-w-[360px] rounded-b-lg border pt-6 pr-5 pb-4 pl-[17px] shadow-lg"
+        data-state={dataState}
+        onAnimationEnd={handleAnimationEnd}
+        className="border-line-strong bg-surface text-foreground data-[state=closed]:animate-banner-out data-[state=open]:animate-banner-in pointer-events-auto w-full max-w-[360px] rounded-b-lg border pt-6 pr-5 pb-4 pl-[17px] shadow-lg"
       >
         <p className="text-[15px] leading-normal font-medium">{title}</p>
         <div className="text-muted mt-1 space-y-0.5 text-xs">{children}</div>

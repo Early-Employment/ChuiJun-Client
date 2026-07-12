@@ -8,6 +8,7 @@ import { CheckCircleIcon } from "@/shared/assets/CheckCircleIcon";
 import { CloseIcon } from "@/shared/assets/CloseIcon";
 import { LogoIcon } from "@/shared/assets/LogoIcon";
 import { PlusCircleIcon } from "@/shared/assets/PlusCircleIcon";
+import { useMountAnimation } from "@/shared/lib/use-mount-animation";
 
 interface ProfileEditDialogProps {
   open: boolean;
@@ -17,6 +18,7 @@ interface ProfileEditDialogProps {
 
 export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogProps) {
   const queryClient = useQueryClient();
+  const { shouldRender, dataState, handleAnimationEnd } = useMountAnimation(open);
   const inputId = useId();
   const inputRef = useRef<HTMLInputElement>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -56,13 +58,20 @@ export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogP
     },
   });
 
-  if (!open) return null;
+  if (!shouldRender) return null;
 
   return (
     // 스크롤 컨테이너(overflow-y-auto) 안에서 렌더되어 inset-0 만으로는 오버레이 높이가
     // 뷰포트 전체를 덮지 못하므로, 높이를 h-dvh(뷰포트 높이)로 명시한다.
-    <div className="bg-overlay fixed inset-x-0 top-0 z-50 flex h-dvh items-center justify-center px-4">
-      <div className="bg-surface w-full max-w-[434px] rounded-[28px] px-8 py-7 shadow-[0_24px_60px_rgb(17_17_17_/_0.16)]">
+    <div
+      data-state={dataState}
+      className="bg-overlay data-[state=closed]:animate-fade-out data-[state=open]:animate-fade-in fixed inset-x-0 top-0 z-50 flex h-dvh items-center justify-center px-4"
+    >
+      <div
+        data-state={dataState}
+        onAnimationEnd={handleAnimationEnd}
+        className="bg-surface data-[state=closed]:animate-modal-out data-[state=open]:animate-modal-in w-full max-w-[434px] rounded-[28px] px-8 py-7 shadow-[0_24px_60px_rgb(17_17_17_/_0.16)]"
+      >
         <div className="flex items-center justify-between gap-4">
           <h2 className="text-heading font-bold">프로필 수정</h2>
           <button

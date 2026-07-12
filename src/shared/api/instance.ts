@@ -48,6 +48,15 @@ function redirectToSignin() {
   }
 }
 
+// GET 요청에 한해 최소 로딩 시간을 보장한다. 응답이 너무 빨리 오면 스켈레톤이
+// 깜빡였다 사라지는(flash) 문제가 생기기 때문. 사용자 액션인 POST/PUT/DELETE 는
+// 즉각 반응해야 하므로 대상에서 제외한다.
+const MIN_LOADING_DURATION_MS = 400;
+
+function delay(ms: number) {
+  return new Promise<void>((resolve) => setTimeout(resolve, ms));
+}
+
 // 요청 인터셉터: accessToken 이 없으면 보내기 전에 선제 재발급에 합류한다.
 // (재오픈 탭·만료 직후 첫 요청에서 401 폭포 없이 토큰을 확보한다. /auth/* 는 제외.)
 instance.interceptors.request.use(async (config) => {
@@ -64,13 +73,21 @@ instance.interceptors.request.use(async (config) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
+  (config as InternalAxiosRequestConfig & { _requestedAt?: number })._requestedAt = Date.now();
   return config;
 });
 
 // 응답 인터셉터: 사용 중 만료로 401 이 나면 1회 재발급·재시도한다.
 // 재발급도 실패하면 세션을 정리하고 /signin 으로 보낸다.
 instance.interceptors.response.use(
-  (response) => response,
+  async (response) => {
+    const config = response.config as InternalAxiosRequestConfig & { _requestedAt?: number };
+    if (config.method?.toLowerCase() === "get" && config._requestedAt !== undefined) {
+      const remaining = MIN_LOADING_DURATION_MS - (Date.now() - config._requestedAt);
+      if (remaining > 0) await delay(remaining);
+    }
+    return response;
+  },
   async (error) => {
     if (typeof window === "undefined") return Promise.reject(error);
 

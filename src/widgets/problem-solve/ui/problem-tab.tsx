@@ -46,7 +46,7 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
               type="button"
               onClick={() => run(code)}
               disabled={busy}
-              className="border-line bg-surface rounded-md border px-4 py-3 text-sm font-medium disabled:opacity-50"
+              className="border-line bg-surface rounded-md border px-4 py-3 text-sm font-medium transition-transform active:scale-95 disabled:opacity-50"
             >
               실행
             </button>
@@ -54,7 +54,7 @@ export function ProblemTab({ problem }: { problem: ProblemDetail }) {
               type="button"
               onClick={() => submitCode(code)}
               disabled={busy}
-              className="border-line-strong bg-surface rounded-md border px-4 py-3 text-sm font-medium disabled:opacity-50"
+              className="border-line-strong bg-surface rounded-md border px-4 py-3 text-sm font-medium transition-transform active:scale-95 disabled:opacity-50"
             >
               제출하기
             </button>
