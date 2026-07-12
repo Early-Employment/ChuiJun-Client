@@ -96,6 +96,10 @@
 
   --animate-fade-in: fade-in 200ms var(--ease-out) both;
   --animate-fade-out: fade-out 150ms var(--ease-in) both;
+  /* fill-mode 없음(fill: none) 전용. both/forwards 는 애니메이션이 끝난 뒤에도 그
+     엘리먼트에 새 stacking context 를 영구히 만들어, 내부의 position:fixed 다이얼로그가
+     헤더보다 아래에 갇힌다. 콘텐츠 진입처럼 "한 번 재생하고 끝"인 경우에만 쓴다. */
+  --animate-content-fade-in: fade-in 200ms var(--ease-out);
   --animate-banner-in: banner-in 320ms var(--ease-spring) both;
   --animate-banner-out: banner-out 150ms var(--ease-in) both;
   --animate-modal-in: modal-in 320ms var(--ease-spring) both;
