@@ -19,3 +19,16 @@ export interface PresignedUrlResponse {
 export interface UpdateProfileImageRequest {
   profileImageUrl: string;
 }
+
+const LOCAL_UPLOAD_PATH_MARKER = "/api/local-upload/";
+
+/**
+ * 로컬/개발 환경은 실제 S3 대신 백엔드 자체가 `/api/local-upload/*` 로 파일을 직접 서빙한다.
+ * 이 경로는 백엔드에 CORS 설정이 없어 브라우저가 절대 URL로 직접(cross-origin) 요청하면 막힌다.
+ * next.config.ts 의 same-origin 프록시를 타도록 오리진을 떼고 경로만 남긴다.
+ * 실제 S3 presigned URL(운영 환경, 자체 CORS 설정 보유)은 그대로 반환한다.
+ */
+export function toSameOriginUrl(url: string): string {
+  if (!url.includes(LOCAL_UPLOAD_PATH_MARKER)) return url;
+  return new URL(url).pathname;
+}
