@@ -27,6 +27,12 @@ export interface MemberProfile {
   profileImageUrl: string;
   tier: MemberTier;
   rating: number;
+  /** 학년. 예: 3 */
+  grade: number;
+  /** 반. 예: 1 */
+  classNum: number;
+  /** 반 내 번호. */
+  number: number;
   currentStreak: number;
   totalSolvedCount: number;
   /** 일별 학습 통계(잔디밭 기록). */
