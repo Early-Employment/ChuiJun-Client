@@ -27,8 +27,9 @@ const LOCAL_UPLOAD_PATH_MARKER = "/api/local-upload/";
  * 이 경로는 백엔드에 CORS 설정이 없어 브라우저가 절대 URL로 직접(cross-origin) 요청하면 막힌다.
  * next.config.ts 의 same-origin 프록시를 타도록 오리진을 떼고 경로만 남긴다.
  * 실제 S3 presigned URL(운영 환경, 자체 CORS 설정 보유)은 그대로 반환한다.
+ * 프로필 이미지를 아직 설정하지 않은 회원은 `profileImageUrl`이 `null`로 내려온다.
  */
-export function toSameOriginUrl(url: string): string {
-  if (!url.includes(LOCAL_UPLOAD_PATH_MARKER)) return url;
-  return new URL(url).pathname;
+export function toSameOriginUrl<T extends string | null | undefined>(url: T): T {
+  if (!url || !url.includes(LOCAL_UPLOAD_PATH_MARKER)) return url;
+  return new URL(url).pathname as T;
 }
