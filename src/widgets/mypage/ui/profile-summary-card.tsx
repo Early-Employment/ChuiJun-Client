@@ -47,6 +47,7 @@ function buildTierProgress(rating: number, tier: keyof typeof MEMBER_TIER_PROGRE
 
 function ProfileSummaryCard() {
   const { data: profile } = useSuspenseQuery(memberKeys.me());
+  const { data: classroom } = useSuspenseQuery(memberKeys.myClassroom());
   const tierColor = MEMBER_TIER_COLOR_CLASSES[profile.tier];
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const tierProgress = buildTierProgress(profile.rating, profile.tier);
@@ -73,8 +74,9 @@ function ProfileSummaryCard() {
             <div>
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="text-heading font-bold">{profile.name}</h1>
-                {/* TODO(backend): /members/me 는 학년·반을 주지 않음 — placeholder */}
-                <span className="bg-surface-subtle text-muted rounded-lg px-3 py-1 text-sm">—</span>
+                <span className="bg-surface-subtle text-muted rounded-lg px-3 py-1 text-sm">
+                  {classroom.classLabel}
+                </span>
               </div>
               <div
                 className={`mt-2 flex items-center gap-1 text-sm font-semibold ${tierColor.text}`}

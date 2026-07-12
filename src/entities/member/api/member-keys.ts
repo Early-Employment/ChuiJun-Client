@@ -1,5 +1,6 @@
 import { queryOptions } from "@tanstack/react-query";
 import { instance } from "@/shared/api/instance";
+import { createMockMemberClassroom } from "@/entities/member/api/member-classroom-mock";
 import type {
   PresignedUrlRequest,
   PresignedUrlResponse,
@@ -14,6 +15,12 @@ export const memberKeys = {
     queryOptions({
       queryKey: [...memberKeys.all, "me"] as const,
       queryFn: async () => (await instance.get<MemberProfile>("/members/me")).data,
+    }),
+  // /members/me 가 아직 학년·반을 안 줘서 목으로 채운다(§5). 실전환 시 queryFn 만 교체.
+  myClassroom: () =>
+    queryOptions({
+      queryKey: [...memberKeys.all, "my-classroom"] as const,
+      queryFn: async () => createMockMemberClassroom(),
     }),
   // 프로필 이미지 수정 mutation. presigned URL 발급 → S3 업로드 → 최종 URL 확정 3단계.
   // 확정된 profileImageUrl 을 반환한다.
