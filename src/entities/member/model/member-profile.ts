@@ -24,7 +24,8 @@ export interface RecentActivity {
 export interface MemberProfile {
   memberId: number;
   name: string;
-  profileImageUrl: string;
+  /** 프로필 이미지를 아직 설정하지 않은 회원은 `null`. */
+  profileImageUrl: string | null;
   tier: MemberTier;
   rating: number;
   /** 학년. 예: 3 */
