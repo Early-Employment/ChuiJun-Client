@@ -22,7 +22,9 @@ export function QueryBoundary({ children, loadingFallback, errorFallback }: Prop
 
   return (
     <QueryErrorBoundary onReset={reset} fallback={errorFallback}>
-      <Suspense fallback={loadingFallback}>{children}</Suspense>
+      <Suspense fallback={loadingFallback}>
+        <div className="animate-fade-in">{children}</div>
+      </Suspense>
     </QueryErrorBoundary>
   );
 }
