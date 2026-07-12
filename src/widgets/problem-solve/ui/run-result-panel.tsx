@@ -1,3 +1,4 @@
+import type { CSSProperties } from "react";
 import type { JudgeReport, TestcaseOutcome } from "@/features/code-judge/model/judge";
 import type { SolveState } from "@/features/code-judge/model/use-solve-flow";
 import { Spinner } from "@/shared/ui/spinner";
@@ -83,8 +84,13 @@ function OutcomeReport({
   return (
     <div className="flex h-80 flex-col gap-3">
       <div className="bg-surface-subtle min-h-0 flex-1 space-y-4 overflow-y-auto rounded-md px-5 py-3">
-        {outcomes.map((outcome) => (
-          <TestcaseBlock key={outcome.index} label={label} outcome={outcome} />
+        {outcomes.map((outcome, index) => (
+          <TestcaseBlock
+            key={outcome.index}
+            label={label}
+            outcome={outcome}
+            style={{ animationDelay: `${Math.min(index, 8) * 60}ms` }}
+          />
         ))}
       </div>
       <p className="shrink-0 text-sm font-medium">{summary}</p>
@@ -92,9 +98,17 @@ function OutcomeReport({
   );
 }
 
-function TestcaseBlock({ label, outcome }: { label: string; outcome: TestcaseOutcome }) {
+function TestcaseBlock({
+  label,
+  outcome,
+  style,
+}: {
+  label: string;
+  outcome: TestcaseOutcome;
+  style?: CSSProperties;
+}) {
   return (
-    <div className="space-y-1 text-sm">
+    <div className="animate-stagger-item space-y-1 text-sm" style={style}>
       <p className="text-foreground font-medium">
         {label} {outcome.index + 1}
       </p>
