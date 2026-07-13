@@ -4,7 +4,7 @@ import { getMemberId, getMemberRole } from "@/shared/api/member-session-store";
 import { mapClassroomSummaries } from "@/entities/classroom/api/classroom-api-mapper";
 import type { ClassroomResponse } from "@/entities/classroom/api/classroom-api-response";
 
-// 교사: GET /classrooms?teacherId
+// 교사: GET /classrooms/teacher
 // 학생: GET /classrooms/me?studentId
 export const classroomSummaryKeys = {
   all: ["classroom-summary"] as const,
@@ -20,9 +20,7 @@ export const classroomSummaryKeys = {
         const role = getMemberRole();
         const isTeacher = role === "TEACHER" || role === "ADMIN";
         const { data } = isTeacher
-          ? await instance.get<ClassroomResponse[]>("/classrooms", {
-              params: { teacherId: memberId },
-            })
+          ? await instance.get<ClassroomResponse[]>("/classrooms/teacher")
           : await instance.get<ClassroomResponse[]>("/classrooms/me", {
               params: { studentId: memberId },
             });

@@ -80,7 +80,8 @@ export const studentClassroomKeys = {
           instance.get<ClassroomAssignmentResponse[]>(`/classrooms/${classroomId}/assignments`),
         ]);
 
-        // 백엔드에 단건 조회(GET /classrooms/{id})가 없어 목록 조회 결과에서 찾는다.
+        // GET /classrooms/{id}는 소속 여부를 검증하지 않으므로, 본인 소속 학급만
+        // 내려주는 GET /classrooms/me 결과에서 찾아 다른 학급 정보 열람을 막는다.
         const classroom = classrooms.find((candidate) => candidate.id === classroomId);
         if (!classroom) {
           throw new Error("학생이 소속되지 않은 학급입니다.");
