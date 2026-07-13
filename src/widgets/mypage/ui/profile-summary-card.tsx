@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import Image from "next/image";
 import { memberKeys } from "@/entities/member/api/member-keys";
 import {
   MEMBER_TIER_COLOR_CLASSES,
@@ -55,10 +56,15 @@ function ProfileSummaryCard() {
     <>
       <section className="border-line bg-surface flex flex-col gap-8 rounded-lg border px-5 py-6 sm:px-8 sm:py-8 lg:flex-row lg:items-center lg:px-14">
         <div className="relative mx-auto size-40 shrink-0 lg:mx-0">
-          <div className="flex size-40 items-center justify-center overflow-hidden rounded-full bg-neutral-300">
+          <div className="relative flex size-40 items-center justify-center overflow-hidden rounded-full bg-neutral-300">
             {profile.profileImageUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img src={profile.profileImageUrl} alt="" className="size-full object-cover" />
+              <Image
+                src={profile.profileImageUrl}
+                alt=""
+                fill
+                sizes="160px"
+                className="object-cover"
+              />
             ) : (
               <LogoIcon className="text-accent size-28" />
             )}

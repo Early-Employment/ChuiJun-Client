@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useRef, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import Image from "next/image";
 import { memberKeys } from "@/entities/member/api/member-keys";
 import type { MemberProfile } from "@/entities/member/model/member-profile";
 import { CheckCircleIcon } from "@/shared/assets/CheckCircleIcon";
@@ -85,10 +86,13 @@ export function ProfileEditDialog({ open, profile, onClose }: ProfileEditDialogP
         </div>
 
         <div className="mt-5 flex justify-center">
-          <div className="bg-surface-subtle border-line flex size-40 items-center justify-center overflow-hidden rounded-full border">
-            {previewUrl ? (
+          <div className="bg-surface-subtle border-line relative flex size-40 items-center justify-center overflow-hidden rounded-full border">
+            {previewUrl && selectedFile ? (
+              // 선택 직후 미리보기는 blob: objectURL 이라 next/image 원격 호스트 검증을 통과할 수 없다.
               // eslint-disable-next-line @next/next/no-img-element
               <img src={previewUrl} alt="" className="size-full object-cover" />
+            ) : previewUrl ? (
+              <Image src={previewUrl} alt="" fill sizes="160px" className="object-cover" />
             ) : (
               <LogoIcon className="text-accent size-24" />
             )}

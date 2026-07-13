@@ -15,6 +15,7 @@ import { AssignmentIcon } from "@/shared/assets/AssignmentIcon";
 import { MoreVerticalIcon } from "@/shared/assets/MoreVerticalIcon";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
 import { Skeleton } from "@/shared/ui/skeleton";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 
 // 마감일 ISO → "6월 30일 18시 마감" 형태의 안내 문구.
@@ -119,10 +120,15 @@ function StudentRow({ student }: { student: ClassroomStudent }) {
   return (
     <li className="flex items-center justify-between gap-3 rounded-lg px-1 py-3">
       <div className="flex min-w-0 items-center gap-3">
-        <div className="bg-line flex size-[33px] shrink-0 items-center justify-center overflow-hidden rounded-full">
+        <div className="bg-line relative flex size-[33px] shrink-0 items-center justify-center overflow-hidden rounded-full">
           {student.profileImageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={student.profileImageUrl} alt="" className="size-full object-cover" />
+            <Image
+              src={student.profileImageUrl}
+              alt=""
+              fill
+              sizes="33px"
+              className="object-cover"
+            />
           ) : null}
         </div>
         <p className="text-foreground truncate text-[20px] font-medium">{student.name}</p>
