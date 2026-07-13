@@ -73,17 +73,16 @@ export const studentClassroomKeys = {
           throw new Error("학생 회원 ID가 없어 학급을 조회할 수 없습니다.");
         }
 
-        const [{ data: classrooms }, { data: classroom }, { data: assignments }] =
-          await Promise.all([
-            instance.get<ClassroomResponse[]>("/classrooms/me", {
-              params: { studentId },
-            }),
-            instance.get<ClassroomResponse>(`/classrooms/${classroomId}`),
-            instance.get<ClassroomAssignmentResponse[]>(`/classrooms/${classroomId}/assignments`),
-          ]);
+        const [{ data: classrooms }, { data: assignments }] = await Promise.all([
+          instance.get<ClassroomResponse[]>("/classrooms/me", {
+            params: { studentId },
+          }),
+          instance.get<ClassroomAssignmentResponse[]>(`/classrooms/${classroomId}/assignments`),
+        ]);
 
-        const hasAccess = classrooms.some((candidate) => candidate.id === classroomId);
-        if (!hasAccess) {
+        // 백엔드에 단건 조회(GET /classrooms/{id})가 없어 목록 조회 결과에서 찾는다.
+        const classroom = classrooms.find((candidate) => candidate.id === classroomId);
+        if (!classroom) {
           throw new Error("학생이 소속되지 않은 학급입니다.");
         }
 
