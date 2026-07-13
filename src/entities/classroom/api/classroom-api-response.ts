@@ -15,3 +15,21 @@ export interface ClassroomAssignmentResponse {
   submitted: boolean;
   required: boolean;
 }
+
+export interface ClassroomTeacherDashboardResponse {
+  stats: ClassroomStatsResponse;
+  students: ClassroomStudentResponse[];
+}
+
+export interface ClassroomStatsResponse {
+  totalSubmissionRate: number;
+  recentMissingStudentsCount: number;
+  averageCorrectRate: number;
+  lowCorrectRateProblemCount: number;
+}
+
+export interface ClassroomStudentResponse {
+  memberId: number;
+  name: string;
+  profileImageUrl: string | null;
+}

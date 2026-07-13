@@ -30,8 +30,7 @@ function ClassroomPageWidget({ classroomId }: { classroomId: string }) {
     queries: [
       classroomDetailKeys.detail(numericClassroomId),
       classroomAssignmentKeys.list(numericClassroomId),
-      // 대시보드 지표·학생 명단은 백엔드 미제공으로 보류 — 격리된 목 유지.
-      classroomDashboardKeys.current(),
+      classroomDashboardKeys.current(numericClassroomId),
     ],
   });
   const router = useRouter();
@@ -115,19 +114,13 @@ function MetricCard({ metric }: { metric: ClassroomMetric }) {
 }
 
 function StudentRow({ student }: { student: ClassroomStudent }) {
-  const avatarClassName =
-    student.avatarVariant === "highlight"
-      ? "border-line-strong bg-surface-accent-soft text-reward border"
-      : "bg-line text-line";
-
   return (
     <li className="flex items-center justify-between gap-3 rounded-lg px-1 py-3">
       <div className="flex min-w-0 items-center gap-3">
-        <div
-          className={`flex size-[33px] shrink-0 items-center justify-center rounded-full ${avatarClassName}`}
-        >
-          {student.avatarVariant === "highlight" ? (
-            <span className="text-xs leading-none">*</span>
+        <div className="bg-line flex size-[33px] shrink-0 items-center justify-center overflow-hidden rounded-full">
+          {student.profileImageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={student.profileImageUrl} alt="" className="size-full object-cover" />
           ) : null}
         </div>
         <p className="text-foreground truncate text-[20px] font-medium">{student.name}</p>
