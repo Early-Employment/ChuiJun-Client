@@ -4,6 +4,15 @@ const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "chuijun.https.gsmsv.site",
+        pathname: "/**",
+      },
+    ],
+  },
   async rewrites() {
     if (!NEXT_PUBLIC_API_BASE_URL) return [];
     return [
