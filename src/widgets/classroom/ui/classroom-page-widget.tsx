@@ -1,9 +1,11 @@
 "use client";
 
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { classroomAssignmentKeys } from "@/entities/classroom/api/classroom-assignment-keys";
-import { classroomDashboardKeys } from "@/entities/classroom/api/classroom-dashboard-keys";
-import { classroomDetailKeys } from "@/entities/classroom/api/classroom-detail-keys";
+import {
+  classroomAssignmentKeys,
+  classroomDashboardKeys,
+  classroomDetailKeys,
+} from "@/entities/classroom/api/classroom-keys";
 import type { ClassroomAssignmentItem } from "@/entities/classroom/model/classroom-assignment-item";
 import type {
   ClassroomMetric,

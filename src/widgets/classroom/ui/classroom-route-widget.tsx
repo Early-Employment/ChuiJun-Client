@@ -1,7 +1,7 @@
 "use client";
 
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { classroomViewerKeys } from "@/entities/classroom/api/classroom-viewer-keys";
+import { classroomViewerKeys } from "@/entities/classroom/api/classroom-keys";
 import { ClassroomPageWidgetBoundary } from "@/widgets/classroom/ui/classroom-page-widget";
 import { StudentClassroomPageWidgetBoundary } from "@/widgets/classroom/ui/student-classroom-page-widget";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
