@@ -36,7 +36,13 @@ self.onmessage = async (event) => {
   const message = event.data;
 
   if (message.type === "warm") {
-    await getRuntime();
+    try {
+      await getRuntime();
+    } catch (error) {
+      // CDN 차단·오프라인 등. 이걸 알리지 않으면 메인 스레드가 warmed 를 영원히 기다린다.
+      self.postMessage({ type: "warm-failed", message: String(error) });
+      return;
+    }
     self.postMessage({ type: "warmed" });
     return;
   }

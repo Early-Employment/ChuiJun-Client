@@ -24,9 +24,16 @@ export interface RecentActivity {
 export interface MemberProfile {
   memberId: number;
   name: string;
-  profileImageUrl: string;
+  /** 프로필 이미지를 아직 설정하지 않은 회원은 `null`. */
+  profileImageUrl: string | null;
   tier: MemberTier;
   rating: number;
+  /** 학년. 예: 3 */
+  grade: number;
+  /** 반. 예: 1 */
+  classNum: number;
+  /** 반 내 번호. */
+  number: number;
   currentStreak: number;
   totalSolvedCount: number;
   /** 일별 학습 통계(잔디밭 기록). */

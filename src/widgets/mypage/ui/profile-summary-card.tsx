@@ -73,8 +73,9 @@ function ProfileSummaryCard() {
             <div>
               <div className="flex flex-wrap items-center gap-3">
                 <h1 className="text-heading font-bold">{profile.name}</h1>
-                {/* TODO(backend): /members/me 는 학년·반을 주지 않음 — placeholder */}
-                <span className="bg-surface-subtle text-muted rounded-lg px-3 py-1 text-sm">—</span>
+                <span className="bg-surface-subtle text-muted rounded-lg px-3 py-1 text-sm">
+                  {profile.grade}학년 {profile.classNum}반
+                </span>
               </div>
               <div
                 className={`mt-2 flex items-center gap-1 text-sm font-semibold ${tierColor.text}`}
