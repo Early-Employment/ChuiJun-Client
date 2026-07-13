@@ -7,19 +7,10 @@ export interface ClassroomMetric {
 export interface ClassroomStudent {
   id: string;
   name: string;
-  avatarVariant: "neutral" | "highlight";
-}
-
-export interface ClassroomAssignment {
-  id: string;
-  title: string;
-  submissionLabel: string;
-  isPinned: boolean;
+  profileImageUrl: string | null;
 }
 
 export interface ClassroomDashboard {
-  classLabel: string;
   metrics: ClassroomMetric[];
   students: ClassroomStudent[];
-  assignments: ClassroomAssignment[];
 }

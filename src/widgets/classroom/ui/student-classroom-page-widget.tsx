@@ -17,10 +17,6 @@ import { Skeleton } from "@/shared/ui/skeleton";
 function StudentClassroomPageWidget({ classroomId }: { classroomId: number }) {
   const { data } = useSuspenseQuery(studentClassroomKeys.current(classroomId));
 
-  if (data.assignments.length === 0 && data.upcomingAssignments.length === 0) {
-    return <StudentClassroomPageWidget.Empty />;
-  }
-
   return (
     <main className="mx-auto w-full max-w-[1440px] px-4 py-8 sm:px-8 lg:py-10 xl:px-10">
       <section className="mx-auto w-full max-w-[1160px] space-y-6">
@@ -30,9 +26,15 @@ function StudentClassroomPageWidget({ classroomId }: { classroomId: number }) {
           <UpcomingAssignmentsCard items={data.upcomingAssignments} />
 
           <section className="space-y-3">
-            {data.assignments.map((assignment) => (
-              <AssignmentCard key={assignment.id} assignment={assignment} />
-            ))}
+            {data.assignments.length === 0 ? (
+              <p className="text-muted border-line-strong bg-surface rounded-[10px] border px-4 py-5 text-sm">
+                등록된 과제가 없습니다
+              </p>
+            ) : (
+              data.assignments.map((assignment) => (
+                <AssignmentCard key={assignment.id} assignment={assignment} />
+              ))
+            )}
           </section>
         </div>
       </section>
@@ -71,11 +73,15 @@ function UpcomingAssignmentsCard({ items }: { items: StudentUpcomingAssignment[]
     <section className="border-line-strong bg-surface h-fit rounded-[10px] border px-7 py-6">
       <h2 className="text-foreground text-xl font-medium">곧 마감되는 과제</h2>
 
-      <ul className="mt-3">
-        {items.map((item, index) => (
-          <UpcomingAssignmentRow key={item.id} item={item} isLast={index === items.length - 1} />
-        ))}
-      </ul>
+      {items.length === 0 ? (
+        <p className="text-muted mt-3 text-sm">마감 되는 과제가 없습니다</p>
+      ) : (
+        <ul className="mt-3">
+          {items.map((item, index) => (
+            <UpcomingAssignmentRow key={item.id} item={item} isLast={index === items.length - 1} />
+          ))}
+        </ul>
+      )}
     </section>
   );
 }
@@ -169,17 +175,8 @@ function StudentClassroomPageWidgetError({ resetErrorBoundary }: QueryErrorFallb
   );
 }
 
-function StudentClassroomPageWidgetEmpty() {
-  return (
-    <div className="text-muted flex min-h-[480px] items-center justify-center px-4 text-sm">
-      아직 표시할 과제가 없어요.
-    </div>
-  );
-}
-
 StudentClassroomPageWidget.Loading = StudentClassroomPageWidgetLoading;
 StudentClassroomPageWidget.Error = StudentClassroomPageWidgetError;
-StudentClassroomPageWidget.Empty = StudentClassroomPageWidgetEmpty;
 
 export function StudentClassroomPageWidgetBoundary({ classroomId }: { classroomId: string }) {
   const numericClassroomId = Number(classroomId);
