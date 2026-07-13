@@ -9,6 +9,9 @@ const MOCK_CLASSROOM_DETAIL: ClassroomDetail = {
   teacherName: "홍길동",
 };
 
-export function createMockClassroomDetail(): ClassroomDetail {
-  return MOCK_CLASSROOM_DETAIL;
+export function createMockClassroomDetail(classroomId: number): ClassroomDetail {
+  return {
+    ...MOCK_CLASSROOM_DETAIL,
+    id: classroomId,
+  };
 }

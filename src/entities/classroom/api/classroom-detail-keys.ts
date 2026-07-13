@@ -11,6 +11,6 @@ export const classroomDetailKeys = {
       // 백엔드 미구현: 목 데이터 반환. 실전환 시 아래 한 줄로 교체한다.
       // queryFn: async () =>
       //   mapClassroomDetail((await instance.get<ClassroomResponse>(`/classrooms/${classroomId}`)).data),
-      queryFn: async () => createMockClassroomDetail(),
+      queryFn: async () => createMockClassroomDetail(classroomId),
     }),
 };
