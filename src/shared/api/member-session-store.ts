@@ -12,9 +12,12 @@ export function getMemberId(): number | null {
   return raw === null ? null : Number(raw);
 }
 
+// 백엔드가 대소문자를 문서(STUDENT/TEACHER/ADMIN)와 다르게 내려주는 경우가 있어(§api-spec-divergence),
+// 저장된 값을 그대로 캐스팅하지 않고 대문자로 정규화해 반환한다. 교사/학생 분기가 이 값에 의존한다.
 export function getMemberRole(): MemberRole | null {
   if (typeof window === "undefined") return null;
-  return window.sessionStorage.getItem(MEMBER_ROLE_KEY) as MemberRole | null;
+  const raw = window.sessionStorage.getItem(MEMBER_ROLE_KEY);
+  return raw === null ? null : (raw.toUpperCase() as MemberRole);
 }
 
 export function setMemberSession(memberId: number, role: MemberRole): void {
