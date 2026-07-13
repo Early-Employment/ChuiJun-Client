@@ -2,8 +2,7 @@
 
 import Link from "next/link";
 import { useSuspenseQueries } from "@tanstack/react-query";
-import { classroomSummaryKeys } from "@/entities/classroom/api/classroom-summary-keys";
-import { classroomViewerKeys } from "@/entities/classroom/api/classroom-viewer-keys";
+import { classroomSummaryKeys, classroomViewerKeys } from "@/entities/classroom/api/classroom-keys";
 import type { ClassroomSummary } from "@/entities/classroom/model/classroom-summary";
 import { PlusCircleIcon } from "@/shared/assets/PlusCircleIcon";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { studentClassroomKeys } from "@/entities/classroom/api/student-classroom-keys";
+import { studentClassroomKeys } from "@/entities/classroom/api/classroom-keys";
 import type {
   StudentAssignment,
   StudentUpcomingAssignment,

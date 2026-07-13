@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useMutation, useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { assignmentKeys } from "@/entities/assignment/api/assignment-keys";
-import { classroomAssignmentKeys } from "@/entities/classroom/api/classroom-assignment-keys";
+import { classroomAssignmentKeys } from "@/entities/classroom/api/classroom-keys";
 import { problemKeys } from "@/entities/problem/api/problem-keys";
 import { ChevronLeftIcon } from "@/shared/assets/ChevronLeftIcon";
 import { QueryBoundary, type QueryErrorFallbackProps } from "@/shared/ui/query-boundary";
